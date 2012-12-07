@@ -1,0 +1,29 @@
+#! /bin/bash
+set -e
+
+MY_LOG="$1"
+MY_DIR="$(cd "$(dirname "$0")" && pwd)"
+MY_ETC="$MY_DIR/../etc"
+
+if [ -z "$MY_LOG" ]; then
+    echo "=> Not logging"
+else
+    echo "=> Logging to: $MY_LOG"
+fi
+
+for (( i = 1; ; i++ )); do
+    if [ -a "$MY_LOG" ]; then
+        read -p "=> Work cycle #$i: " MY_DESCRIPTION
+        MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
+        echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION"
+        echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION" >> "$MY_LOG"
+    fi
+  
+    countdown 25 
+    notify-send "Pomodoro - #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
+    echo -n "=> Press [Enter] to continue" && read
+  
+    echo "=> Break cycle $i"
+    countdown 5
+    notify-send "Pomodoro - Break complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
+done
