@@ -1,0 +1,22 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` [minutes]"
+    exit 1
+fi
+
+MY_TIME="$1"
+MY_RED='\e[0;31m'
+MY_GREEN='\e[0;32m'
+MY_NORMAL='\033[0m'
+
+echo -e "[$MY_GREEN********** Start *********$MY_NORMAL]"
+for (( i = $MY_TIME; i > 0; i-- ))
+do
+  echo -n "$i..."
+  sleep 1m
+done
+
+echo -e "\n[$MY_RED********** Done **********$MY_NORMAL]"
