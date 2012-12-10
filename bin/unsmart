@@ -1,0 +1,192 @@
+#!/usr/bin/ruby
+
+def prompt_for(text, default = nil, options = nil)
+  response = nil
+
+  while response.nil? do
+    prompt = "==> #{text}"
+    prompt += " [#{options.join(',')}]" if options
+    prompt += " [default=#{default}]" if default
+    prompt += options ? '? ' : ': '
+    print prompt
+    response = STDIN.gets.chomp
+
+    if response.empty? and (not default.nil?)
+      response = default
+    end
+
+    if options
+      response = nil unless options.include?(response)
+    end
+  end
+
+  return response
+end
+
+# count files in a directory
+def count_files(dir)
+  # subtract one because it returns the directory as one result
+  cmd = "find #{dir}/ | wc -l"
+  `#{cmd}`.chomp.to_i - 1
+end
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} compressed-file [target-dir]"
+  exit 1
+end
+
+filename = ARGV[0]
+
+# detect supported extensions on filename
+unless File.basename(filename) =~ /(.+)(\.zip|\.tgz|\.tbz|\.tar\.gz|\.tar\.bz2|\.rar)$/
+  puts "=> Don't know what to do with that file!"
+  exit 1
+end
+
+# remember as basename and extension
+base = $1
+extension = $2
+
+if filename =~ /^(http)|(ftp)/
+  # need to wget the file
+
+  # get a temp file
+  tempfile = `tempfile --suffix '#{extension}'`.chomp
+
+  # wget the file as a tempfile
+  raise "Unable to wget the file" unless system "wget '#{filename}' -O '#{tempfile}'" 
+
+  # use the tempfile from now on
+  filename = tempfile
+end
+
+raise "File does not exist" unless File.exist?(filename)
+
+# get absolute pathname of compressed file
+path = File.expand_path(filename)
+
+cmd = nil
+
+# choose command based on extension
+if extension == ".zip"
+  # zip
+  #
+  # -q     perform operations quietly
+  cmd = "unzip -q '#{path}'"
+elsif extension == ".tar.gz" or extension == ".tgz"
+  # gzipped tar
+  #
+  # -x     extract files from an archive
+  # -z     filter the archive through gzip
+  # -f     use archive file or device ARCHIVE
+  cmd = "tar xz -f '#{path}'"
+elsif extension == ".tar.bz2" or extension == ".tbz"
+  # bzipped tar
+  #
+  # -x     extract files from an archive
+  # -j     filter the archive through bzip2
+  # -f     use archive file or device ARCHIVE
+  cmd = "tar xj -f '#{path}'"
+elsif extension == ".rar"
+  # rar
+  #
+  # x      Extract files with full path
+  # -inul  Disable all messages
+  cmd = "unrar x -inul '#{path}'"
+end
+
+# use the optional second parameter as the destination
+dest = ARGV[1]
+
+if dest.nil?
+  # no parameter
+
+  # use the base name as the default
+  dest = base
+
+  # actually, only use the first alpha part, if possible
+  if base =~ /^([a-zA-Z]+)/
+    dest = $1 if $1.size > 2
+  end
+
+  # use lowercase
+  dest = dest.downcase
+end
+
+# get absolute path of destination
+dest_path = File.expand_path(dest)
+
+# remember if we need to create the destination directory
+mkdir_needed = false
+
+if File.exist?(dest_path)
+  # this exists
+  raise "Destination path '#{dest_path}' is not a directory!" unless File.directory?(dest_path)
+
+  count = count_files(dest_path)
+  if count > 0
+    puts "=> Target path '#{dest_path}' exists and contains #{count} file(s)."
+    exit 1 unless prompt_for("Continue?", 'n', %w{ y n }) == 'y'
+  end
+else
+  mkdir_needed = true
+end
+
+# create temp directory
+tempdir = `mktemp -d`.chomp
+
+# execute command in the temp directory
+old = Dir.pwd
+Dir.chdir(tempdir)
+puts "=> Extracting..."
+raise "Command failed: \"#{cmd}\"" unless system(cmd)
+Dir.chdir(old)
+
+# assume straight copy of contents
+source = tempdir
+
+# navigate into a single directory
+files = Dir[File.join(source, '*')]
+if files.size == 1 and File.directory?(files.first)
+  source = files.first
+end
+
+if mkdir_needed
+  # need this mkdir from before
+  raise "Failed to create '#{dest_path}' directory!" unless Dir.mkdir(dest_path)
+end
+
+# -i    interactive (prompt before overwrite)
+raise "Failed to move files" unless system "mv -i \"#{source}\"/* \"#{dest_path}\"/"
+
+# move hidden files in a separate step
+if count_files(source) > 0
+  # there must be hidden files
+  puts "=> Also moving hidden files..."
+
+  raise "Failed to move hidden files" unless system "mv -i \"#{source}\"/.[!.]* \"#{dest_path}\"/"
+end
+
+# directory should be empty by now
+raise "Failed to remove '#{source}'" unless Dir.rmdir(source)
+
+# delete temp directory
+if source != tempdir
+  raise "Failed to remove '#{tempdir}'" unless Dir.rmdir(tempdir)
+end
+
+search = count_files(dest_path)
+
+# get the first part of the usage result
+`du -sh '#{dest_path}'` =~ /(.+)\t/
+
+usage = $1
+
+puts "=> Extracted: #{search} file(s) to '#{dest_path}' (#{usage})"
+
+# delete source compressed
+if prompt_for("Delete #{filename}?", 'n', %w{ y n }) == 'y'
+  raise "Failed to delete '#{path}'" unless File.delete(path)
+end
+
