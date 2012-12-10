@@ -12,7 +12,7 @@ else
 fi
 
 for (( i = 1; ; i++ )); do
-    if [ -a "$MY_LOG" ]; then
+    if [ -n "$MY_LOG" ]; then
         read -p "=> Work cycle #$i: " MY_DESCRIPTION
         MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION"
