@@ -1,0 +1,18 @@
+#! /bin/bash
+set -e
+
+# capture a cropped screenshot to a timestamped filename
+MY_FILE="/tmp/`date +%Y-%m-%d-%I%M%S`.png"
+scrot -s "$MY_FILE"
+
+# use ImageMagick to measure the dimensions of the image captured
+MY_SIZE=`identify "$MY_FILE" | cut -f 3 -d' '`
+
+# output dimensions WxH
+echo $MY_SIZE
+
+# remove temporary file
+rm "$MY_FILE"
+
+# send the dimensions to the clipboard as well
+echo -n "$MY_SIZE" | xclip -loops 1 -silent

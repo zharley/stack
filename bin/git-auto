@@ -1,0 +1,49 @@
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` a long message"
+    echo "=> git commit/push shortcut especially for code"
+    echo "=> warns about adding untracked files (and push)"
+    echo "--------------------------------------------------------------------------------"
+    git status
+    exit 1
+fi
+
+# only try to commit if there's something to commit
+if git status | grep -q "nothing to commit"; then
+    echo "=> Nothing to commit in `pwd`"
+else
+    # use all parameters as the message
+    MY_MESSAGE="$@"
+
+    # optionally add untracked files
+    if git status | grep -q "Untracked files"; then
+        # prompt user
+        read -p "=> Add untracked files in `pwd`? " MY_ANSWER
+
+        # add files if desired
+        if test "$MY_ANSWER" == "y"; then
+            git add .
+        else
+            echo "=> Not adding untracked files."
+        fi
+    fi
+
+    # commit it
+    echo "=> Committing `pwd`"
+    git commit -a -m "$MY_MESSAGE"
+fi
+
+if git status | grep -q "Your branch is ahead"; then
+    # ask about pushing changes
+    read -p "=> Push changes in `pwd`? " MY_ANSWER
+
+    # push if desired
+    if test "$MY_ANSWER" == "y"; then
+        echo "=> Pushing all in `pwd`"
+        git push --all
+    else
+        echo "=> Nothing to push in `pwd`"
+    fi
+fi
