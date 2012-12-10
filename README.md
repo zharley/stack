@@ -19,4 +19,5 @@ Scripts available in **bin**:
 * **pomodoro**: Counts down a 25-minute task period followed by a 5-minute break, in perpetuity, an adaptation of the [Pomodoro Technique](http://en.wikipedia.org/wiki/Pomodoro_Technique). It optionally logs tasks to a file.
 * **screen-measure**: Uses *scrot* and *imagemagick* to measure on-screen dimensions.
 * **screen-crop**: Snaps a cropped screenshot, outputting to a timestamp-derived filename, then opens the image for editing.
+* **ssh-send-key**: Sets up SSH public key authentication between your computer and a server.
 * **unsmart**: Acts as a wrapper for uncompressing tar/zip/rar and extracting them to a clean directory name.
