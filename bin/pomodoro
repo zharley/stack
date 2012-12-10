@@ -26,4 +26,5 @@ for (( i = 1; ; i++ )); do
     echo "=> Break cycle $i"
     countdown 5
     notify-send "Pomodoro - Break complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
+    echo -n "=> Press [Enter] to continue" && read
 done
