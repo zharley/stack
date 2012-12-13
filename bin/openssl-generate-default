@@ -1,0 +1,16 @@
+#! /bin/bash
+set -e
+
+MY_KEY="/etc/ssl/private/server"
+
+# generate a 2048-bit RSA private key
+sudo openssl genrsa -out $MY_KEY.key 2048
+
+# make it only readable/writeable by root
+sudo chmod 600 $MY_KEY.key
+
+# make a new Certificate Signing Request
+sudo openssl req -new -key $MY_KEY.key -out $MY_KEY.csr
+
+# create a self-signed certificate using the private key (valid for 5 years)
+sudo openssl x509 -in $MY_KEY.csr -out $MY_KEY.crt -req -signkey $MY_KEY.key -days 1825
