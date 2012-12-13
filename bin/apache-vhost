@@ -1,0 +1,100 @@
+#!/usr/bin/ruby
+
+# needs an argument
+if ARGV.size < 2
+  puts "Usage: #{File.basename($0)} app-dir my.domain.com"
+  exit 1
+end
+
+# directory is the first parameter
+dir = ARGV[0]
+
+# convert to full path
+dir_path = File.expand_path(dir)
+
+# make sure directory exists
+raise "Directory '#{dir}' does not exist." unless File.directory?(dir_path)
+
+# domain is second parameter
+domain = ARGV[1]
+
+# detect subdomain/name
+domain =~ /(.+\.)?(.+)\..+/
+subdomain = $1
+name = $2
+
+# the current user
+user = ENV['USER']
+
+add_alias = subdomain.nil? ? "www." + domain : nil
+
+puts <<EOF
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    
+    ServerName #{domain}
+    #{add_alias ? "ServerAlias #{add_alias}" : "# no alias"}
+    
+    # set logs
+    ErrorLog /var/log/apache2/vhost-error.log
+    LogLevel warn
+    CustomLog /var/log/apache2/vhost-access.log combined
+    
+    DocumentRoot #{dir_path}
+    # DocumentRoot #{dir_path}/web
+    
+    # # symfony 1.x config
+    # DirectoryIndex index.php
+    # <Directory "#{dir_path}/web">
+    #     AllowOverride All
+    #     Allow from All
+    # </Directory>
+    # Alias /sf #{dir_path}/lib/vendor/symfony/data/web/sf
+    # <Directory "#{dir_path}/lib/vendor/symfony/data/web/sf">
+    #     AllowOverride All
+    #     Allow from All
+    # </Directory>
+    
+    # # python http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives 
+    # WSGIDaemonProcess #{domain} user=#{user} group=#{user} processes=1 threads=5 home=#{dir_path} python-path=#{dir_path}
+    # WSGIScriptAlias / #{dir_path}/wsgi.py
+    # <Directory #{dir_path}>
+    #     WSGIProcessGroup #{domain} 
+    #     WSGIApplicationGroup %{GLOBAL}
+    #     Order deny,allow
+    #     Allow from all
+    # </Directory>
+    
+    # # optional port balancer (proxy proxy_balancer proxy_http rewrite)
+    # <Proxy balancer://#{name}_balancer> 
+    #     Order allow,deny 
+    #     Allow from all 
+    #     BalancerMember http://127.0.0.1:3000
+    # </Proxy> 
+    # # simple pass-through
+    # RewriteEngine On
+    # RewriteRule ^/(.*)$ balancer://#{name}_balancer%{REQUEST_URI} [P,QSA,L]
+</VirtualHost>
+
+# <VirtualHost *:443>
+#     ServerAdmin webmaster@localhost
+# 
+#     ServerName #{domain}
+#     #{add_alias ? "ServerAlias #{add_alias}" : "# no alias"}
+#     
+#     # set logs
+#     ErrorLog /var/log/apache2/vhost-error.log
+#     LogLevel warn
+#     CustomLog /var/log/apache2/vhost-access.log combined
+# 
+#     DocumentRoot #{dir_path}
+#     # DocumentRoot #{dir_path}/web
+# 
+#     # enable SSL for this virtual host.
+#     SSLEngine on
+# 
+#     # use a (self-signed) certificate found here
+#     SSLCertificateFile    /etc/ssl/private/server.crt
+#     SSLCertificateKeyFile /etc/ssl/private/server.key
+# </VirtualHost>
+EOF

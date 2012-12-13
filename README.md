@@ -13,6 +13,7 @@ Add to **~/.profile**:
 
 Scripts available in **bin**:
 
+* **apache-vhost**: Generates a VirtualHost directive with some often-used settings.
 * **countdown**: Counts down a certain number of minutes.
 * **git-auto**: Adds, commits and pushes changes in a git repository in a single command.
 * **mysql-new-app**: Creates a matching database and username, auto-generating a password if desired.
