@@ -1,0 +1,72 @@
+#!/usr/bin/ruby
+
+def apply_luminance(hexcolor, luminance)
+  format = []
+
+  for i in 0...3
+    # convert 
+    value = hexcolor[(i * 2)..(i * 2 + 1)]
+    value = value.to_i(16)
+    value = [[value + value * luminance, 0].max, 255].min
+    format << value
+  end
+
+  [ luminance, "#%02X%02X%02X" % format ]
+end
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} hexcolor [luminance]"
+  exit 1
+end
+
+hexcolor = ARGV[0]
+luminance = ARGV[1]
+
+# remove number symbol and any other invalid characters
+hexcolor.gsub!(/[^0-9a-f]/i, '')
+
+if hexcolor.size == 3
+  # convert short form to long form
+  hexcolor = hexcolor[0...1] * 2 + hexcolor[1...2] * 2 + hexcolor[2...3] * 2
+end
+
+# expect 6-letter code
+if hexcolor.size != 6
+  puts "Expected 3 or 6-character hex code"
+  exit 1
+end
+
+output = []
+
+if luminance.nil?
+  # auto-generate some luminance values
+  output << apply_luminance(hexcolor, 0.8)
+  output << apply_luminance(hexcolor, 0.5)
+  output << apply_luminance(hexcolor, 0.3)
+  output << apply_luminance(hexcolor, 0.2)
+  output << apply_luminance(hexcolor, 0.1)
+  output << apply_luminance(hexcolor, 0)
+  output << apply_luminance(hexcolor, -0.1)
+  output << apply_luminance(hexcolor, -0.2)
+  output << apply_luminance(hexcolor, -0.3)
+  output << apply_luminance(hexcolor, -0.5)
+  output << apply_luminance(hexcolor, -0.8)
+else
+  output << apply_luminance(hexcolor, luminance.to_f)
+end
+
+# render output
+begin
+  # use the paint gem if it's available
+  require 'rubygems'
+  require 'paint'
+
+  for item in output
+    puts (item[0] >= 0 ? '+' : '') + ("%.2f: " % item[0]) + item[1] + ' ' + Paint['*' * 65, item[1]]
+  end
+rescue LoadError
+  for item in output
+    puts (item[0] >= 0 ? '+' : '') + ("%.2f: " % item[0]) + item[1]
+  end
+end

@@ -12,7 +12,7 @@ MY_LOGIN="$1"
 
 # the second parameter optionally specifies a protocol
 MY_PROTOCOL="dsa"
-if [ -n $2 ]; then
+if [ -n "$2" ]; then
     MY_PROTOCOL="$2"
 fi
 
