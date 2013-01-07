@@ -1,0 +1,85 @@
+#!/bin/bash
+
+################################################################################
+## FILE HELPERS ################################################################
+################################################################################
+
+# detailed file list
+alias ll='ls -lah'
+
+# show details of a file (including access rights in octal)
+alias d='stat -c "%A (%a) %8s %.19y %n"'
+
+# rsync -a archive, -v verbose, -z compressed, -h human, -P progress and partial
+alias rcopy='rsync -avzhP'
+
+# with --delete (delete extraneous files from dest dirs BEFORE transfer)
+alias rcopyd='rsync -avzhP --delete'
+
+# extracts a zipped tar file
+alias untar='tar xvzf'
+
+################################################################################
+## CODING ######################################################################
+################################################################################
+
+# revision control shortcuts
+alias g='git-auto'
+alias st="svn --ignore-externals status"
+alias sc="svn commit"
+alias sl="svn log | less"
+alias sup="svn up --ignore-externals"
+alias svd="svn diff | colordiff | less -R"
+
+# debugging SSL
+# e.g. show-certs smtpout.secureserver.net:465
+alias show-certs='openssl s_client -showcerts -connect'
+# e.g. msmtp-certs --host=smtpout.secureserver.net 
+alias msmtp-certs='msmtp --tls-certcheck=off --tls=on --tls-starttls=off --port=465 --serverinfo'
+
+# tidy up xml/html e.g. tidy-xml file.html
+alias tidy-xml='tidy -i -xml'
+
+################################################################################
+## SECURITY ####################################################################
+################################################################################
+
+# generate passwords
+alias pw-secure='pwgen --secure 32 1'
+alias pw-symbols='pwgen --secure --symbols 32 1'
+alias pw-numbers='ruby -e "puts rand(2 ** 100)"'
+
+# encryption
+# e.g.
+# encrypt-salted in.key | xxd
+# unhex-typed typed.hex | decrypt-stream > out.key
+alias encrypt-salted='openssl aes-256-cbc -salt -in'
+alias unhex-typed='xxd -r -p'
+alias decrypt-stream='openssl aes-256-cbc -d'
+
+################################################################################
+## UBUNTU  #####################################################################
+################################################################################
+
+# open in new tab in existing gvim
+alias e="gvim --remote-tab"
+
+# find matching packages
+alias apt-find='apt-cache search'
+
+# memorable synonym for a useful program
+alias usage='baobab'
+
+# show info on connected SATA drives
+alias sd='dmesg | grep "\[sd.\]"'
+
+# show hard-drive temperatures for /dev/sda and /dev/sdb
+alias temp='sudo hddtemp /dev/sda && sudo hddtemp /dev/sdb'
+
+################################################################################
+## FUN #########################################################################
+################################################################################
+
+# sounds
+alias sound-toot='play -n synth 0.3 sine 300-3300 vol 0.1 &> /dev/null'
+alias sound-alarm='play -n synth 2 sine 300-3000 sine 3000-300 repeat 20 vol 0.1 &> /dev/null'

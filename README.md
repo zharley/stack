@@ -4,10 +4,17 @@ This is a tool kit consisting of my command-line scripts.
 
 ### Install
 
-Add to **~/.profile**:
+Add bin directory to **~/.profile**:
 
     # add bin to path
     PATH="$HOME/src/stack/bin:$PATH"
+
+Use aliases:
+
+    # include aliases
+    if [ -f "$HOME/src/stack/etc/aliases" ]; then
+        . "$HOME/src/stack/etc/aliases"
+    fi
 
 ### Reference
 
