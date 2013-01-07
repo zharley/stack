@@ -1,0 +1,15 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: `basename $0` filebase output.pdf"
+    exit 1
+fi
+
+MY_BASE="$1"
+MY_OUTPUT="$2"
+
+convert $MY_BASE*.png "$MY_OUTPUT"
+
+ls -lah $MY_OUTPUT

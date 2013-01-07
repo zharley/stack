@@ -1,0 +1,24 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ] || [ -z "$2" ] || ( [ "$2" != "yes" ] && [ "$2" != "no" ] ); then
+  echo "Usage: `basename $0` [PermitRootLogin|PasswordAuthentication|...] [yes|no]"
+  exit 1
+fi
+
+# path of file
+MY_FILE=/etc/ssh/sshd_config
+MY_SETTING="$1"
+MY_VALUE="$2"
+
+echo "=> Setting the '$MY_SETTING' to '$MY_VALUE' in $MY_FILE"
+
+# make in-place substitution with backup
+sudo sed --in-place='.old' "s:#\?$MY_SETTING \(yes\|no\):$MY_SETTING $MY_VALUE:" $MY_FILE
+
+# show change
+diff /etc/ssh/sshd_config /etc/ssh/sshd_config.old
+
+# restart ssh server
+sudo restart ssh

@@ -1,0 +1,19 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` input.pdf [filebase]"
+    exit 1
+fi
+
+MY_FILE="$1"
+MY_BASE="${MY_FILE%.*}"
+
+if [ -n "$2" ]; then
+  MY_BASE="$2"
+fi
+
+convert -density 300 "$MY_FILE" "$MY_BASE.png"
+
+ls -lah $MY_BASE*.png
