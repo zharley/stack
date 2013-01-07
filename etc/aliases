@@ -40,6 +40,9 @@ alias msmtp-certs='msmtp --tls-certcheck=off --tls=on --tls-starttls=off --port=
 # tidy up xml/html e.g. tidy-xml file.html
 alias tidy-xml='tidy -i -xml'
 
+# tunnel MySQL on port 9999
+alias mysql-tunnel='ssh -L 9999:127.0.0.1:3306'
+
 ################################################################################
 ## SECURITY ####################################################################
 ################################################################################
