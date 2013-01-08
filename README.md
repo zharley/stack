@@ -22,6 +22,7 @@ Scripts available in **bin**:
 
 * **apache-vhost**: Generates a VirtualHost directive with some often-used settings.
 * **countdown**: Counts down a certain number of minutes.
+* **firefox-preview-image**: Generates a temporary HTML frame containing the specified image and launches that in Firefox, in order to preview a website mock-up.
 * **git-auto**: Adds, commits and pushes changes in a git repository in a single command.
 * **mysql-new-app**: Creates a matching database and username, auto-generating a password if desired.
 * **openssl-generate-default**: Outputs a self-signed SSL certificate to */etc/ssl/private* for local development usage.
