@@ -19,6 +19,9 @@ alias rcopyd='rsync -avzhP --delete'
 # extracts a zipped tar file
 alias untar='tar xvzf'
 
+# reverse lines in file
+alias reverse-file="awk '{ a[NR]=\$0 } END { for(i=NR; i; --i) print a[i] }'"
+
 ################################################################################
 ## CODING ######################################################################
 ################################################################################
@@ -30,6 +33,8 @@ alias sc="svn commit"
 alias sl="svn log | less"
 alias sup="svn up --ignore-externals"
 alias svd="svn diff | colordiff | less -R"
+alias svn-add-all="svn status | awk '{if (\$1 == \"?\") print \$2 }' | xargs svn add"
+alias svn-del-all="svn status | awk '{if (\$1 == \"!\") print \$2 }' | xargs svn delete"
 
 # debugging SSL
 # e.g. show-certs smtpout.secureserver.net:465
@@ -42,6 +47,33 @@ alias tidy-xml='tidy -i -xml'
 
 # tunnel MySQL on port 9999
 alias mysql-tunnel='ssh -L 9999:127.0.0.1:3306'
+
+# spider a site
+#
+# -nc             Normally new copies of files are downloaded, but here the original 
+#                 version is preserved and any newer copies on the server to be ignored.
+#                 Files with the suffixes .html or .htm will be loaded from the local
+#                 disk and parsed as if they had been retrieved from the Web.
+#
+# -nv             Turn off verbose without being completely quiet (use -q for that), which
+#                 means that error messages and basic information still get printed.
+#
+# -r              Turn on recursive retrieving.
+#
+# --random-wait   Vary wait time between requests between 0.5 and 1.5 seconds.
+#
+# --wait=seconds  Wait the specified number of seconds between the retrievals.  
+#
+# -l depth        Specify recursion maximum depth level depth. Default is 5.
+#
+# -R              Specify comma-separated lists of file name suffixes or patterns to reject.
+#
+# -np             Do not ever ascend to the parent directory when retrieving recursively.
+#                 This is a useful option, since it guarantees that only the files below a
+#                 certain hierarchy will be downloaded.
+#
+alias spider='wget -nc -nv -r --random-wait --wait=1 -l9 -np'
+alias spider-html='wget -nc -nv -r --random-wait --wait=1 -l9 -R .jpg,.JPG,.gif,.GIF,.png,.PNG -np'
 
 ################################################################################
 ## SECURITY ####################################################################
@@ -78,6 +110,9 @@ alias sd='dmesg | grep "\[sd.\]"'
 
 # show hard-drive temperatures for /dev/sda and /dev/sdb
 alias temp='sudo hddtemp /dev/sda && sudo hddtemp /dev/sdb'
+
+# install headers for the current kernel
+alias apt-install-kernel-headers='sudo apt-get install linux-headers-`uname -r`'
 
 ################################################################################
 ## FUN #########################################################################
