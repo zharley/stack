@@ -1,0 +1,121 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` param"
+    exit 1
+fi
+
+# MY_FILE="$1"
+
+# if [ "$1" == "-e" ]; then
+#     # edit
+#     cd content
+#     gvim .
+# elif [ -n "$1" ]; then
+#     # parameter given (incorrectly)
+#     echo "Usage: `basename $0` [-e]"
+#     exit 1
+# else
+#     # launch it
+# fi
+
+# # shows some info and prompts for "y" to continue
+# # if anything other than "y" is entered, it exits
+# confirm() {
+#     if [ $MY_CONFIRM -eq 0 ]; then
+#         read -p "=> $1 : Continue (y)? " MY_ANSWER
+#         if test "$MY_ANSWER" != "y"; then 
+#             echo "=> Cancelled!"
+#             exit 1 
+#         fi
+#     fi
+# }
+ 
+# # echo with a prefix
+# say() {
+#     if [ $MY_QUIET -eq 0 ]; then
+#         echo "=> $1"
+#     fi
+# }
+# 
+
+# # read from STDIN
+# while read LINE; do
+#     echo "$LINE"
+# done < $MY_FILE
+
+# if [ -n "$1" ]; then
+#     # parameter given
+# fi
+
+# MY_FILE="$HOME/bin/$1"
+# 
+# echo "=> Creating '$MY_FILE'"
+# 
+# if [ -f "$MY_FILE" ]; then
+#     echo "=> File exists"
+#     exit 1
+# fi
+
+# make in-place substitution with backup
+# sudo sed --in-place='.old' "s:#\?$MY_SETTING \(yes\|no\):$MY_SETTING $1:" $MY_FILE
+
+# # check for presence of parameters
+# if [ -z "$1" ] || ( [ "$1" != "yes" ] && [ "$1" != "no" ] ); then
+#     echo Usage: sshd-permit-root [yes\|no]
+# fi
+
+# # convert .html extensions to .htm
+# for i in *.html; do
+#    if [ -f ${i%l} ]; then 
+#       echo "${i%l} already exists"
+#    else 
+#       mv $i ${i%l}
+#    fi 
+# done
+
+# # some regexes
+# $(var:pos[:len]) # extract substr from pos (0-based) for len
+# $(var/substr/repl) # replace first match
+# $(var//substr/repl) # replace all matches
+# $(var/#substr/repl) # replace if matches at beginning (non-greedy)
+# $(var/##substr/repl) # replace if matches at beginning (greedy)
+# $(var/%substr/repl) # replace if matches at end (non-greedy)
+# $(var/%%substr/repl) # replace if matches at end (greedy)
+# ${#var} # returns length of $var
+# ${!var} # indirect expansion
+
+# # multi-line output
+# cat > output.file << EOF
+# Line 1
+# Line 2
+# EOF
+ 
+# # support multiple command-line options
+# while getopts "nlrc:dfq" MY_OPTION; do
+#     case "$MY_OPTION" in
+#         n) MY_ACTION="new";;
+#         l) MY_ACTION="local";;
+#         r) MY_ACTION="remote";;
+#         c) MY_SOURCE="$OPTARG";;
+#         d) MY_DEPLOY_DATABASE=1;;
+#         f) MY_DEPLOY_FILES=1;;
+#         q) MY_QUIET=1;;
+#         [?]) exit 1;;
+#     esac
+# done
+ 
+# # infinite loop
+# while :; do
+#   sleep 1
+# done
+
+# # for loop with variable
+# MY_TIME="$1"
+# for (( i = $MY_TIME; i > 0; i-- ))
+# do
+#   echo -n "$i..."
+#   sleep 1m
+# done

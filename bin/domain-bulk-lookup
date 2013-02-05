@@ -1,0 +1,35 @@
+#!/usr/bin/ruby
+
+def lookup_line(line)
+  domain = line.chomp
+  result = `host '#{domain}'`
+  address = $1
+
+  # lookup host
+  if result.index("NXDOMAIN")
+    # available
+    puts "Available: " + domain
+  else
+    # taken
+    puts "Taken: " + domain
+  end
+
+  sleep rand
+end
+
+if STDIN.tty?  
+  # needs an argument
+  raise "domain-lookup filename" unless ARGV.size == 1
+
+  filename = ARGV[0]
+  File.open(filename, "r") do |infile|
+    while (line = infile.gets)
+      lookup_line(line)
+    end
+  end
+else
+  # we are in a pipeline
+  while line = STDIN.gets
+    lookup_line(line)
+  end
+end

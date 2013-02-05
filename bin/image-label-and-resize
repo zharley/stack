@@ -1,0 +1,43 @@
+#!/usr/bin/ruby
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} /path/to/image [description]"
+  exit 1
+end
+
+filename = ARGV[0]
+description = ARGV[1]
+
+# use either a version of the description or the original filename as the output
+output = description ? description.gsub(/\W/, '-').downcase : File.basename(filename, File.extname(filename))
+
+# translate description, if any, to ImageMagick language
+#
+# -fill      fill a graphic primitive with some color
+# -box       fill color for font bounding box
+# -gravity   horizontal and vertical text placement
+# -pointsize font point size
+# -font      render text with this font (convert -list type)
+# -annotate  annotate an image with text (tx and ty are offsets that give the
+#            location of the text relative to the upper left corner of the image
+# -strip     strip the image of any profiles or comments
+description &&= " -fill white -box '#00000069' -gravity South -pointsize 30 -font 'Helvetica' -strip -annotate +0+5 '  #{description}  '"
+
+# output here
+output = "/tmp/#{output}.jpg"
+
+# resize and convert
+#
+# -resize    resize the image
+# -quality   quality!
+cmd = "convert #{filename} -resize 800x600 -quality 90#{description} #{output}"
+
+# show command
+puts "=> Executing:\n#{cmd}"
+
+# execute
+system cmd
+
+# show output
+puts "\n=> Output: #{output}"

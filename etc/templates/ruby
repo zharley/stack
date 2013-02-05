@@ -1,0 +1,71 @@
+#!/usr/bin/ruby
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} param"
+  exit 1
+end
+
+filename = ARGV[0]
+
+# # get command-line options
+# require 'optparse'
+# args = ARGV.getopts "af:"
+# puts args.inspect # {"a"=>false, "f"=>nil}
+# 
+# if STDIN.tty?  
+#   # normal command-line
+# 
+#   # read file
+#   File.open(filename, "r") do |infile|
+#     while (line = infile.gets)
+#       puts line
+#     end
+#   end
+# else
+#   # we are in a pipeline
+# 
+#   # read pipeline
+#   while line = STDIN.gets
+#     puts line
+#   end
+# end
+#
+# files = Dir["*.mp3"]
+# for file in files
+# end
+#
+# require 'csv'
+#  
+# CSV.open('data.csv', 'r') do |row|
+#   p row
+# end
+#
+# x = <<EOF
+# This
+# is some long
+# text
+# EOF
+# 
+# def prompt_for(text, default = nil, options = nil)
+#   response = nil
+# 
+#   while response.nil? do
+#     prompt = "==> #{text}"
+#     prompt += " [#{options.join(',')}]" if options
+#     prompt += " [default=#{default}]" if default
+#     prompt += options ? '? ' : ': '
+#     print prompt
+#     response = STDIN.gets.chomp
+# 
+#     if response.empty? and (not default.nil?)
+#       response = default
+#     end
+# 
+#     if options
+#       response = nil unless options.include?(response)
+#     end
+#   end
+# 
+#   return response
+# end

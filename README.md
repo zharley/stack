@@ -1,6 +1,6 @@
 ### About
 
-This is a tool kit consisting of my command-line scripts.
+This is a tool kit consisting of some scripts and dotfiles.
 
 ### Install
 
@@ -22,9 +22,12 @@ Scripts available in **bin**:
 
 * **apache-vhost**: Generates a VirtualHost directive with some often-used settings.
 * **countdown**: Counts down a certain number of minutes.
+* **domain-bulk-lookup**: Reads domain names from a file or input stream and indicates whether they appear to be availble.
 * **firefox-preview-image**: Generates a temporary HTML frame containing the specified image and launches that in Firefox, in order to preview a website mock-up.
 * **git-auto**: Adds, commits and pushes changes in a git repository in a single command.
+* **image-label-and-resize**: Resizes an image using ImageMagick and applies a label at the bottom.
 * **mysql-new-app**: Creates a matching database and username, auto-generating a password if desired.
+* **new-script**: Generates a new executable file based on a template in *etc/templates*.
 * **openssl-generate-default**: Outputs a self-signed SSL certificate to */etc/ssl/private* for local development usage.
 * **pdf2png**: Produces a PNG for each page of a PDF, sampled at 300dpi, using ImageMagick.
 * **png2pdf**: Assembles a PDF from a series of PNGs (one per page), using ImageMagick.

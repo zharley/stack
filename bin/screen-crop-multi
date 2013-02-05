@@ -1,0 +1,11 @@
+#! /bin/bash
+set -e
+
+while [ 1 ]; do
+  MY_FILE="`date +%Y-%m-%d-%I%M%S`.png"
+  echo "=> Select area to capture or click window"
+  scrot -s "$MY_FILE"
+  echo "=> Captured: $MY_FILE"
+  read -n 1 -p "=> Press any key to continue (or CTRL+C to exit)..."
+  echo ""
+done

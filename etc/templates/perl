@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+
+use File::Basename;
+
+if ($#ARGV < 0) {
+    print "Usage: " . basename($0) . " param\n";
+    exit 1;
+}
+
+my $file = $ARGV[0];
+ 
+# # basic string methods
+# $items = "alpha beta gamma\n";
+# chop($items);
+# @items = split(/ /,$items);
+# $cmd = "echo $items";
+# print $cmd . "\n";
+# if (system($cmd)) { print "Command failed\n"; }
+# 
+# # foreach loop
+# foreach $item (@items) {
+#     print "Hello, $item\n";
+# }
+
+# # for loop
+# $start = 1;
+# $stop = 10;
+# for ($i = $start; $i <= $stop; $i++) {
+#     print "i = $i\n";
+# }
+ 
+# # write to file
+# open(HTML, ">output.html");
+# print HTML "<html>\n<head>\n<title>Title</title>\n</head>\n<body>\n";
+# print HTML "</body>\n</html>\n";
+# close(HTML);
+ 
+# # read old file line-by-line and and write to new file
+# open(OF, $oldfile);
+# open(NF, ">$newfile");
+# 
+# # read in each line 
+# while ($line = <OF>) {
+#     $line =~ s/$old/$new/;
+#     print NF $line;
+# }
+# 
+# close(OF);
+# close(NF);

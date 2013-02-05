@@ -1,0 +1,45 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` /path/to/new/script [template]"
+    exit 1
+fi
+
+MY_FILE="$1"
+
+# make sure file does not already exist
+if [ -f "$MY_FILE" ]; then
+    echo "=> File '$MY_FILE' already exists"
+    exit 1
+fi
+
+# current directory
+MY_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# select script template
+MY_TEMPLATE="$2"
+if [ -z "$MY_TEMPLATE" ]; then
+    # default to bash
+    MY_TEMPLATE="bash"
+fi
+MY_TEMPLATE="$MY_DIR/../etc/templates/$MY_TEMPLATE"
+
+# verify that template exists
+if [ ! -f "$MY_TEMPLATE" ]; then
+    echo "=> Cannot find template '$MY_TEMPLATE'"
+    exit 1
+fi
+
+# create file
+echo "=> Creating '$MY_FILE'"
+cp "$MY_TEMPLATE" "$MY_FILE" 
+chmod +x "$MY_FILE"
+
+# edit it
+if hash gvim 2>/dev/null; then
+    gvim --remote-tab "$MY_FILE"
+elif hash vim 2>/dev/null; then
+    vim "$MY_FILE"
+fi

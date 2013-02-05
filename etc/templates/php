@@ -1,0 +1,37 @@
+#!/usr/bin/php
+<?php
+
+function say($message)
+{
+  echo "=> $message\n";
+}
+
+// check for presence of parameters
+if (!is_array($argv) || count($argv) < 2)
+{
+  echo "Usage: ".basename(__FILE__)." param\n";
+  die;
+}
+
+$param = $argv[1];
+
+echo "Your parameter is '$param'\n";
+
+// // MySQL connection example
+//
+// $db = 'mydb';
+// $host = 'localhost';
+// $user = 'root';
+// $pass = '';
+//  
+// mysql_connect($host, $user, $pass);
+// mysql_select_db($db);
+//  
+// $sql = "SELECT * FROM table WHERE id = 10";
+//  
+// $result = mysql_query($sql);
+//  
+// while ($row = mysql_fetch_array($result))
+// {
+//   var_dump($row);
+// }
