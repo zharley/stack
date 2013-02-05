@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+if [ -z $1 ]; then
+        echo "Usage: video-duration file.avi"
+        exit 1
+fi
+
+MY_FILE="$1"
+
+# the portion of ffmpeg output related to the video duration looks like:
+# Duration: 01:46:01.49, start: 0.000000, bitrate: 923 kb/s
+#
+# the awk script extracts the "01:46:01.49" portion
+MY_DURATION=`ffmpeg -i $MY_FILE 2>&1 | awk '/Duration:/ {gsub(/[^0-9:.]+/, "", $2); print $2}'`
+
+# this ruby script converts the ffmpeg duration into h:mm:ss (e.g. "1:46:01")
+ruby -e "x = '$MY_DURATION'.split(':'); h = x[0].to_i; m = x[1].to_i; s = x[2].to_f.round; puts (h > 0) ? ('%d:%02d:%02d' % [h,m,s]) : ('%d:%02d' % [m,s])"

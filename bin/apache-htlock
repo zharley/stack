@@ -1,0 +1,48 @@
+#! /bin/bash
+set -e
+
+MY_HTPASS=".htpasswd"
+MY_HTACCESS=".htaccess"
+MY_AUTHNAME="Restricted"
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` username [$MY_AUTHNAME]"
+    echo "=> Sets up basic $MY_HTACCESS/$MY_HTPASS authentication in the current directory (`pwd`)"
+    exit 1
+fi
+
+MY_USER="$1"
+MY_DIR=`pwd`
+
+if [ -n "$2" ]; then
+    # parameter given
+    MY_AUTHNAME="$2"
+fi
+
+# make sure file does not already exist
+if [ -f $MY_HTACCESS ] || [ -f $MY_HTPASS ]; then
+    echo "=> Oops, '$MY_HTACCESS' and/or '$MY_HTPASS' already exists!"
+    exit 1
+fi
+
+# write the access file
+cat > $MY_HTACCESS << EOF
+# don't show directory listings for URLs which map to a directory.
+Options -Indexes
+
+# basic HTTP authentication
+AuthType Basic
+AuthName "$MY_AUTHNAME"
+AuthUserFile $MY_DIR/$MY_HTPASS
+Require valid-user
+
+# hide dot files in root directory
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>
+EOF
+
+# write the password file
+htpasswd -c "$MY_HTPASS" "$MY_USER"
