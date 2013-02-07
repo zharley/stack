@@ -1,0 +1,86 @@
+" load pathogen bundles
+" @see https://github.com/tpope/vim-pathogen
+runtime bundle/pathogen/autoload/pathogen.vim
+call pathogen#infect()
+call pathogen#helptags()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" GENERAL PREFERENCES
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" enable syntax highlighting
+syntax on
+
+" enable filetype-specific indenting and plugins
+filetype plugin indent on
+
+" show line numbers
+set number
+
+" set colour scheme
+colorscheme slate
+
+" automatically reload vimrc upon save
+au! BufWritePost .vimrc source %
+
+" ignore certain extensions and locations (affects Command-T)
+set wildignore+=.svn,.git
+set wildignore+=www/app/cache/**,www/web/bundles/**,www/sites/default/files/**,www/backup/**
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
+
+" no toolbar (in gvim)
+set guioptions-=T
+" no menu (in gvim)
+set guioptions-=m
+
+" prevent overflowing output when doing find-in-files
+set nomore
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" PLUGIN CONFIGURATION
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" allow 50K files to show up in Command-T
+let g:CommandTMaxFiles=50000
+" show the best match at the bottom of the Command-T window.
+let g:CommandTMatchWindowReverse = 1 
+" open Command-T files in a new tab by default
+let g:CommandTAcceptSelectionTabMap='<CR>'
+" use Ctrl+O to open file in the current tab
+let g:CommandTAcceptSelectionMap='<C-o>' 
+
+au BufRead,BufNewFile *.twig set syntax=htmljinja
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" KEYBOARD 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" map leader and often-used shortcuts
+let mapleader=","
+map <leader>t :call util#BeginCommandT()<CR>
+map <leader>f :CommandTFlush<CR>:call util#BeginCommandT()<CR>
+map <leader>a :Align 
+map <Leader>r :PowerReplace 
+
+" use Ctrl+K and Ctrl+J to switch between open tabs
+map <C-k> gT
+map <C-j> gt
+map <C-w> :tabclose<CR>
+
+" write to file
+map <Leader><Leader> :w<CR>
+
+" cut, copy, paste
+map <Leader>x "+x
+map <Leader>c "+y
+map <Leader>v "+gP
+
+" delete without destroying buffer
+map <Leader>d "_d
+
+" switch to 4-space indents
+map <Leader>4 :set tabstop=4 softtabstop=4 shiftwidth=4<CR>
+
+" pull full path name into paste buffer for attachment to email etc
+nnoremap <Leader>p :let @*=expand("%")<CR>
+"nnoremap <F2> :let @*=substitute(expand("%:p"), "/", "\\", "g")<cr>

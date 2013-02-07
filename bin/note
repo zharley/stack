@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# expect note file here
+MY_NOTE="$HOME/.note"
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    # show note
+    cat "$MY_NOTE"
+    exit 1
+fi
+
+# append to note
+echo "$@" >> "$MY_NOTE"
+
+tail "$MY_NOTE"
