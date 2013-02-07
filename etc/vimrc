@@ -62,7 +62,8 @@ map <leader>f :CommandTFlush<CR>:call util#BeginCommandT()<CR>
 map <leader>a :Align 
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
-map <Leader>s :Ack 
+map <Leader>s :Ack --ignore-dir=cache -i 
+map <Leader>n :wincmd w<CR>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs
 map <C-k> gT
@@ -70,7 +71,7 @@ map <C-j> gt
 map <C-w> :tabclose<CR>
 
 " use Ctrl+n to hop to next split window
-map <C-n> :wincmd w<CR>
+map <C-n> :w<CR>:cn<CR>
 
 " write to file
 map <Leader><Leader> :w<CR>
