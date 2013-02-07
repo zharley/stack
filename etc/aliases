@@ -82,6 +82,10 @@ alias spider-html='wget -nc -nv -r --random-wait --wait=1 -l9 -R .jpg,.JPG,.gif,
 alias tail-vhost-access='sudo tail -f /var/log/apache2/vhost-access.log'
 alias tail-vhost-error='sudo tail -f /var/log/apache2/vhost-error.log'
 
+# note taking
+alias n="note"
+alias ng="note | grep"
+
 ################################################################################
 ## SECURITY ####################################################################
 ################################################################################
