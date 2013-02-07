@@ -2,7 +2,7 @@
 
 " returns the MixedCase version of a word
 function! util#MixedCase(word)
-  return substitute(CamelCase(a:word),'^.','\u&','')
+  return substitute(util#CamelCase(a:word),'^.','\u&','')
 endfunction
 
 " returns the camelCase version of a word
@@ -51,7 +51,21 @@ function! util#BeginCommandT()
   endif
 endfunction
 
-" do power replace on selection
+" @see http://stackoverflow.com/questions/5686206/search-replace-using-quickfix-list-in-vim
+function! util#QuickfixFilenames()
+  " Building a hash ensures we get each buffer only once
+  let buffer_numbers = {}
+  for quickfix_item in getqflist()
+    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+  endfor
+  return join(values(buffer_numbers))
+endfunction
+
+" begin public interface
+let s:keepcpo = &cpo
+set cpo&vim
+
+" define commands
 " 
 " -nargs=
 "         1 One argument.
@@ -63,4 +77,13 @@ endfunction
 "      =% defaults to the whole file
 "
 " <q-args> quotes special characters in the argument.
-command! -nargs=+ -range=% PowerReplace <line1>,<line2>call util#PowerReplace(<f-args>)
+
+" do power replace on selection 
+command -nargs=+ -range=% UtilPowerReplace <line1>,<line2>call util#PowerReplace(<f-args>)
+
+" pass quickfix to args
+command -nargs=0 -bar UtilQuickfixToArgs execute 'args ' . util#QuickfixFilenames()
+
+let &cpo= s:keepcpo
+unlet s:keepcpo
+" end public interface
