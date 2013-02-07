@@ -38,5 +38,6 @@ Scripts available in **bin**:
 * **screen-crop-multi**: Takes screenshots repeatedly, outputting to timestamp-derived filenames.
 * **ssh-send-key**: Sets up SSH public key authentication between your computer and a server.
 * **sshd-config-set**: Toggles yes/no configuration settings (such as PermitRootLogin and PasswordAuthentication) in the sshd\_config file.
+* **svn-remove-data**: Recursivly removes all .svn subdirectories under the current tree.
 * **unsmart**: Acts as a wrapper for uncompressing tar/zip/rar and extracting them to a clean directory name.
 * **video-duration**: Reformats video duration information from ffmpeg's verbose output as h:mm:ss.

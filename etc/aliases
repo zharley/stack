@@ -22,6 +22,9 @@ alias untar='tar xvzf'
 # reverse lines in file
 alias reverse-file="awk '{ a[NR]=\$0 } END { for(i=NR; i; --i) print a[i] }'"
 
+# count files in all subdirectories
+alias count-files="find . -type f | wc -l"
+
 ################################################################################
 ## CODING ######################################################################
 ################################################################################
@@ -75,6 +78,10 @@ alias mysql-tunnel='ssh -L 9999:127.0.0.1:3306'
 alias spider='wget -nc -nv -r --random-wait --wait=1 -l9 -np'
 alias spider-html='wget -nc -nv -r --random-wait --wait=1 -l9 -R .jpg,.JPG,.gif,.GIF,.png,.PNG -np'
 
+# watch particular vhost log files
+alias tail-vhost-access='sudo tail -f /var/log/apache2/vhost-access.log'
+alias tail-vhost-error='sudo tail -f /var/log/apache2/vhost-error.log'
+
 ################################################################################
 ## SECURITY ####################################################################
 ################################################################################
@@ -93,7 +100,7 @@ alias unhex-typed='xxd -r -p'
 alias decrypt-stream='openssl aes-256-cbc -d'
 
 ################################################################################
-## UBUNTU  #####################################################################
+## UBUNTU ######################################################################
 ################################################################################
 
 # open in new tab in existing gvim
@@ -105,14 +112,24 @@ alias apt-find='apt-cache search'
 # memorable synonym for a useful program
 alias usage='baobab'
 
+# install headers for the current kernel
+alias apt-install-kernel-headers='sudo apt-get install linux-headers-`uname -r`'
+
+# update and upgrade in one command
+alias upgrade='sudo sh -c "apt-get update && apt-get upgrade"'
+
+################################################################################
+## DEVICES #####################################################################
+################################################################################
+
 # show info on connected SATA drives
 alias sd='dmesg | grep "\[sd.\]"'
 
 # show hard-drive temperatures for /dev/sda and /dev/sdb
 alias temp='sudo hddtemp /dev/sda && sudo hddtemp /dev/sdb'
 
-# install headers for the current kernel
-alias apt-install-kernel-headers='sudo apt-get install linux-headers-`uname -r`'
+# show battery information
+alias batt="acpi | awk '{ print \$4 \$5 }' | sed 's/,/ /'"
 
 ################################################################################
 ## FUN #########################################################################

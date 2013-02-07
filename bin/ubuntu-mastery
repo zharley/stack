@@ -1,0 +1,10 @@
+#!/usr/bin/ruby
+
+# counts the total number of packages
+total = `apt-cache pkgnames | wc -l`.to_i
+
+# counts the number of packages installed
+count = `dpkg --get-selections | awk '{ print $1 }'`.split("\n").size
+
+# prints a percentage of total
+puts "#{count}/#{total} = %d%%" % [ count * 100 / total ]

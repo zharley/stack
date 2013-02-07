@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+read -p "Remove .svn data in subdirectories (y)? " answer
+
+if test "$answer" == "y"; then
+  find . -name '.svn' | xargs rm -R
+fi
