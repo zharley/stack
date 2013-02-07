@@ -30,16 +30,17 @@ function! util#PowerReplace(from, to) range
   let from_snake = util#SnakeCase(a:from)
   let from_camel = util#CamelCase(a:from)
   let from_mixed = util#MixedCase(a:from)
+  let from_upper = toupper(from_snake)
 
   let to_snake = util#SnakeCase(a:to)
   let to_camel = util#CamelCase(a:to)
   let to_mixed = util#MixedCase(a:to)
+  let to_upper = toupper(to_snake)
 
   execute a:firstline.",".a:lastline."s/".from_snake."/".to_snake."/gec"
   execute a:firstline.",".a:lastline."s/".from_camel."/".to_camel."/gec"
   execute a:firstline.",".a:lastline."s/".from_mixed."/".to_mixed."/gec"
-
-  echo "Done power replace!"
+  execute a:firstline.",".a:lastline."s/".from_upper."/".to_upper."/gec"
 endfunction
 
 " launch CommandT as long as it's not the home directory
@@ -79,10 +80,10 @@ set cpo&vim
 " <q-args> quotes special characters in the argument.
 
 " do power replace on selection 
-command -nargs=+ -range=% UtilPowerReplace <line1>,<line2>call util#PowerReplace(<f-args>)
+command! -nargs=+ -range=% UtilPowerReplace <line1>,<line2>call util#PowerReplace(<f-args>)
 
 " pass quickfix to args
-command -nargs=0 -bar UtilQuickfixToArgs execute 'args ' . util#QuickfixFilenames()
+command! -nargs=0 -bar UtilQuickfixToArgs execute 'args ' . util#QuickfixFilenames()
 
 let &cpo= s:keepcpo
 unlet s:keepcpo
