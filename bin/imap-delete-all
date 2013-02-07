@@ -1,0 +1,64 @@
+#!/usr/bin/php
+<?php
+
+function say($message)
+{
+    echo "=> $message\n";
+}
+
+// check for parameters
+if (!is_array($argv) || count($argv) < 4)
+{
+    echo "Usage: ".basename(__FILE__)." {some.imap.ssl.server.com:993/imap/ssl/novalidate-cert} user@domain.com password\n";
+    exit;
+}
+
+$server = $argv[1];
+$username = $argv[2];
+$password = $argv[3];
+
+say("Connecting to $username@$server...");
+
+// open IMAP mailbox
+$mailbox = imap_open(
+    $server,
+    $username,
+    $password
+);
+
+if (!$mailbox)
+{
+    // fail
+    say("Could not connect to mailbox");
+    say("Errors: ".implode(',', imap_errors()));
+    say("Alerts: ".implode(',', imap_alerts()));
+    exit;
+}
+
+say("Successful connection.");
+
+// see how many messages there are in the mailbox
+$num = imap_num_msg($mailbox);
+
+say("$num message(s) found in mailbox");
+
+// read all messages
+for ($messageNumber = 1; $messageNumber <= $num; $messageNumber++)
+{
+    // get headers for this message
+    $headers = imap_headerinfo($mailbox, $messageNumber);
+    $toMailbox = $headers->to[0]->mailbox;
+    $toHost = $headers->to[0]->host;
+    $subject = $headers->subject;
+
+    say("Deleting #$messageNumber (to: $toMailbox@$toHost subject:'$subject')");
+
+    imap_delete($mailbox, $messageNumber);
+}
+
+// clean up
+say("Expunging and closing mailbox...");
+imap_expunge($mailbox);
+imap_close($mailbox);
+
+say("Done!");

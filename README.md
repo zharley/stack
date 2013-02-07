@@ -27,6 +27,7 @@ Scripts available in **bin**:
 * **firefox-preview-image**: Generates a temporary HTML frame containing the specified image and launches that in Firefox, in order to preview a website mock-up.
 * **git-auto**: Adds, commits and pushes changes in a git repository in a single command.
 * **image-label-and-resize**: Resizes an image using ImageMagick and applies a label at the bottom.
+* **imap-delete-all**: Bulk-deletes (all) messages from an IMAP inbox.
 * **mysql-new-app**: Creates a matching database and username, auto-generating a password if desired.
 * **new-script**: Generates a new executable file based on a template in *etc/templates*.
 * **openssl-generate-default**: Outputs a self-signed SSL certificate to */etc/ssl/private* for local development usage.
