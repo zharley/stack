@@ -50,6 +50,7 @@ let g:CommandTAcceptSelectionTabMap='<CR>'
 let g:CommandTAcceptSelectionMap='<C-o>' 
 
 au BufRead,BufNewFile *.twig set syntax=htmljinja
+autocmd BufReadPost * :DetectIndent
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" KEYBOARD 

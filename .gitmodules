@@ -14,3 +14,7 @@
 [submodule "etc/vim/bundle/ack"]
 	path = etc/vim/bundle/ack
 	url = https://github.com/mileszs/ack.vim.git
+[submodule "etc/vim/bundle/detectindent"]
+	path = etc/vim/bundle/detectindent
+	url = https://github.com/ciaranm/detectindent.git
+        ignore = dirty
