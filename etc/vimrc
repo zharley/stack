@@ -18,7 +18,7 @@ filetype plugin indent on
 set number
 
 " set colour scheme
-colorscheme slate
+colorscheme slate-variant
 
 " automatically reload vimrc upon save
 au! BufWritePost .vimrc source %
@@ -34,7 +34,25 @@ set guioptions-=T
 set guioptions-=m
 
 " prevent overflowing output when doing find-in-files
-set nomore
+set nomore	
+
+" show matching parenteses
+set showmatch	
+
+" incremental search
+set incsearch	
+
+" highlight search result
+set hlsearch
+
+" case insensitive search
+set ignorecase
+
+" back to case sensitive for searches containing UPPERCASE
+set smartcase	
+
+" automatically scroll so that at least this lines are above or below cursor
+set scrolloff=5 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" PLUGIN CONFIGURATION
@@ -49,7 +67,7 @@ let g:CommandTAcceptSelectionTabMap='<CR>'
 " use Ctrl+O to open file in the current tab
 let g:CommandTAcceptSelectionMap='<C-o>' 
 
-au BufRead,BufNewFile *.twig set syntax=htmljinja
+"au BufRead,BufNewFile *.twig set syntax=htmljinja
 autocmd BufReadPost * :DetectIndent
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
