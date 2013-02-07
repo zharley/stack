@@ -32,6 +32,8 @@ set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
 set guioptions-=T
 " no menu (in gvim)
 set guioptions-=m
+" no right scrollbar (in gvim)
+set guioptions-=r
 
 " prevent overflowing output when doing find-in-files
 set nomore	
