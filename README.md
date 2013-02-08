@@ -30,6 +30,7 @@ Scripts available in **bin**:
 * **imap-delete-all**: Bulk-deletes (all) messages from an IMAP inbox.
 * **mysql-new-app**: Creates a matching database and username, auto-generating a password if desired.
 * **new-script**: Generates a new executable file based on a template in *etc/templates*.
+* **note**: Appends a simple note to a text file.
 * **openssl-generate-default**: Outputs a self-signed SSL certificate to */etc/ssl/private* for local development usage.
 * **pdf2png**: Produces a PNG for each page of a PDF, sampled at 300dpi, using ImageMagick.
 * **png2pdf**: Assembles a PDF from a series of PNGs (one per page), using ImageMagick.
@@ -41,4 +42,5 @@ Scripts available in **bin**:
 * **sshd-config-set**: Toggles yes/no configuration settings (such as PermitRootLogin and PasswordAuthentication) in the sshd\_config file.
 * **svn-remove-data**: Recursivly removes all .svn subdirectories under the current tree.
 * **unsmart**: Acts as a wrapper for uncompressing tar/zip/rar and extracting them to a clean directory name.
+* **use**: Installs a package using *apt-get* and makes a note of it.
 * **video-duration**: Reformats video duration information from ffmpeg's verbose output as h:mm:ss.

@@ -1,0 +1,10 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` package1 [package2 ... package3]"
+    exit 1
+fi
+
+sudo apt-get install $@ && note install $@
