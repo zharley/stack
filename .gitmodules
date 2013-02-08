@@ -21,3 +21,6 @@
 [submodule "etc/vim/bundle/surround"]
 	path = etc/vim/bundle/surround
 	url = https://github.com/tpope/vim-surround.git
+[submodule "etc/vim/bundle/twig"]
+	path = etc/vim/bundle/twig
+	url = https://github.com/beyondwords/vim-twig.git
