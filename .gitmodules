@@ -20,7 +20,13 @@
         ignore = dirty
 [submodule "etc/vim/bundle/surround"]
 	path = etc/vim/bundle/surround
-	url = https://github.com/tpope/vim-surround.git
+	url = git://github.com/tpope/vim-surround.git
 [submodule "etc/vim/bundle/twig"]
 	path = etc/vim/bundle/twig
 	url = https://github.com/beyondwords/vim-twig.git
+[submodule "etc/vim/bundle/html5"]
+	path = etc/vim/bundle/html5
+	url = https://github.com/othree/html5.vim.git
+[submodule "etc/vim/bundle/twig-indent"]
+	path = etc/vim/bundle/twig-indent
+	url = https://github.com/tokutake/twig-indent.git
