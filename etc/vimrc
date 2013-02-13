@@ -51,7 +51,7 @@ set hlsearch
 set ignorecase
 
 " back to case sensitive for searches containing UPPERCASE
-set smartcase	
+"set smartcase	
 
 " automatically scroll so that at least this lines are above or below cursor
 set scrolloff=5 
@@ -61,6 +61,9 @@ set expandtab
 
 " start new line at appropriate indentation level
 set smartindent
+
+" make tab bar always visible (to prevent annoying appearing/disappearing)
+set showtabline=2
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" PLUGIN CONFIGURATION
