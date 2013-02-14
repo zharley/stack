@@ -17,14 +17,16 @@ for (( i = 1; ; i++ )); do
         MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION"
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION" >> "$MY_LOG"
+    else
+        echo "=> Work cycle #$i"
     fi
   
     countdown 25 
-    notify-send "Pomodoro - #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
+    notify-send "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
     echo -n "=> Press [Enter] to continue" && read
   
-    echo "=> Break cycle $i"
+    echo "=> Break cycle #$i"
     countdown 5
-    notify-send "Pomodoro - Break complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
+    notify-send "Pomodoro - Break cycle #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
     echo -n "=> Press [Enter] to continue" && read
 done

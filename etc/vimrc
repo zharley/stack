@@ -81,6 +81,9 @@ let g:CommandTAcceptSelectionMap='<C-o>'
 "au BufRead,BufNewFile *.twig set syntax=htmljinja
 autocmd BufReadPost * :DetectIndent
 
+" disable syntax checking on twig files -- it does not seem to work
+let g:syntastic_mode_map = { 'passive_filetypes': ['twig'] }
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" KEYBOARD 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
