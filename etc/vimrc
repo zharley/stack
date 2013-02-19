@@ -8,6 +8,9 @@ call pathogen#helptags()
 "" GENERAL PREFERENCES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" we're running Vim, not Vi!
+set nocompatible          
+
 " enable syntax highlighting
 syntax on
 
@@ -28,18 +31,19 @@ set wildignore+=.svn,.git
 set wildignore+=www/app/cache/**,www/web/bundles/**,www/sites/default/files/**,www/backup/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
 
-" no toolbar (in gvim)
+" autocomplete: pick longest match first, then cycle through list
+set wildmode=longest,list,full
+
+" no toolbar, menu, or right scroll bar (in gvim)
 set guioptions-=T
-" no menu (in gvim)
 set guioptions-=m
-" no right scrollbar (in gvim)
 set guioptions-=r
 
 " prevent overflowing output when doing find-in-files
 set nomore	
 
 " show matching parenteses
-set showmatch	
+set noshowmatch
 
 " incremental search
 set incsearch	
@@ -48,10 +52,10 @@ set incsearch
 set hlsearch
 
 " case insensitive search
-set ignorecase
+set noignorecase
 
 " back to case sensitive for searches containing UPPERCASE
-"set smartcase	
+set nosmartcase
 
 " automatically scroll so that at least this lines are above or below cursor
 set scrolloff=5 
@@ -64,6 +68,12 @@ set smartindent
 
 " make tab bar always visible (to prevent annoying appearing/disappearing)
 set showtabline=2
+
+" shorten waiting for mapping disambiguation
+set timeoutlen=200
+
+" wrap words visually
+set lbr 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" PLUGIN CONFIGURATION
@@ -82,7 +92,7 @@ let g:CommandTAcceptSelectionMap='<C-o>'
 autocmd BufReadPost * :DetectIndent
 
 " disable syntax checking on twig files -- it does not seem to work
-let g:syntastic_mode_map = { 'passive_filetypes': ['twig'] }
+let g:syntastic_mode_map = { 'mode' : 'active', 'active_filetypes' : [], 'passive_filetypes': ['twig'] }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" KEYBOARD 
@@ -91,11 +101,11 @@ let g:syntastic_mode_map = { 'passive_filetypes': ['twig'] }
 " map leader and often-used shortcuts
 let mapleader=","
 map <leader>t :call util#BeginCommandT()<CR>
-map <leader>f :CommandTFlush<CR>:call util#BeginCommandT()<CR>
+map <leader>tt :CommandTFlush<CR>:call util#BeginCommandT()<CR>
 map <leader>a :Align 
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
-map <Leader>s :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
+map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 map <Leader>n :wincmd w<CR>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs
@@ -124,3 +134,6 @@ map <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2 expandtab<CR>
 " pull full path name into paste buffer for attachment to email etc
 nnoremap <Leader>p :let @*=expand("%")<CR>
 "nnoremap <F2> :let @*=substitute(expand("%:p"), "/", "\\", "g")<cr>
+
+" use Tab to initiate autocomplete
+imap <Tab> <C-n>
