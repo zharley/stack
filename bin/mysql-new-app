@@ -31,6 +31,8 @@ IDENTIFIED BY '$MY_PASSWORD';"
 # run MySQL command
 mysql -u root -e "$MY_COMMAND"
 
+echo "=> Running:"
+echo "$MY_COMMAND"
 echo "=> Database for application '$MY_APP' initialized."
 
 if [ -z "$2" ]; then
