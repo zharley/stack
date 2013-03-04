@@ -101,7 +101,7 @@ let g:syntastic_mode_map = { 'mode' : 'active', 'active_filetypes' : [], 'passiv
 " map leader and often-used shortcuts
 let mapleader=","
 map <leader>t :call util#BeginCommandT()<CR>
-map <leader>tt :CommandTFlush<CR>:call util#BeginCommandT()<CR>
+map <leader>g :CommandTFlush<CR>:call util#BeginCommandT()<CR>
 map <leader>a :Align 
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
