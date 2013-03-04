@@ -1,0 +1,38 @@
+# check every minute
+set daemon 60
+
+# recipient
+set alert user@example.com
+
+# name of a file to dump messages to
+set logfile syslog facility log_daemon
+
+# mailserver used for sending alert
+set mailserver localhost
+
+# specify format for email
+set mail-format {
+  from: monit@$HOST
+  subject: $HOST: $EVENT
+  message:
+Service:     $SERVICE
+Date:        $DATE
+Host:        $HOST
+Action:      $ACTION
+Description: $DESCRIPTION
+}
+
+# check load, memory, cpu
+check system server.localhost
+  if loadavg (1min) > 3 then alert
+  if loadavg (5min) > 2 then alert
+  if memory usage > 85% then alert
+  if cpu usage (user) > 70% then alert
+  if cpu usage (system) > 30% then alert
+  if cpu usage (wait) > 20% then alert
+  if cpu usage (wait) > 20% then alert
+
+# check hard drive
+check filesystem rootfs with path /dev/xvda1
+  if space usage > 80% for 5 times within 15 cycles
+    then alert else if succeeded for 10 cycles then alert
