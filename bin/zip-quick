@@ -1,0 +1,42 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` directory [options]"
+    echo "=> Output name based on directory name and datestamp"
+    echo "=> Ignores any .git subdirectory"
+    echo "=> The 'options' parameter is passed directly to zip, e.g."
+    echo "   --encrypt     prompts for encryption password"
+    exit 1
+fi
+
+MY_DIR="$1"
+MY_OPTIONS="$2"
+
+# enter directory
+cd "$MY_DIR"
+
+# get a plain directory path, without trailing slash
+MY_DIR_TOP=${PWD##*/}
+
+# go up one directory
+cd ..
+
+# get directory base name (removes any extension)
+MY_BASE=`basename "$MY_DIR_TOP"`
+
+# output to /tmp, filename based on current date
+MY_ZIP="/tmp/`date +%Y-%m-%d`-$MY_BASE.zip"
+
+# delete the zip file if it exists
+rm -f "$MY_ZIP"
+
+# -r  travel the directory structure recursively
+# -x  explicitly exclude specified files
+zip -r "$MY_ZIP" "$MY_DIR_TOP" -x \*.git* $MY_OPTIONS
+
+echo "=> Done!"
+
+# show result
+du -sh "$MY_ZIP"
