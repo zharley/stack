@@ -38,17 +38,13 @@ set mailserver localhost
 # specify format for email
 set mail-format {
   from: monit@\$HOST
-  subject: \$HOST: \$EVENT
+  subject: Monit \$SERVICE \$ACTION on \$HOST 
   message:
-Service:     \$SERVICE
-Date:        \$DATE
-Host:        \$HOST
-Action:      \$ACTION
-Description: \$DESCRIPTION
+\$EVENT: \$DESCRIPTION
 }
 
 # check load, memory, cpu
-check system localhost
+check system system
   if loadavg (1min) > 3 then alert
   if loadavg (5min) > 2 then alert
   if memory usage > 75% then alert
@@ -58,8 +54,11 @@ check system localhost
 
 # check hard drive
 check filesystem rootfs with path $MY_HDD_DEVICE
-  if space usage > 80% for 5 times within 15 cycles
-    then alert else if succeeded for 10 cycles then alert
+  if space usage > 80% then alert
+  if space usage > 85% then alert
+  if space usage > 90% then alert
+  if space usage > 95% then alert
+  if space usage > 97% then alert
 EOF
 
 chmod 600 $MY_MONITRC
