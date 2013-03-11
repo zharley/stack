@@ -1,0 +1,32 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` example.com [127.0.0.1]"
+    exit 1
+fi
+
+MY_DOMAIN="$1"
+MY_IP="127.0.0.1"
+
+if [ -n "$2" ]; then
+    MY_IP="$2"
+fi
+
+MY_HOSTS_FILE="/etc/hosts"
+
+MY_LINE="$MY_IP $MY_DOMAIN"
+
+if grep -q "$MY_LINE" "$MY_HOSTS_FILE"; then
+    echo "=> Oops! $MY_DOMAIN resolves to $MY_IP in $MY_HOSTS_FILE"
+    exit 1
+fi
+
+echo "=> Adding domain $MY_DOMAIN with IP $MY_IP to $MY_HOSTS_FILE"
+
+sudo sh -c "echo '$MY_LINE' >> $MY_HOSTS_FILE"
+
+tail $MY_HOSTS_FILE
+
+echo "=> Done!"
