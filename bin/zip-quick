@@ -30,7 +30,14 @@ MY_BASE=`basename "$MY_DIR_TOP"`
 MY_ZIP="/tmp/`date +%Y-%m-%d`-$MY_BASE.zip"
 
 # delete the zip file if it exists
-rm -f "$MY_ZIP"
+if [ -f "$MY_ZIP" ]; then
+    echo "=> Target file exists: $MY_ZIP"
+    rm -i "$MY_ZIP"
+
+    if [ -f "$MY_ZIP" ]; then
+        exit 1
+    fi
+fi
 
 # -r  travel the directory structure recursively
 # -x  explicitly exclude specified files
