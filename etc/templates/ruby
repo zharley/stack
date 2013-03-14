@@ -69,3 +69,19 @@ filename = ARGV[0]
 # 
 #   return response
 # end
+#
+
+
+# require 'rubygems'  
+# require 'active_record'  
+# 
+# ActiveRecord::Base.establish_connection(
+#     :adapter=> "mysql",
+#       :username=> "root",
+#         :host => "localhost",
+#           :database=> "katalyst"
+# )  
+#   
+# class User < ActiveRecord::Base  
+#   set_table_name "user"
+# end  
