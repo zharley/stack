@@ -1,0 +1,24 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: `basename $0` app-dir domain.localhost"
+    exit 1
+fi
+
+MY_DIRECTORY="$1"
+MY_DOMAIN="$2"
+
+# install a basic apache config
+apache-vhost $MY_DIRECTORY $MY_DOMAIN | \
+  sudo tee /etc/apache2/sites-available/$MY_DOMAIN
+
+# customize the apache config (if desired)
+sudo vim /etc/apache2/sites-available/$MY_DOMAIN
+
+# enable site and reload
+sudo a2ensite $MY_DOMAIN
+sudo /etc/init.d/apache2 reload
+
+echo "=> Apache VirtualHost has been enabled for $MY_DOMAIN"
