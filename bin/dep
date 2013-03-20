@@ -1,0 +1,363 @@
+#! /bin/bash
+set -e
+
+# shows some info and prompts for "y" to continue
+# if anything other than "y" is entered, it exits
+confirm() {
+    if [ $MY_CONFIRM -eq 0 ]; then
+        read -p "=> $1 : Continue (y)? " MY_ANSWER
+        if test "$MY_ANSWER" != "y"; then 
+            echo "=> Cancelled!"
+            exit 1 
+        fi
+    fi
+}
+
+# shows information in a uniform way
+say() {
+    if [ $MY_QUIET -eq 0 ]; then
+        echo "=> $1"
+    fi
+}
+
+# show file/directory size
+usage() {
+    if [ $MY_QUIET -eq 0 ]; then
+        du -sh "$1"
+    fi
+}
+
+# set MY_COMMAND for mysql remote action
+# needs to be called before every remote action because
+# it opens the SSH tunnel if needed
+mysql_prepare_remote(){
+    MY_DB_HOST="$DEPLOY_DB_HOST"
+    MY_DB_PORT="3306"
+
+    # auto-detect whether a ssh tunnel is needed
+    if [[ $DEPLOY_DB_HOST =~ '@' ]]; then
+        MY_DB_PORT_TUNNEL="3309"
+
+        say "Preparing SSH tunnel on port $MY_DB_PORT_TUNNEL to $DEPLOY_DB_HOST"
+
+        # prepare SSH tunnel (open for at least 4 seconds, closes
+        # automatically when no longer used)
+        # -C        compress
+        # -f        fork
+        # -L        port forward
+        ssh -C -f -L $MY_DB_PORT_TUNNEL:localhost:$MY_DB_PORT $DEPLOY_DB_HOST "sleep 10"
+
+        # if host is "localhost", automatic connection based on socket
+        MY_DB_HOST="127.0.0.1"
+
+        # connect to local host at a different port, thus achieving the tunnel
+        MY_DB_PORT="$MY_DB_PORT_TUNNEL"
+    fi
+
+    # -C    compress
+    # -h    host
+    # -P    port
+    MY_COMMAND="-u $DEPLOY_DB_USERNAME -p$DEPLOY_DB_PASSWORD -C -h $MY_DB_HOST -P $MY_DB_PORT $DEPLOY_DB_NAME"
+}
+
+# mysql remote helpers
+mysql_remote_dump() {
+    mysql_prepare_remote
+    mysqldump $MY_COMMAND > "$1"
+}
+
+mysql_remote_import() {
+    mysql_prepare_remote
+    mysql $MY_COMMAND < "$1"
+}
+
+mysql_remote_interactive() {
+    mysql_prepare_remote
+    mysql $MY_COMMAND
+}
+
+mysql_ensure_db_exists() {
+    # make sure that the database exists locally
+    MY_COMMAND="SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA \
+    WHERE SCHEMA_NAME = '$DEPLOY_DB_NAME'"
+    if ! mysql -u root -e "$MY_COMMAND" | grep -q "$DEPLOY_DB_NAME"; then
+        confirm "Auto-generate user $DEPLOY_DB_USERNAME and database $DEPLOY_DB_NAME"
+
+        # generate database
+        MY_COMMAND="CREATE DATABASE $DEPLOY_DB_NAME; \
+            GRANT ALL ON ${DEPLOY_DB_NAME}.* TO '$DEPLOY_DB_USERNAME'@'localhost' \
+            IDENTIFIED BY '$DEPLOY_DB_PASSWORD';"
+
+        mysql -u root -e "$MY_COMMAND"
+    fi
+}
+
+# default name for config file
+MY_SOURCE="deploy.conf"
+
+# by default, don't do anything (i.e. require command-line params)
+MY_ACTION=""
+MY_DEPLOY_DATABASE=0
+MY_DEPLOY_FILES=0
+
+# will be either remote or local
+MY_MODE=""
+
+# file name to use for SQL dumps/imports
+MY_DB_DUMP=""
+
+# user interaction options
+MY_CONFIRM=0
+MY_QUIET=0
+
+# custom rsync add-on
+MY_RSYNC_EXTRA=""
+
+while getopts "nlrc:dafytwxm:qi:sbgpzue" MY_OPTION; do
+    case "$MY_OPTION" in
+        a) MY_DEPLOY_DATABASE=1;;
+        c) MY_SOURCE="$OPTARG";;
+        d) MY_ACTION="deploy";;
+        f) MY_DEPLOY_FILES=1;;
+        i) MY_ACTION="import"; MY_DB_DUMP="$OPTARG";;
+        l) MY_MODE="local";;
+        m) MY_DB_DUMP="$OPTARG";;
+        n) MY_ACTION="new";;
+        q) MY_QUIET=1;;
+        r) MY_MODE="remote";;
+        s) MY_ACTION="interactive";;
+        t) MY_RSYNC_EXTRA="--dry-run";;
+        x) MY_ACTION="dump";;
+        y) MY_CONFIRM=1;;
+        [?]) exit 1;;
+    esac
+done
+
+# check for presence of parameters
+if [ -z "$MY_ACTION" ]; then
+    cat << EOF
+Usage: `basename $0` [-options]
+    -n           create a new deploy.conf in the current directory
+    -c [file]    provide a alternative name for the config file
+    -y           don't confirm anything (assume yes)
+    -q           silence output
+
+    MODE (refers to what is modified)
+    -l           act on local files or database
+    -r           act on remote files or database
+
+    DATABASE
+    -s           start interactive database shell
+    -x           dump (export) database to a file (need to choose a mode)
+      -m [file]  specify file name (default: database_name.sql)
+    -i [file]    import database from a file
+
+    DEPLOY
+    -d           deploy something
+      -a         deploy database (won't by default)
+      -f         deploy files (won't by default)
+        -t       set --dry-run for rsync
+EOF
+    exit 1
+fi
+
+if [ "$MY_ACTION" == "new" ]; then
+    # this will generate a new deploy.conf file
+    if [ -f "$MY_SOURCE" ]; then
+        # exists already
+        say "$MY_SOURCE already exists!"
+    else
+        # okay, generate
+        cat > "$MY_SOURCE" <<EOF
+#!/bin/bash
+#
+# deploy formula
+# `date`
+#
+# local root directory used only for "cd"
+export DEPLOY_ROOT_LOCAL="www"
+
+# remote root directory (used for rsync) - keep trailing /
+export DEPLOY_ROOT_REMOTE="user@localhost:webapps/app/"
+
+# rsync command 
+# -a archive
+# -v verbose
+# -z compressed
+# -h human
+# -P progress and partial
+# -c cheksum-based skip
+# --delete-after (delete extraneous files from dest dirs AFTER transfer)
+# --exclude .ht*
+export DEPLOY_RSYNC=(-a -v -z -h -P -c --delete-after)
+
+# execute this command within DEPLOY_ROOT_LOCAL
+# whenever files are being deployed
+#export DEPLOY_FILE_HOOK="touch tmp/restart.txt"
+
+# the domain for Apache vhost config (auto-alias www if no subdomain)
+export DEPLOY_DOMAIN="localhost"
+
+# database conf
+
+# name of database
+export DEPLOY_DB_NAME="database"
+
+# name of database user (if different from the database)
+#export DEPLOY_DB_USERNAME="database"
+
+# remote mysql host name (automatically SSH tunnel if it contains @)
+export DEPLOY_DB_HOST="user@localhost"
+export DEPLOY_DB_HOST_INTERNAL="internaldb"
+
+# database user's password
+export DEPLOY_DB_PASSWORD="password"
+EOF
+
+        say "$MY_SOURCE generated"
+    fi
+
+    exit 0
+fi
+
+# all remaining commands require deploy.conf file to already exist
+if [ ! -f "$MY_SOURCE" ]; then
+    say "Cannot find $MY_SOURCE"
+    exit 1
+fi
+
+# load in deploy.conf
+source $MY_SOURCE
+
+# provide a default username if none is specified
+if [ -z "$DEPLOY_DB_USERNAME" ]; then
+    DEPLOY_DB_USERNAME="$DEPLOY_DB_NAME"
+fi
+
+if [ -z "$MY_MODE" ]; then
+    say "Mode not specified. This action needs a mode."
+    exit 1
+fi
+
+# simple dump-to-file
+if [ "$MY_ACTION" == "dump" ]; then
+    if [ -z "$MY_DB_DUMP" ]; then
+        # no dump name specified, determine default
+        MY_DB_DUMP="$DEPLOY_DB_NAME.sql"
+    fi
+
+    if [ "$MY_MODE" == "local" ]; then
+        confirm "Dump local copy of database to '$MY_DB_DUMP'"
+        mysqldump -u root $DEPLOY_DB_NAME > $MY_DB_DUMP
+    else
+        confirm "Dump remote copy of database to '$MY_DB_DUMP'"
+        mysql_remote_dump "$MY_DB_DUMP"
+    fi
+
+    say "Dump complete:"
+    usage "$MY_DB_DUMP"
+
+    exit 0
+fi
+
+# simple import from file
+if [ "$MY_ACTION" == "import" ]; then
+    if [ "$MY_MODE" == "local" ]; then
+        mysql -e "DROP DATABASE IF EXISTS $DEPLOY_DB_NAME"
+        mysql_ensure_db_exists
+
+        confirm "Import '$MY_DB_DUMP' to local database"
+        mysql -u root $DEPLOY_DB_NAME < $MY_DB_DUMP
+    else
+        confirm "Upload '$MY_DB_DUMP' to remote database"
+        mysql_remote_import "$MY_DB_DUMP"
+    fi
+
+    say "Import complete."
+
+    exit 0
+fi
+
+# interactive shell
+if [ "$MY_ACTION" == "interactive" ]; then
+    if [ "$MY_MODE" == "local" ]; then
+        mysql -u root $DEPLOY_DB_NAME
+    else
+        mysql_remote_interactive
+    fi
+
+    exit 0
+fi
+
+# at this point, the action is deploy
+
+if [ $MY_DEPLOY_DATABASE -eq 0 ]; then
+    say "Skipping database (use -a to deploy database)"
+else
+    mysql_ensure_db_exists
+
+    # temporary dump file
+    MY_TEMP_DUMP=`tempfile --prefix 'dump-' --suffix '.sql'`
+
+    # perform database actions
+    if [ "$MY_MODE" == "local" ]; then
+        # get remote
+        confirm "Get $DEPLOY_DB_NAME from $DEPLOY_DB_HOST"
+        mysql_remote_dump "$MY_TEMP_DUMP"
+
+        # report
+        say "Remote dump complete: "
+        usage "$MY_TEMP_DUMP"
+
+        # import
+        confirm "Import dump to localhost"
+        mysql -u root $DEPLOY_DB_NAME < $MY_TEMP_DUMP
+
+        # report
+        say "Local $DEPLOY_DB_NAME is up-to-date."
+    elif [ "$MY_MODE" == "remote" ]; then
+        # get local
+        confirm "Dump local $DEPLOY_DB_NAME"
+        mysqldump -u root $DEPLOY_DB_NAME > $MY_TEMP_DUMP
+
+        # report
+        say "Local dump complete: "
+        usage "$MY_TEMP_DUMP"
+
+        # import
+        confirm "Upload dump to $DEPLOY_DB_HOST"
+        mysql_remote_import "$MY_TEMP_DUMP"
+
+        # report
+        say "Remote $DEPLOY_DB_NAME is now up-to-date!"
+    fi
+fi
+
+if [ $MY_DEPLOY_FILES -eq 0 ]; then
+    say "Skipping file rsync (use -f to deploy files)"
+else
+    # enter local root directory
+    cd "$DEPLOY_ROOT_LOCAL"
+    say "Local root directory: `pwd`"
+
+    if [ -n "$DEPLOY_FILE_HOOK" ]; then
+        say "Running deploy file hook"
+        $DEPLOY_FILE_HOOK
+    fi
+
+    # perform rsync actions
+    if [ "$MY_MODE" == "local" ]; then
+        confirm "Download from '$DEPLOY_ROOT_REMOTE'"
+        rsync "${DEPLOY_RSYNC[@]}" $MY_RSYNC_EXTRA $DEPLOY_ROOT_REMOTE .
+    elif [ "$MY_MODE" == "remote" ]; then
+        confirm "Upload to '$DEPLOY_ROOT_REMOTE'"
+        rsync "${DEPLOY_RSYNC[@]}" $MY_RSYNC_EXTRA . $DEPLOY_ROOT_REMOTE
+    fi
+fi
+
+say "Finished."
+
+# play a little sound
+if [ $MY_QUIET -eq 0 ]; then
+    play -n synth 0.3 sine 300-3300 vol 0.1 &> /dev/null
+fi
