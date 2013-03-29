@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# 1) Mounts a device (e.g. a USB drive)
+# 2) Echos to stdout the contents of a key found on the device
+#
+# This script runs in connection with /conf/conf.d/cryptroot in the initramfs
+#
+# e.g.
+#   target=root
+#   source=/dev/sda3
+#   key=/dev/disk/by-uuid/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/filename.key
+#   keyscript=/keyscripts/keyscript
+# 
+# The value at key= is the only parameter passed to this script.
+#
+# Note that the parameter contains both the device name and the keyfile name. 
+# The script will split that string on the last '/' using the right substring 
+# as the filename, and the left substring as the device name.  In this method, 
+# the key 'filename.key' must be found in the root directory of the specified 
+# device. 
+#
+# @see crypttab man:
+#   keyscript=<path>
+#     The executable at the indicated path is executed with the key file from
+#     the third field of the crypttab as its only argument and the output is 
+#     used as the key.
+#
+# Since output of this script is used as the decryption key, all other messages
+# are explicitly sent to console (> /dev/console) or silenced (> /dev/null 2>&1)
+
+fatal_error() {
+    echo "Boot Error: $1" > /dev/console
+    exit 1
+}
+
+# Check for presence of parameters
+if [ -z $1 ]; then
+    fatal_error "Missing script parameter"
+fi
+
+MY_KEY="$1"
+MY_KEY_DEVICE="${MY_KEY%/*}"
+MY_KEY_FILE="${MY_KEY##*/}"
+MY_KEY_MOUNT="/mnt/key"
+
+# e.g.
+#   MY_KEY_DEVICE=/dev/disk/by-uuid/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+#   MY_KEY_FILE=keyfile.key
+
+# Watch the udev event queue, exits if all current events are handled 
+/sbin/udevadm settle --timeout=30
+
+# Be patient
+if [ ! -b "${MY_KEY_DEVICE}" ]; then
+    echo "Key device not found... will wait a bit." > /dev/console
+
+    # Wait up to 8 seconds for the keydevice to appear
+    MY_WAIT_TIME=8
+
+    while [ ! -b "${MY_KEY_DEVICE}" ]; do
+        /bin/sleep 1
+        MY_WAIT_TIME=$(( ${MY_WAIT_TIME} - 1 ))
+        [ ${MY_WAIT_TIME} -gt 0 ] || break
+    done
+fi
+
+# Device must exist at this point
+if [ ! -b "${MY_KEY_DEVICE}" ]; then
+    fatal_error "Key device not found"
+fi
+
+# Create mount point and mount key device
+if [ ! -d $MY_KEY_MOUNT ]; then
+    mkdir -p -m 0700 $MY_KEY_MOUNT > /dev/null 2>&1
+fi
+mount -r -t ext2 $MY_KEY_DEVICE $MY_KEY_MOUNT > /dev/null 2>&1
+
+# Check status
+if [ $? -ne 0 ]; then
+    fatal_error "Failed to mount device"
+elif [ -r "$MY_KEY_MOUNT/${MY_KEY_FILE}" -a -s "$MY_KEY_MOUNT/${MY_KEY_FILE}" ]; then
+    # Success, output the keyfile contents
+    echo "Success!  Welcome." > /dev/console
+    cat $MY_KEY_MOUNT/${MY_KEY_FILE}
+else
+    fatal_error "Could not find ${MY_KEY_FILE} on ${MY_KEY_DEVICE}"
+fi
+
+# Unmount and close the key device
+umount $MY_KEY_MOUNT > /dev/null 2>&1
+rmdir $MY_KEY_MOUNT > /dev/null 2>&1
