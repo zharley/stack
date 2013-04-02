@@ -1,6 +1,6 @@
-### About
+## Device configuration
 
-General notes regarding bare-bones Ubuntu setup.
+Configure partitions in preparation for bare-bones Ubuntu setup.
 
 ### Partitions
 
@@ -47,13 +47,13 @@ Setup mdadm. **Warning**: This will wipe out any data on the device.
     apt-get -y install mdadm
     mdadm --verbose --create /dev/md0 --level=1 --raid-devices=2 $MY_RAID_DEVICE1 $MY_RAID_DEVICE2
 
-### Device check and format
+### Key device setup (if applicable)
 
 The following checks, wipes and formats a device. **Warning**: This will wipe out any data on the device.
 
     read -p "Device (e.g. /dev/sda): " MY_KEY_DEVICE
 
-Wipe device, format as ext2.
+Wipe, format as ext2.
 
     # badblocks will wipe and also test the usb device
     #
@@ -68,14 +68,23 @@ Wipe device, format as ext2.
     # format as ext2 and mount
     mkfs.ext2 $MY_KEY_DEVICE 
 
+## Installation
+
+Install Ubuntu 12.04, optionally using cryptsetup for disk encryption.
+
+### Configuration
+
+Get sample configuration file. Edit as necessary.
+
+    wget https://raw.github.com/zharley/stack/master/etc/setup.conf
+
+    vim setup.conf
+
+    source setup.conf
+
 ### Encryption
 
-The following generates a key file containing random bytes.
-
-    read -p "Device (e.g. /dev/sda): " MY_KEY_DEVICE
-    read -p "Name of keyfile (e.g. file.key): " MY_KEY_NAME
-
-The quality of the key file depends on **/dev/random**.
+Generate a key file containing random bytes (the quality of which depends on the randomness of **/dev/random**).
 
     # mount
     mount $MY_KEY_DEVICE /mnt
@@ -86,12 +95,7 @@ The quality of the key file depends on **/dev/random**.
     # unmount
     umount /mnt
 
-The following uses [cryptsetup](http://code.google.com/p/cryptsetup/) to encrypt a device.
-
-    read -p "Root partition (e.g. /dev/sda3 or /dev/md0): " MY_ROOT_PARTITION
-    MY_FORMAT_OPTIONS="--hash=sha512 --cipher=aes-cbc-essiv:sha256 --key-size=256"
-
-Perform encryption and formatting. **Warning**: This will wipe out any data on the device.
+Use [cryptsetup](http://code.google.com/p/cryptsetup/) to encrypt a device. **Warning**: This will wipe out any data on the device.
 
     apt-get -y install cryptsetup
     modprobe dm-crypt
@@ -100,10 +104,10 @@ Perform encryption and formatting. **Warning**: This will wipe out any data on t
     mount $MY_KEY_DEVICE /mnt
 
     # LUKS format (exclude last parameter to use password only)
-    cryptsetup $MY_FORMAT_OPTIONS luksFormat $MY_ROOT_PARTITION /mnt/$MY_KEY_NAME
+    cryptsetup $MY_CRYPTSETUP_FORMAT
 
     # LUKS open (exclude key-file parameter to use password only)
-    cryptsetup --key-file /mnt/$MY_KEY_NAME luksOpen $MY_ROOT_PARTITION root
+    cryptsetup $MY_CRUPTSETUP_OPEN
 
     # unmount key device (optional)
     umount /mnt
@@ -115,24 +119,13 @@ Perform encryption and formatting. **Warning**: This will wipe out any data on t
 
 Prepare devices
 
-    read -p "Boot device (e.g. /dev/sda1): " MY_BOOT_DEVICE
-    read -p "Root device (e.g. /dev/sda3 or /dev/mapper/root): " MY_ROOT_DEVICE
-
     # format boot partition as ext2
     mkfs.ext2 $MY_BOOT_DEVICE
 
     # mount root and boot partitions
     mount $MY_ROOT_DEVICE /mnt && mkdir -p /mnt/boot && mount $MY_BOOT_DEVICE /mnt/boot
 
-Do a minimal install of Ubuntu using a [recent package of debootstrap](http://ftp.debian.org/debian/pool/main/d/debootstrap/) and a [nearby mirror](https://launchpad.net/ubuntu/+archivemirrors).
-
-    MY_ARCH="i386"
-    MY_DISTRO="precise" 
-    MY_MIRROR="http://mirror.peer1.net/ubuntu/"
-    MY_BASE="language-pack-en,language-pack-en-base,linux-image,cryptsetup,ssh,mdadm,git-core,vim,wget,rsync,cron,man-db"
-    MY_SOURCES="main,restricted,universe,multiverse"
-
-    MY_DEBOOTSTRAP="http://ftp.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.47_all.deb"
+Do a minimal install of Ubuntu using debootstrap.
 
     # install debootstrap
     wget $MY_DEBOOTSTRAP -O /tmp/debootstrap.deb 
@@ -143,40 +136,26 @@ Do a minimal install of Ubuntu using a [recent package of debootstrap](http://ft
 
 Add matching sources.list:
 
-    MY_SOURCES="`echo $MY_SOURCES | sed s/,/\ /g`"
-
     cat << EOF > /mnt/etc/apt/sources.list
     # binary packages
-    deb $MY_MIRROR $MY_DISTRO $MY_SOURCES
-    deb $MY_MIRROR $MY_DISTRO-updates $MY_SOURCES
-    deb $MY_MIRROR $MY_DISTRO-security $MY_SOURCES
+    deb $MY_MIRROR $MY_DISTRO $MY_SOURCES_SPACED
+    deb $MY_MIRROR $MY_DISTRO-updates $MY_SOURCES_SPACED
+    deb $MY_MIRROR $MY_DISTRO-security $MY_SOURCES_SPACED
     
     # source packages
-    #deb-src $MY_MIRROR $MY_DISTRO $MY_SOURCES
-    #deb-src $MY_MIRROR $MY_DISTRO-updates $MY_SOURCES
-    #deb-src $MY_MIRROR $MY_DISTRO-security $MY_SOURCES
+    #deb-src $MY_MIRROR $MY_DISTRO $MY_SOURCES_SPACED
+    #deb-src $MY_MIRROR $MY_DISTRO-updates $MY_SOURCES_SPACED
+    #deb-src $MY_MIRROR $MY_DISTRO-security $MY_SOURCES_SPACED
     EOF
 
 ### Boot Configuration
 
-Determine a persistent device path for each of various devices:
-
-    blkid
-    ls -l /dev/disk/by-uuid
-    ls -l /dev/disk/by-id
-    udevadm info --query=symlink --name=/dev/sda1
-
 Configure **crypttab** (if applicable) **with key file** using persistent device names:
-
-    read -p "Root device (e.g. /dev/disk/by-uuid/... or /dev/md0): " MY_PERSISTENT_ROOT
-    read -p "Swap device (e.g. /dev/disk/by-id/...): " MY_PERSISTENT_SWAP
-    read -p "Key device (e.g. /dev/disk/by-id/...): " MY_PERSISTENT_KEY
-    echo $MY_KEY_NAME
 
     cat << EOF > /mnt/etc/crypttab
     # <target name> <source device> <key file> <options>
-    swap $MY_PERSISTENT_SWAP /dev/urandom swap
-    root $MY_PERSISTENT_ROOT $MY_PERSISTENT_KEY/$MY_KEY_NAME luks,keyscript=/usr/local/sbin/keyscript
+    swap $MY_SWAP_DEVICE_ID /dev/urandom swap
+    root $MY_ROOT_DEVICE_ID $MY_KEY_DEVICE_ID/$MY_KEY_NAME luks,keyscript=/usr/local/sbin/keyscript
     EOF
 
     wget https://raw.github.com/zharley/stack/master/etc/keyscript -O /mnt/usr/local/sbin/keyscript
@@ -184,32 +163,25 @@ Configure **crypttab** (if applicable) **with key file** using persistent device
 
 Configure **crypttab** (if applicable) **without key file**:
 
-    read -p "Root device (e.g. /dev/disk/by-uuid/... or /dev/md0): " MY_PERSISTENT_ROOT
-    read -p "Swap device (e.g. /dev/disk/by-id/...): " MY_PERSISTENT_SWAP
-
     cat << EOF > /mnt/etc/crypttab
     # <target name> <source device> <key file> <options>
-    swap $MY_PERSISTENT_SWAP /dev/urandom swap
-    root $MY_PERSISTENT_ROOT none luks
+    swap $MY_SWAP_DEVICE_ID /dev/urandom swap
+    root $MY_ROOT_DEVICE_ID none luks
     EOF
 
 Configure **fstab**:
-
-    read -p "Boot device (e.g. /dev/disk/by-id/...): " MY_FSTAB_BOOT
-    read -p "Swap device (e.g. /dev/disk/by-id/... or /dev/mapper/swap): " MY_FSTAB_SWAP
-    read -p "Root device (e.g. /dev/disk/by-id/... or /dev/mapper/root): " MY_FSTAB_ROOT
 
     cat << EOF > /mnt/etc/fstab
     # /etc/fstab: static file system information.
     #
     # <file system>    <mount point>   <type>  <options>                   <dump>  <pass>
     proc               /proc           proc    defaults                    0       0
-    # boot
-    $MY_FSTAB_BOOT     /boot           ext2    relatime                    0       2
-    # root
-    $MY_FSTAB_ROOT     /               ext4    relatime,errors=remount-ro  0       1
-    # swap
-    $MY_FSTAB_SWAP     none            swap    sw                          0       0
+    # boot: $MY_BOOT_DEVICE
+    $MY_BOOT_DEVICE_ID /boot           ext2    relatime                    0       2
+    # swap: $MY_SWAP_DEVICE
+    /dev/mapper/swap   none            swap    sw                          0       0
+    # root: $MY_ROOT_DEVICE
+    /dev/mapper/root   /               ext4    relatime,errors=remount-ro  0       1
     EOF
 
 Configure network interfaces:
@@ -239,11 +211,9 @@ Configure network interfaces:
     EOF
 
 Set hostname and hosts:
-
-    read -p "Hostname (name or FQDN): " MY_HOSTNAME
     
     # set hostname
-    echo $MY_HOSTNAME > /mnt/etc/hosts
+    echo $MY_HOSTNAME > /mnt/etc/hostname
 
     # install hosts file
     cat << EOF > /mnt/etc/hosts
@@ -257,24 +227,23 @@ Set hostname and hosts:
     
 Update packages, setup grub and initramfs.
 
-    # Mount devices under /mnt
-    for dir in proc dev sys; do mount --bind /$dir /mnt/$dir; done
+    # mount devices under /mnt
+    for DIR in proc dev sys; do mount --bind /$DIR /mnt/$DIR; done
     
-    # Update packages
+    # update packages
     chroot /mnt apt-get update
     
     # install grub
     chroot /mnt apt-get install grub-pc
     
     # during installation select boot device or install grub manually here
-    read -p "Boot device (e.g. /dev/sda): " MY_BOOT_DEVICE
-    chroot /mnt grub-install $MY_BOOT_DEVICE
+    # chroot /mnt grub-install /dev/sda
 
-    # Remove quiet splash from boot options, to see more details
+    # remove quiet splash from boot options, to see more details
     sed --in-place='.old' 's:GRUB_CMDLINE_LINUX_DEFAULT="quiet splash":GRUB_CMDLINE_LINUX_DEFAULT="":' /mnt/etc/default/grub
     chroot /mnt update-grub
 
-    # Setup initramfs
+    # setup initramfs
     cat << EOF > /mnt/etc/initramfs-tools/modules
     # List of modules that you want to include in initramfs
     mmc_block
@@ -286,6 +255,8 @@ Update packages, setup grub and initramfs.
     
     # set root password
     chroot /mnt passwd
+
+    cp setup.conf /mnt/boot/setup.`date +%Y-%m-%d`.conf
 
 ### Post Configuration
     
