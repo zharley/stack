@@ -87,7 +87,7 @@ Get sample configuration file. Edit as necessary.
 Generate a key file containing random bytes (the quality of which depends on the randomness of **/dev/random**).
 
     # mount
-    mount $MY_KEY_DEVICE /mnt
+    mkdir -p /mnt && mount $MY_KEY_DEVICE /mnt
     
     # generate a random key (32 bytes = 256 bits)
     dd if=/dev/random of=/mnt/$MY_KEY_NAME bs=1 count=32
@@ -101,13 +101,13 @@ Use [cryptsetup](http://code.google.com/p/cryptsetup/) to encrypt a device. **Wa
     modprobe dm-crypt
 
     # mount key device (optional)
-    mount $MY_KEY_DEVICE /mnt
+    mkdir -p /mnt && mount $MY_KEY_DEVICE /mnt
 
-    # LUKS format (exclude last parameter to use password only)
+    # LUKS format
     cryptsetup $MY_CRYPTSETUP_FORMAT
 
-    # LUKS open (exclude key-file parameter to use password only)
-    cryptsetup $MY_CRUPTSETUP_OPEN
+    # LUKS open
+    cryptsetup $MY_CRYPTSETUP_OPEN
 
     # unmount key device (optional)
     umount /mnt
@@ -123,7 +123,8 @@ Prepare devices
     mkfs.ext2 $MY_BOOT_DEVICE
 
     # mount root and boot partitions
-    mount $MY_ROOT_DEVICE /mnt && mkdir -p /mnt/boot && mount $MY_BOOT_DEVICE /mnt/boot
+    mkdir -p /mnt && mount /dev/mapper/root /mnt
+    mkdir -p /mnt/boot && mount $MY_BOOT_DEVICE /mnt/boot
 
 Do a minimal install of Ubuntu using debootstrap.
 
@@ -258,7 +259,9 @@ Update packages, setup grub and initramfs.
 
     cp setup.conf /mnt/boot/setup.`date +%Y-%m-%d`.conf
 
-### Post Configuration
+## Post Configuration
+
+### Miscellaneous
     
 Set timezone:
 
