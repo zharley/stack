@@ -4,6 +4,8 @@ runtime bundle/pathogen/autoload/pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
 
+runtime autoload/util.vim
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" GENERAL PREFERENCES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
