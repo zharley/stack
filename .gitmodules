@@ -30,3 +30,6 @@
 [submodule "etc/vim/bundle/twig-indent"]
 	path = etc/vim/bundle/twig-indent
 	url = https://github.com/tokutake/twig-indent.git
+[submodule "etc/vim/bundle/file-line"]
+	path = etc/vim/bundle/file-line
+	url = https://github.com/vim-scripts/file-line
