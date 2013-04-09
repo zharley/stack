@@ -4,43 +4,28 @@ Configure partitions in preparation for bare-bones Ubuntu setup. This assumes th
 
 ### Partitions
 
-A simple configuration is three partitions (boot, swap, root) with fixed sizes allocated to each of the first two and the remainder allocated to the third.
+This creates a simple [GUID Partition Table](http://en.wikipedia.org/wiki/GUID_Partition_Table) with four partitions (grub, boot, swap, root) with fixed sizes allocated for all but the last, which uses the bulk of the disk. It is necessary to use **parted** (or the gui version **gparted**) rather than **fdisk** in order to create [partitions larger than 2TB](http://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html).
 
-    Disk /dev/sda: 1000.2 GB, 1000204886016 bytes
-    255 heads, 63 sectors/track, 121601 cylinders, total 1953525168 sectors
-    Units = sectors of 1 * 512 = 512 bytes
-    Sector size (logical/physical): 512 bytes / 512 bytes
-    I/O size (minimum/optimal): 512 bytes / 512 bytes
-    Disk identifier: 0xffffffff
+The partitions:
 
-       Device Boot      Start         End      Blocks   Id  System
-    /dev/sda1              63      224909      112423+  83  Linux
-    /dev/sda2          224910     4433939     2104515   83  Linux
-    /dev/sda3         4433940  1953520064   974543062+  83  Linux
+1. grub (2MiB): Dedicated BIOS boot partition for booting in [legacy MBR mode](https://help.ubuntu.com/community/UEFI) (required for old hardware).
 
-Example configuration:
+2. boot (200MiB): Boot parition.
+
+3. swap (1000MiB): Swap parition.
+
+4. root (remainder): Root partition
+
+**Warning**: This will destroy any existing partition table on the device, so make sure it is the right device and data is backed up.
 
     read -p "Device (e.g. /dev/sda): " MY_DEVICE
-    read -p "Boot partition size (e.g. 150M): " MY_BOOT_SIZE
-    read -p "Swap partition size (e.g. 1G): " MY_SWAP_SIZE
-
-    # o   create a new empty partition table
-    # n   add a new partition
-    # w   write table to disk and exit
-    MY_FDISK="o\nn\np\n1\n\n+${MY_BOOT_SIZE}\nn\np\n2\n\n+${MY_SWAP_SIZE}\nn\np\n3\n\n\n\np\nw\n"
-
-Execute partitioning as one command. **Warning**: This will wipe out any data on the device.
-
-    echo -e $MY_FDISK | fdisk $MY_DEVICE
-
-*Partitions larger than 2GB cannot be created with fdisk*. Instead use **parted** (or the gui version **gparted**).
-
-    parted $MY_DEVICE
-    mklabel gpt
-    unit MiB
-    mkpart primary 1 200
-    mkpart primary 200 1200
-    mkpart primary 1200 -1
+    parted $MY_DEVICE mklabel gtp
+    parted $MY_DEVICE mkpart grub 1MiB 3MiB
+    parted $MY_DEVICE mkpart boot 3MiB 203MiB
+    parted $MY_DEVICE mkpart swap 203MiB 1203MiB
+    parted $MY_DEVICE mkpart root 1203MiB -1
+    parted $MY_DEVICE set 1 bios_grub on
+    parted $MY_DEVICE print free
 
 ### RAID
 
@@ -160,9 +145,24 @@ Add matching sources.list:
     
     cat /mnt/etc/apt/sources.list
 
-### Boot configuration
+### Cryptsetup
 
-Configure **crypttab** (if applicable) **with key file** using persistent device names:
+#### With key file
+
+Install a keyscript.
+
+    wget https://raw.github.com/zharley/stack/master/etc/keyscript -O /mnt/usr/local/sbin/keyscript
+    chmod 755 /mnt/usr/local/sbin/keyscript
+
+Use the RAID device:
+
+    cat << EOF > /mnt/etc/crypttab
+    # <target name> <source device> <key file> <options>
+    swap $MY_SWAP_DEVICE_ID /dev/urandom swap
+    root /dev/md0 $MY_KEY_DEVICE_ID/$MY_KEY_NAME luks,keyscript=/usr/local/sbin/keyscript
+    EOF
+
+**Or** use persistent device name for root partition:
 
     cat << EOF > /mnt/etc/crypttab
     # <target name> <source device> <key file> <options>
@@ -170,12 +170,17 @@ Configure **crypttab** (if applicable) **with key file** using persistent device
     root $MY_ROOT_DEVICE_ID $MY_KEY_DEVICE_ID/$MY_KEY_NAME luks,keyscript=/usr/local/sbin/keyscript
     EOF
 
-    cat /mnt/etc/crypttab
+#### Without key file
 
-    wget https://raw.github.com/zharley/stack/master/etc/keyscript -O /mnt/usr/local/sbin/keyscript
-    chmod 755 /mnt/usr/local/sbin/keyscript
+Use the RAID device:
 
-Configure **crypttab** (if applicable) **without key file**:
+    cat << EOF > /mnt/etc/crypttab
+    # <target name> <source device> <key file> <options>
+    swap $MY_SWAP_DEVICE_ID /dev/urandom swap
+    root /dev/md0 none luks
+    EOF
+
+**Or** use persistent device name for root partition:
 
     cat << EOF > /mnt/etc/crypttab
     # <target name> <source device> <key file> <options>
@@ -183,7 +188,11 @@ Configure **crypttab** (if applicable) **without key file**:
     root $MY_ROOT_DEVICE_ID none luks
     EOF
 
+#### Verify
+
     cat /mnt/etc/crypttab
+
+### Filesystems and networking
 
 Configure **fstab**:
 
@@ -248,6 +257,8 @@ Set hostname and hosts:
     EOF
     
     cat /mnt/etc/hosts
+
+### Chroot and boot
     
 Update packages, setup grub and initramfs.
 
@@ -257,11 +268,8 @@ Update packages, setup grub and initramfs.
     # update packages
     chroot /mnt apt-get update
     
-    # install grub
+    # install grub: menu appears to select boot device
     chroot /mnt apt-get install grub-pc
-    
-    # during installation select boot device or install grub manually here
-    # chroot /mnt grub-install /dev/sda
 
     # remove quiet splash from boot options, to see more details
     sed --in-place='.old' 's:GRUB_CMDLINE_LINUX_DEFAULT="quiet splash":GRUB_CMDLINE_LINUX_DEFAULT="bootdegraded=true":' /mnt/etc/default/grub
@@ -350,7 +358,32 @@ Setting up mail:
 
 ## Recovery
 
-### Recovering RAID
+### Preliminary
 
-    apt-get -y install mdadm
+    apt-get update && apt-get -y install vim mdadm cryptsetup
+
+    modprobe dm-crypt
+
+    # start raid
     mdadm --verbose --assemble /dev/md0 /dev/sda3
+
+    # mount key device (optional)
+    mkdir -p /mnt && mount $MY_KEY_DEVICE /mnt
+
+    # LUKS open
+    cryptsetup $MY_CRYPTSETUP_OPEN
+
+    # unmount key device (optional)
+    umount /mnt
+
+    # mount root and boot partitions
+    mkdir -p /mnt && mount /dev/mapper/root /mnt
+    mkdir -p /mnt/boot && mount $MY_BOOT_DEVICE /mnt/boot
+
+    # mount devices under /mnt
+    for DIR in proc dev sys; do mount --bind /$DIR /mnt/$DIR; done
+
+### Reinstall GRUB
+
+    chroot /mnt grub-install /dev/sda
+    chroot /mnt update-grub
