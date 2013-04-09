@@ -1,6 +1,6 @@
 ## Device configuration
 
-Configure partitions in preparation for bare-bones Ubuntu setup.
+Configure partitions in preparation for bare-bones Ubuntu setup. This assumes that the system is booted in a recovery or live CD environment.
 
 ### Partitions
 
@@ -32,6 +32,15 @@ Example configuration:
 Execute partitioning as one command. **Warning**: This will wipe out any data on the device.
 
     echo -e $MY_FDISK | fdisk $MY_DEVICE
+
+*Partitions larger than 2GB cannot be created with fdisk*. Instead use **parted** (or the gui version **gparted**).
+
+    parted $MY_DEVICE
+    mklabel gpt
+    unit MiB
+    mkpart primary 1 200
+    mkpart primary 200 1200
+    mkpart primary 1200 -1
 
 ### RAID
 
@@ -148,8 +157,10 @@ Add matching sources.list:
     #deb-src $MY_MIRROR $MY_DISTRO-updates $MY_SOURCES_SPACED
     #deb-src $MY_MIRROR $MY_DISTRO-security $MY_SOURCES_SPACED
     EOF
+    
+    cat /mnt/etc/apt/sources.list
 
-### Boot Configuration
+### Boot configuration
 
 Configure **crypttab** (if applicable) **with key file** using persistent device names:
 
@@ -158,6 +169,8 @@ Configure **crypttab** (if applicable) **with key file** using persistent device
     swap $MY_SWAP_DEVICE_ID /dev/urandom swap
     root $MY_ROOT_DEVICE_ID $MY_KEY_DEVICE_ID/$MY_KEY_NAME luks,keyscript=/usr/local/sbin/keyscript
     EOF
+
+    cat /mnt/etc/crypttab
 
     wget https://raw.github.com/zharley/stack/master/etc/keyscript -O /mnt/usr/local/sbin/keyscript
     chmod 755 /mnt/usr/local/sbin/keyscript
@@ -169,6 +182,8 @@ Configure **crypttab** (if applicable) **without key file**:
     swap $MY_SWAP_DEVICE_ID /dev/urandom swap
     root $MY_ROOT_DEVICE_ID none luks
     EOF
+
+    cat /mnt/etc/crypttab
 
 Configure **fstab**:
 
@@ -184,6 +199,8 @@ Configure **fstab**:
     # root: $MY_ROOT_DEVICE
     /dev/mapper/root   /               ext4    relatime,errors=remount-ro  0       1
     EOF
+
+    cat /mnt/etc/fstab
 
 Configure network interfaces:
 
@@ -211,10 +228,14 @@ Configure network interfaces:
     #   dns-nameservers 8.8.8.8 8.8.4.4
     EOF
 
+    cat /mnt/etc/network/interfaces
+
 Set hostname and hosts:
     
     # set hostname
     echo $MY_HOSTNAME > /mnt/etc/hostname
+
+    cat /mnt/etc/hostname
 
     # install hosts file
     cat << EOF > /mnt/etc/hosts
@@ -225,6 +246,8 @@ Set hostname and hosts:
     ff02::1         ip6-allnodes
     ff02::2         ip6-allrouters
     EOF
+    
+    cat /mnt/etc/hosts
     
 Update packages, setup grub and initramfs.
 
@@ -241,7 +264,10 @@ Update packages, setup grub and initramfs.
     # chroot /mnt grub-install /dev/sda
 
     # remove quiet splash from boot options, to see more details
-    sed --in-place='.old' 's:GRUB_CMDLINE_LINUX_DEFAULT="quiet splash":GRUB_CMDLINE_LINUX_DEFAULT="":' /mnt/etc/default/grub
+    sed --in-place='.old' 's:GRUB_CMDLINE_LINUX_DEFAULT="quiet splash":GRUB_CMDLINE_LINUX_DEFAULT="bootdegraded=true":' /mnt/etc/default/grub
+
+    cat /mnt/etc/default/grub
+
     chroot /mnt update-grub
 
     # setup initramfs
@@ -252,6 +278,8 @@ Update packages, setup grub and initramfs.
     sdhci_pci
     EOF
 
+    cat /mnt/etc/initramfs-tools/modules
+
     chroot /mnt update-initramfs -u
     
     # set root password
@@ -261,14 +289,16 @@ Update packages, setup grub and initramfs.
 
 ## Post Configuration
 
+After rebooting, log into new system.
+
 ### Miscellaneous
     
 Set timezone:
 
     # set timezone 
-    echo "America/New_York" > /mnt/etc/timezone
-    chroot /mnt dpkg-reconfigure --frontend noninteractive tzdata
-    chroot /mnt ntpdate pool.ntp.org
+    echo "America/New_York" > /etc/timezone
+    dpkg-reconfigure --frontend noninteractive tzdata
+    ntpdate pool.ntp.org
 
 Add a non-root admin user:
 
@@ -317,3 +347,10 @@ Setting up mail:
     From: root@`hostname`
     If you've received this message, then the server is able to send email. 
     EOF
+
+## Recovery
+
+### Recovering RAID
+
+    apt-get -y install mdadm
+    mdadm --verbose --assemble /dev/md0 /dev/sda3
