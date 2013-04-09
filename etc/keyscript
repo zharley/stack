@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 # 1) Mounts a device (e.g. a USB drive)
-# 2) Echos to stdout the contents of a key found on the device
+# 2) Echoes to stdout the contents of a key found on that device
 #
-# This script runs in connection with /conf/conf.d/cryptroot in the initramfs
+# This script runs in connection with /conf/conf.d/cryptroot in initramfs
 #
 # e.g.
 #   target=root

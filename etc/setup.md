@@ -19,11 +19,11 @@ The partitions:
 **Warning**: This will destroy any existing partition table on the device, so make sure it is the right device and data is backed up.
 
     read -p "Device (e.g. /dev/sda): " MY_DEVICE
-    parted $MY_DEVICE mklabel gtp
+    parted $MY_DEVICE mklabel gpt
     parted $MY_DEVICE mkpart grub 1MiB 3MiB
     parted $MY_DEVICE mkpart boot 3MiB 203MiB
     parted $MY_DEVICE mkpart swap 203MiB 1203MiB
-    parted $MY_DEVICE mkpart root 1203MiB -1
+    parted $MY_DEVICE mkpart root 1203MiB -- -1
     parted $MY_DEVICE set 1 bios_grub on
     parted $MY_DEVICE print free
 
@@ -33,8 +33,8 @@ The following is the most basic RAID1 setup with [mdadm](http://en.wikipedia.org
 
 Configuration (device 2 can either be missing or an actual device):
 
-    read -p "First RAID device (e.g. /dev/sda3): " MY_RAID_DEVICE1
-    read -p "Second RAID device (e.g. /dev/sdb3 or missing): " MY_RAID_DEVICE2
+    read -p "First RAID device (e.g. /dev/sda4): " MY_RAID_DEVICE1
+    read -p "Second RAID device (e.g. /dev/sdb4 or missing): " MY_RAID_DEVICE2
 
 Setup mdadm. **Warning**: This will wipe out any data on the device.
 
