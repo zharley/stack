@@ -18,11 +18,6 @@ def prompt_for(text, options = nil)
   response
 end
 
-def warn_about(text)
-  prompt = "Warning: #{text}. Continue anyway" 
-  exit unless prompt_for(prompt, %w{y n}) == 'y'
-end
-
 def skippable?(line)
   # yes if it's a comment or a whitespace line
   line.start_with?("#") || line =~ /$\s*^/
@@ -57,9 +52,9 @@ for line in lines
   packages += line.split(/\s+/)
 end
 
-exit unless prompt_for("Check/install #{packages.size} packages from '#{filename}'", %w{y n}) == 'y'
+exit unless prompt_for("Check #{packages.size} packages from '#{filename}'", %w{y n}) == 'y'
 
-install_count = fail_count = 0
+install_count = 0
 
 # get list of installed packages
 installed_packages = `dpkg --get-selections | awk '{ print $1 }'`.split("\n")
@@ -75,21 +70,21 @@ for package in packages
     # attempt to install this package
     if system("sudo apt-get -yqq install #{package}")
       install_count += 1
-    else
-      # fail
-      warn_about "Package #{package} failed to install"
-      fail_count += 1
     end
   end
 end
 
 installed_packages = `dpkg --get-selections | awk '{ print $1 }'`.split("\n")
+failed_packages = []
 
 for package in packages
   unless installed_packages.index(package)
-    warn_about "Package #{package} not detected after apparently successful install"
-    fail_count += 1
+    failed_packages << package
   end
 end
 
-puts "=> #{packages.size} checked. #{install_count} installed. #{fail_count} fails."
+if failed_packages.size > 0
+  puts "=> The following packages failed to install: " + failed_packages.join(", ")
+end
+
+puts "=> #{packages.size} checked. #{install_count} installed. #{failed_packages.size} failed."
