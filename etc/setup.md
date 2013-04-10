@@ -308,13 +308,16 @@ Set timezone:
     dpkg-reconfigure --frontend noninteractive tzdata
     ntpdate pool.ntp.org
 
-Add a non-root admin user:
+Add a non-root user:
 
-    read -p "Admin username: " MY_USER
-    
-    # create primary admin user
-    chroot /mnt adduser $MY_USER
-    chroot /mnt usermod -G admin -a $MY_USER
+    read -p "Add user: " MY_USER
+    adduser $MY_USER
+    groupadd -f admin
+    usermod -G admin -a $MY_USER
+    cd /home/$MY_USER
+    chmod -R 0700 .
+    sudo -u $MY_USER mkdir -p tmp
+    sudo -u $MY_USER mkdir -p mnt/{usb,ssh,ftp,hdd,cdrom,attach}
 
 Setting up firewall:
 
