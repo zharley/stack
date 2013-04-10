@@ -1,0 +1,164 @@
+# 
+# SERVER
+#
+# core stuff
+build-essential cmake ssh mdadm locate cron
+subversion git-core apache2-utils
+apache2 libapache2-mod-php5
+php5-cgi php5-mysql php5-curl php5-gd php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-apc php5-xdebug
+# database
+postgresql pgadmin3 mysql-server sqlite3
+# nfs
+nfs-common
+# benchmarking, services
+httperf sphinxsearch redis-server
+# dist upgrade
+update-manager-core
+# mail
+postfix postfix-pcre
+# access control list utilities
+acl
+# restricted login shell
+rssh
+
+# 
+# UTILITIES
+#
+# compression
+rar zip p7zip-full p7zip unzip unrar bzip2
+duplicity unison rsync
+# security
+pwgen encfs wipe
+# file systems (especially CD/DVD image tools)
+nrg2iso ntfsprogs dosfstools unetbootin fuseiso daa2iso bchunk isomaster
+# network
+curlftpfs mtr nmap sshfs curl ufw dnsmasq telnet autossh 
+iptraf whois dnsutils lftp traceroute
+# laptop and wireless
+wireless-tools wpasupplicant wicd wicd-curses
+acpi acpitool
+# statistics
+conky statgrab saidar hddtemp
+lynx netrik links
+# encoding
+sharutils enca ack tofrodos 
+# mail
+mailutils mb2md 
+# administrator tools
+screen
+# scanner
+sane-utils
+# partition management
+gdisk parted
+# cleaner tail and file colourizer
+multitail grc
+# ebooks
+epub-utils
+# text file converter
+dos2unix 
+# hardware benchmark
+sysbench
+# detect USB devices
+usbutils
+
+# 
+# PROGRAMMING
+#
+# ruby and stuff
+libmysqlclient-dev ruby1.8-dev ri libmysql-ruby1.8 librmagick-ruby1.8
+memcached wordnet-base libfreeimage-dev libsqlite3-dev shapelib thuban libpq-dev rubygems libmysql-ruby
+# tidying source code
+tidy libxml2-utils csstidy
+# for mechanize & nokogiri ?
+libxslt1-dev
+# for python easy_install (gtimerlog)
+python-setuptools python-pygments
+# markup
+markdown
+# java
+default-jdk icedtea-plugin
+# regular expression wizard
+txt2regex 
+# benchmarking UI
+jmeter
+# misc languages
+scm clisp
+# colors and image editors
+gnome-paint whyteboard gpaint gthumb
+gcolor2
+# better grep
+ack-grep
+# Drupal helper
+drush
+# graphical git
+git-gui
+# PDF modifier
+pdftk
+
+# 
+# DESKTOP
+#
+# xwindows
+xorg gnome-terminal xdm xdg-user-dirs xdotool wmctrl
+# haskell and xmonad accessories
+ghc6 libx11-dev libxinerama-dev xmonad xmobar suckless-tools
+libghc6-parsec3-dev libghc6-mtl-dev libghc6-stm-dev 
+# useful apps
+flashplugin-installer
+chromium-browser
+thunderbird firefox 
+filezilla revelation inkscape gtimelog freemind
+mtools sysinfo gparted gworldclock wine xchm units openoffice.org
+ttf-mscorefonts-installer bonnie++ scrot pidgin gedit dosbox
+pdftoipe pidgin-otr aiksaurus gnome-utils xsane xfe sqlitebrowser cups-pdf
+stardict f-spot ispell libgtk2-ruby gnome-power-manager evince vinagre 
+djview 
+# print
+# Brother HL-2060 Foomatic/hl1250
+brother-lpr-drivers-laser brother-cups-wrapper-laser system-config-printer-gnome 
+lpr cups
+# ensure that the VirtualBox host kernel modules (vboxdrv and # vboxnetflt) are
+# properly updated if the linux kernel version changes
+dkms
+# pdf2html
+poppler-utils
+# science
+emboss garlic gromacs pymol rasmol raster3d gnuplot euler
+# multimedia
+pulseaudio alsa-base alsa-utils pavucontrol pavumeter vlc avidemux
+audacity sox mp3gain totem mp3splt mencoder mplayer libfaac0 soundconverter
+# webcam capturer
+cheese
+# flash video META editor
+flvtool2 
+# special ripper
+abcde
+# editor
+vim-gtk zim abiword exuberant-ctags colordiff vim-gnome
+# reminder tool
+remind
+# virtualbox
+virtualbox-ose virtualbox-guest-additions virtualbox-ose-source virtualbox-ose-dkms
+# for skype
+libqt4-xml libqt4-dbus
+# graphics
+scribus scribus-template imagemagick
+# clipboard
+xclip
+# notification popups
+libnotify-bin xfce4-notifyd
+# compressed filesystem in a file
+avfs
+# python web
+libapache2-mod-wsgi libpq-dev python-dev python-demjson 
+# games
+cmatrix gameclock
+# parse flash video download links
+quvi clive 
+# remote desktop
+gvncviewer rdesktop
+# configuration
+gconf-editor
+dconf-tools
+# mysql GUI
+mysql-workbench
