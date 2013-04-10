@@ -1,0 +1,9 @@
+#!/bin/bash
+ 
+# use capslock key as super
+setxkbmap -option caps:super
+
+# oldschool gray background
+xsetroot -gray
+
+exec xmonad

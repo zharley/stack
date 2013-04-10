@@ -5,7 +5,19 @@ say() {
     echo "=> $1"
 }
 
-# autodetect working directory
+symlink_file() {
+    # -s  make symbolic links instead of hard links
+    # -v  print name of each linked file 
+    # -i  prompt whether to remove destinations
+    ln -siv "$1" "$2"
+}
+
+symlink_dir() {
+    # -T  treat LINK_NAME as a normal file
+    ln -sivT "$1" "$2"
+}
+
+# autodetect project directories
 MY_MAIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 MY_BIN_DIR="$(cd "$MY_MAIN_DIR/bin" && pwd)"
 say "Stack bin directory: $MY_BIN_DIR"
@@ -65,18 +77,14 @@ fi
 say "This will add editor-related symlinks to home directory: .vimrc .vim .ackrc gtkrc-2.0"
 
 # apply step
-read -p "=> Install symlinks (y)? " MY_ANSWER
+read -p "=> Install editor symlinks (y)? " MY_ANSWER
 if test "$MY_ANSWER" != "y"; then
     say "Skipped."
 else
-    # -s  make symbolic links instead of hard links
-    # -v  print name of each linked file 
-    # -i  prompt whether to remove destinations
-    # -T  treat LINK_NAME as a normal file
-    ln -siv "$MY_ETC_DIR/vimrc" "$HOME/.vimrc"
-    ln -siv "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
-    ln -siv "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
-    ln -sivT "$MY_ETC_DIR/vim" "$HOME/.vim"
+    symlink_file "$MY_ETC_DIR/vimrc" "$HOME/.vimrc"
+    symlink_file "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
+    symlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
+    symlink_dir "$MY_ETC_DIR/vim" "$HOME/.vim"
 fi
 
 # preview step
@@ -102,6 +110,20 @@ else
     cd "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t"
     ruby extconf.rb
     make
+fi
+
+# preview step
+say "This will add x-related symlinks to home directory: .xmonad .xsession"
+
+# apply step
+read -p "=> Install x-related symlinks (y)? " MY_ANSWER
+if test "$MY_ANSWER" != "y"; then
+    say "Skipped."
+else
+    mkdir -p "$HOME/.xmonad"
+    symlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
+    symlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
+    symlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
 fi
 
 # done
