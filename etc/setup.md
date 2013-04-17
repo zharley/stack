@@ -359,6 +359,22 @@ Setting up mail:
     If you've received this message, then the server is able to send email. 
     EOF
 
+Enable common Apache modules:
+
+    # apache modules
+    a2enmod proxy_balancer proxy_http rewrite
+
+### Desktop
+
+Remove auto-generated directories and register absence of these directories with desktop settings manager.
+
+    rmdir {Desktop,Documents,Downloads,Music,Pictures,Public,Templates,Videos}
+    xdg-user-dirs-update
+
+Remove graphical login window:
+
+    update-rc.d -f xdm remove
+
 ## Recovery
 
 ### Preliminary
