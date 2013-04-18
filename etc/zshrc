@@ -1,0 +1,104 @@
+################################################################################
+## GENERAL #####################################################################
+################################################################################
+
+# Set up the prompt
+# @see http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
+# %B (%b)      Start (stop) boldface mode
+# %U (%u)      Start (stop) underline mode
+# %n           Username
+# %m           Hostname upto the first .
+PROMPT='%B%n@%m%b: '
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+
+# Load dircolors
+eval "$(dircolors -b)"
+
+# The current chroot (used in the prompt below)
+if [ -z "$MY_CHROOT" ] && [ -r /etc/MY_CHROOT ]; then
+    MY_CHROOT=$(cat /etc/MY_CHROOT)
+fi
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    set_title() { printf "\e]0;$PWD\a" }
+    chpwd_functions=(set_title)
+    ;;
+*)
+    ;;
+esac
+
+# Use colours
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+################################################################################
+## AUTOCOMPLETION ##############################################################
+################################################################################
+
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+################################################################################
+## OPTIONS #####################################################################
+################################################################################
+
+# @see http://zsh.sourceforge.net/Doc/Release/Options-Index.html
+
+# Try to correct the spelling of all arguments in a line
+setopt CORRECTALL
+
+# If a command is issued that can't be executed as a normal command, and the 
+# command is the name of a directory, perform the cd command to that directory.
+setopt AUTOCD
+
+# Treat the #, ~ and ^ characters as part of patterns for filename generation, 
+# etc. (An initial unquoted ~ always produces named directory expansion.)
+setopt EXTENDEDGLOB
+
+# If unset, the cursor is set to the end of the word if completion is started. 
+# Otherwise it stays there and completion is done from both ends.
+setopt COMPLETEINWORD
+
+# If a new command line being added to the history list duplicates an older one, 
+# the older command is removed from the list (even if it is not the previous event).
+setopt HISTIGNOREALLDUPS
+
+# As each line is added, the history file is checked to see if anything was 
+# written out by another shell, and if so it is included in the history of the 
+# current shell too.
+setopt SHAREHISTORY
+
+################################################################################
+## ALIASES #####################################################################
+################################################################################
+
+# Automatically load stack aliases
+MY_ZSHRC_FILE=`readlink -f ~/.zshrc`
+MY_ETC_DIR=`dirname $MY_ZSHRC_FILE`
+source ${MY_ETC_DIR}/aliases

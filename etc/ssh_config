@@ -1,0 +1,7 @@
+# To use this file, copy it to ~/.ssh/config
+#
+# Hashing of hostnames in known_hosts file breaks zsh autocompletion of hosts.
+#
+# Disabling it (below) is a security sacrifice because an attacker gets to see
+# plaintext host names by looking at ~/.ssh/known_hosts
+HashKnownHosts no
