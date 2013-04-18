@@ -308,6 +308,13 @@ Set timezone:
     dpkg-reconfigure --frontend noninteractive tzdata
     ntpdate pool.ntp.org
 
+Set default language and locale:
+
+    cat << EOF >> /etc/environment
+    LANG="en_CA.UTF-8"
+    LANGUAGE="en_CA"
+    EOF
+
 Add a non-root user:
 
     read -p "Add user: " MY_USER
