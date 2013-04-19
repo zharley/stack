@@ -315,12 +315,23 @@ Set default language and locale:
     LANGUAGE="en_CA"
     EOF
 
-Add a non-root user:
+Setup a priviledged non-root user:
 
     read -p "Add user: " MY_USER
     adduser $MY_USER
-    groupadd -f admin
-    usermod -G admin -a $MY_USER
+
+    # adm      Can view log files in /var/log
+    # admin    Can sudo
+    # audio    Can access sound devices
+    # cdrom    Can access optical disks
+    # fuse     Can access File System User Space 
+    # lpadmin  Can change printer settings
+    # netdev   Can administer network and wireless
+    # video    Can access video devices
+    MY_GROUPS="adm,admin,audio,cdrom,fuse,lpadmin,netdev,video"
+    for g in $(echo $MY_GROUPS | tr ',' ' '); do groupadd -f $g; done
+    usermod -G $MY_GROUPS -a $MY_USER
+
     cd /home/$MY_USER
     chmod -R 0700 .
     sudo -u $MY_USER mkdir -p tmp
