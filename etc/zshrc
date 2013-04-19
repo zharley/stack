@@ -4,11 +4,14 @@
 
 # Set up the prompt
 # @see http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
-# %B (%b)      Start (stop) boldface mode
-# %U (%u)      Start (stop) underline mode
 # %n           Username
+# %U (%u)      Start (stop) underline mode
 # %m           Hostname upto the first .
-PROMPT='%B%n@%m%b: '
+# %3~          Current working directory, showing a max of 3 trailing components
+#              and with ~ instead of home
+# %B (%b)      Start (stop) boldface mode
+# %#           A `#' if the shell is running with privileges, a `%' if not
+PROMPT='%n@%U%m%u:%3~%B%#%b '
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000
@@ -50,7 +53,7 @@ autoload -Uz compinit
 compinit
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' format 'Completing %d'
+#zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
