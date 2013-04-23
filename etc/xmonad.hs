@@ -71,6 +71,7 @@ myKeys = [
     ((mod4Mask .|. shiftMask, xK_m), spawn "mysql-workbench"),
     ((mod4Mask .|. shiftMask, xK_d), spawn "gthumb"),
     ((mod4Mask .|. shiftMask, xK_v), spawn "vlc"),
+    ((mod4Mask .|. shiftMask, xK_equal), spawn "xzoom -mag 10"),
     -- listen to specific hardware buttons
     ((0, 0x1008FF11), spawn "amixer set Master 2-"),
     ((0, 0x1008FF13), spawn "amixer set Master 2+"),
