@@ -18,6 +18,11 @@ HISTSIZE=1000
 SAVEHIST=1000
 HISTFILE=~/.zsh_history
 
+# Use emacs key bindings
+bindkey -v
+bindkey '^P' up-line-or-history
+bindkey '^N' down-line-or-history
+
 # Load dircolors
 eval "$(dircolors -b)"
 
