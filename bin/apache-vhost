@@ -41,19 +41,6 @@ puts <<EOF
     CustomLog /var/log/apache2/vhost-access.log combined
     
     DocumentRoot #{dir_path}
-    # DocumentRoot #{dir_path}/web
-    
-    # # symfony 1.x config
-    # DirectoryIndex index.php
-    # <Directory "#{dir_path}/web">
-    #     AllowOverride All
-    #     Allow from All
-    # </Directory>
-    # Alias /sf #{dir_path}/lib/vendor/symfony/data/web/sf
-    # <Directory "#{dir_path}/lib/vendor/symfony/data/web/sf">
-    #     AllowOverride All
-    #     Allow from All
-    # </Directory>
     
     # # python http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives 
     # WSGIDaemonProcess #{domain} user=#{user} group=#{user} processes=1 threads=5 home=#{dir_path} python-path=#{dir_path}
@@ -71,6 +58,7 @@ puts <<EOF
     #     Allow from all 
     #     BalancerMember http://127.0.0.1:3000
     # </Proxy> 
+
     # # simple pass-through
     # RewriteEngine On
     # RewriteRule ^/(.*)$ balancer://#{name}_balancer%{REQUEST_URI} [P,QSA,L]
