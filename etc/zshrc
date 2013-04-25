@@ -23,9 +23,6 @@ bindkey -v
 bindkey '^P' up-line-or-history
 bindkey '^N' down-line-or-history
 
-# Load dircolors
-eval "$(dircolors -b)"
-
 # The current chroot (used in the prompt below)
 if [ -z "$MY_CHROOT" ] && [ -r /etc/MY_CHROOT ]; then
     MY_CHROOT=$(cat /etc/MY_CHROOT)
@@ -49,6 +46,26 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+# Substitute specific colour palette
+echo -n "\033]4;0;#1e1314\007"
+echo -n "\033]4;1;#d27172\007"
+echo -n "\033]4;2;#4bcf72\007"
+echo -n "\033]4;3;#d2a043\007"
+echo -n "\033]4;4;#4b71d0\007"
+echo -n "\033]4;5;#d242d0\007"
+echo -n "\033]4;6;#4bcfd0\007"
+echo -n "\033]4;7;#d2cfd0\007"
+echo -n "\033]4;8;#787172\007"
+echo -n "\033]4;9;#ff7172\007"
+echo -n "\033]4;10;#78ff72\007"
+echo -n "\033]4;11;#ffff72\007"
+echo -n "\033]4;12;#78a0fe\007"
+echo -n "\033]4;13;#ff71fe\007"
+echo -n "\033]4;14;#4bfffe\007"
+echo -n "\033]4;15;#fffffe\007"
+echo -n "\033]10;#d2cfd0\007"
+echo -n "\033]11;#1e1314\007"
 
 ################################################################################
 ## AUTOCOMPLETION ##############################################################
