@@ -76,12 +76,11 @@ puts <<EOF
 #     CustomLog /var/log/apache2/vhost-access.log combined
 # 
 #     DocumentRoot #{dir_path}
-#     # DocumentRoot #{dir_path}/web
 # 
 #     # enable SSL for this virtual host.
 #     SSLEngine on
 # 
-#     # use a (self-signed) certificate found here
+#     # use a self-signed certificate
 #     SSLCertificateFile    /etc/ssl/private/server.crt
 #     SSLCertificateKeyFile /etc/ssl/private/server.key
 # </VirtualHost>
