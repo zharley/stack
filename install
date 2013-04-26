@@ -70,6 +70,8 @@ MY_OK="${MY_GREEN}ok${MY_NORMAL}"
 ## INSTALLATION STEPS ##########################################################
 ################################################################################
 
+cd "$MY_MAIN_DIR"
+
 say "Stack bin directory: $MY_BIN_DIR"
 say "Stack etc directory: $MY_ETC_DIR"
 
@@ -151,7 +153,7 @@ else
     fi
 fi
 
-if git --git-dir="$MY_MAIN_DIR" submodule status | grep -q '^-'; then
+if git submodule status | grep -q '^-'; then
     # preview step
     say "This will install all submodules (especially vim plugins managed by pathogen)."
 
