@@ -137,7 +137,7 @@ if [ "$MY_ETC_DIR/vimrc" -ef "$HOME/.vimrc" ] && [ "$MY_ETC_DIR/ackrc" -ef "$HOM
     say "[$MY_OK] Looks like all desirable console-related symlinks are set"
 else
     # preview step
-    say "This will add symlinks to home directory: .vimrc .vim .ackrc gtkrc-2.0 .zshrc"
+    say "This will add symlinks to your home directory for: .vimrc .vim .ackrc gtkrc-2.0 .zshrc"
 
     # apply step
     read -p "=> Install cli-related symlinks (y)? " MY_ANSWER
@@ -151,7 +151,7 @@ else
     fi
 fi
 
-if git submodule status | grep -q '^-'; then
+if git --git-dir="$MY_MAIN_DIR" submodule status | grep -q '^-'; then
     # preview step
     say "This will install all submodules (especially vim plugins managed by pathogen)."
 
@@ -184,28 +184,32 @@ else
     say "[$MY_OK] Looks like Command-T is compiled."
 fi
 
-if [ "$MY_ETC_DIR/xmonad.hs" -ef "$HOME/.xmonad/xmonad.hs" ] && 
-   [ "$MY_ETC_DIR/xmobar.hs" -ef "$HOME/.xmonad/xmobar.hs" ] && 
-   [ "$MY_ETC_DIR/xsession" -ef "$HOME/.xsession" ] && 
-   [ "$MY_ETC_DIR/gtkrc-2.0" -ef "$HOME/.gtkrc-2.0" ]; then
-    say "[$MY_OK] Looks like all desirable x-related symlinks are set"
-else
-    # preview step
-    say "This will add x-related symlinks to home directory: .xmonad .xsession"
+if [ -n "$DISPLAY" ]; then
+   if [ "$MY_ETC_DIR/xmonad.hs" -ef "$HOME/.xmonad/xmonad.hs" ] && 
+      [ "$MY_ETC_DIR/xmobar.hs" -ef "$HOME/.xmonad/xmobar.hs" ] && 
+      [ "$MY_ETC_DIR/xsession" -ef "$HOME/.xsession" ] && 
+      [ "$MY_ETC_DIR/gtkrc-2.0" -ef "$HOME/.gtkrc-2.0" ]; then
+       say "[$MY_OK] Looks like all desirable x-related symlinks are set"
+   else
+       # preview step
+       say "This will add symlinks to your home directory for: .xmonad .xsession"
 
-    # apply step
-    read -p "=> Install x-related symlinks (y)? " MY_ANSWER
-    if test "$MY_ANSWER" != "y"; then
-        say "Skipped."
-    else
-        mkdir -p "$HOME/.xmonad"
-        symlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
-        symlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
-        symlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
-        symlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
-    fi
+       # apply step
+       read -p "=> Install X-related symlinks (y)? " MY_ANSWER
+       if test "$MY_ANSWER" != "y"; then
+           say "Skipped."
+       else
+           mkdir -p "$HOME/.xmonad"
+           symlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
+           symlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
+           symlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
+           symlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
+       fi
+   fi
+else
+   say "No display detected, so skip x-related symlinks."
 fi
 
 # done
 say "Done!"
-say "Logout and login in to verify that it setup worked."
+say "Note: You may have to logout and log back in to see the result."
