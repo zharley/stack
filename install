@@ -90,7 +90,7 @@ else
 fi
 
 # install preferred shell
-if ! which zsh; then
+if ! which zsh > /dev/null; then
     say "Preferred shell not detected: zsh"
 
     read -p "=> Install zsh (with apt-get) (y)? " MY_ANSWER
@@ -102,7 +102,7 @@ if ! which zsh; then
 fi
 
 # install preferred shell
-if which zsh; then
+if which zsh > /dev/null; then
     MY_ZSH_PATH="$(which zsh)"
 
     say "[$MY_OK] Existence of preferred shell $MY_ZSH_PATH detected."
