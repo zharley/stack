@@ -1,0 +1,14 @@
+#! /bin/bash
+set -e
+
+MY_MAIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo "=> Stack directory detected: $MY_MAIN_DIR" 
+
+cd "$MY_MAIN_DIR"
+
+echo "=> Updating from git..." 
+git pull
+
+echo "=> Re-installing..." 
+./install
