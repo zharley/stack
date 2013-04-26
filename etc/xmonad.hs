@@ -32,13 +32,13 @@ import XMonad.Layout.Gaps
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Actions.CopyWindow
+import XMonad.Actions.SpawnOn
 
--- to get the className do
--- xprop | grep WM_CLASS
--- to get the title do
--- xprop | grep WM_NAME
+-- post-launch hooks
+--
+-- to get the className: xprop | grep WM_CLASS
+-- to get the title:     xprop | grep WM_NAME
 myManageHook :: ManageHook
-
 myManageHook = composeAll [
     -- float these
     className =? "VBoxSDL"               --> doFloat,
@@ -70,7 +70,7 @@ myKeys = [
     ((mod4Mask .|. shiftMask, xK_e), spawn "gvim"),
     ((mod4Mask .|. shiftMask, xK_m), spawn "mysql-workbench"),
     ((mod4Mask .|. shiftMask, xK_d), spawn "gthumb"),
-    ((mod4Mask .|. shiftMask, xK_v), spawn "vlc"),
+    ((mod4Mask .|. shiftMask, xK_l), spawn "xterm" ),
     ((mod4Mask .|. shiftMask, xK_equal), spawn "xzoom -mag 10"),
     -- listen to specific hardware buttons
     ((0, 0x1008FF11), spawn "amixer set Master 2-"),
@@ -87,6 +87,7 @@ myKeys = [
     , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]
     ]
 
+-- layout
 myLayout = gaps [(U,15)] (smartBorders (tiled ||| Full))
   where
      -- tiling algorithm partitions the screen into two panes
@@ -95,27 +96,37 @@ myLayout = gaps [(U,15)] (smartBorders (tiled ||| Full))
      nmaster = 1
      -- proportion of screen occupied by master pane
      ratio   = toRational (2/(1+sqrt(5)::Double)) -- golden
-     -- percent of screen to increment by when resizing panes
+     -- fraction of screen to increment by when resizing panes
      delta   = 3/100
 
+-- workspace names
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9" ]
 
+-- specific terminal command
+myTerminal = "xterm -fa monaco -fs 10 -cr red1 -selbg grey30"
+
+-- startup hook
+myStartup :: X ()
+myStartup = do
+    setWMName "LG3D"
+    spawnOn "1" "firefox"
+    spawnOn "1" myTerminal
+
 main = do
-  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
-  xmonad $ defaultConfig {
-         -- http://mkaz.com/solog/system/xterm-colors.html
-         terminal = "xterm -fa monaco -fs 10 -cr red1 -selbg grey30",
-         workspaces = myWorkspaces,
-         focusFollowsMouse  = True,
-         borderWidth = 1,
-         startupHook = setWMName "LG3D",
-         manageHook = manageDocks <+> myManageHook <+>
-                      manageHook defaultConfig,
-         layoutHook = myLayout,
-         logHook = dynamicLogWithPP $ xmobarPP {
-                     ppOutput = hPutStrLn xmproc
-                   , ppTitle = xmobarColor "white" "" . shorten 100
-                   },
-         modMask = mod4Mask     -- Rebind Mod to the Windows key
-       } `additionalKeys`
-       myKeys
+    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
+    xmonad $ defaultConfig {
+        terminal          = myTerminal,
+        workspaces        = myWorkspaces,
+        focusFollowsMouse = True,
+        borderWidth       = 1,
+        manageHook        = manageDocks <+> myManageHook <+>
+                            manageHook defaultConfig,
+        layoutHook        = myLayout,
+        startupHook       = myStartup,
+        logHook           = dynamicLogWithPP $ xmobarPP {
+                              ppOutput = hPutStrLn xmproc
+                            , ppTitle = xmobarColor "white" "" . shorten 100
+                            },
+        modMask = mod4Mask     -- Rebind Mod to the Windows key
+     } `additionalKeys`
+     myKeys
