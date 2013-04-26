@@ -1,0 +1,34 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` path/to/filename"
+    exit 1
+fi
+
+MY_FILE="$1"
+
+echo "=> Searching for last commit that affected '$MY_FILE'"
+
+MY_COMMIT=`git rev-list -n 1 HEAD -- $MY_FILE`
+
+if [ -z "$MY_COMMIT" ]; then
+    echo "=> Commit not found. Double-check file path."
+    exit 1
+fi
+
+echo "=> Commit found:"
+git log -n 1 $MY_COMMIT
+
+read -p "=> Checkout file from that commit : Continue (y)? " MY_ANSWER
+if test "$MY_ANSWER" != "y"; then 
+    echo "=> Cancelled!"
+    exit 1 
+fi
+
+git checkout $MY_COMMIT^ -- $MY_FILE
+
+ls -la $MY_FILE
+
+echo "=> Done"
