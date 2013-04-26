@@ -1,42 +1,80 @@
 #! /bin/bash
 set -e
 
+################################################################################
+## HELPER FUNCTIONS ############################################################
+################################################################################
+
 say() {
-    echo "=> $1"
+    echo -e "=> $1"
 }
 
 symlink_file() {
-    # -s  make symbolic links instead of hard links
-    # -v  print name of each linked file 
-    # -i  prompt whether to remove destinations
-    ln -siv "$1" "$2"
+    if [ "$1" -ef "$2" ]; then
+        say "[skip] File symlink exists $1 => $2"
+    else
+        # -s  make symbolic links instead of hard links
+        # -v  print name of each linked file 
+        # -i  prompt whether to remove destinations
+        ln -siv "$1" "$2"
+    fi
 }
 
 symlink_dir() {
-    # -T  treat LINK_NAME as a normal file
-    ln -sivT "$1" "$2"
+    if [ "$1" -ef "$2" ]; then
+        say "[skip] Directory symlink exists $1 => $2"
+    else
+        # -T  treat LINK_NAME as a normal file
+        ln -sivT "$1" "$2"
+    fi
 }
 
-# autodetect project directories
+################################################################################
+## VARIABLES ###################################################################
+################################################################################
+
+# autodetect stack directories
 MY_MAIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 MY_BIN_DIR="$(cd "$MY_MAIN_DIR/bin" && pwd)"
-say "Stack bin directory: $MY_BIN_DIR"
 MY_ETC_DIR="$(cd "$MY_MAIN_DIR/etc" && pwd)"
-say "Stack etc directory: $MY_ETC_DIR"
 
-# aliases file is here
+# paths to particular files and directories
 MY_ALIASES_PATH="$MY_ETC_DIR/aliases"
-
-# the profile file is here
 MY_PROFILE_PATH="$HOME/.profile"
+MY_ZSH_PATH="$(which zsh)"
+MY_BASHRC_PATH="$HOME/.bashrc"
+
+# code fragment to add stack/bin to the path
 MY_INCLUDE_BIN="
 # include stack bin
 if [ -d \"$MY_BIN_DIR\" ]; then
     PATH=\"$MY_BIN_DIR:\$PATH\"
 fi"
 
+# code fragment to include aliases in bashrc
+MY_INCLUDE_ALIASES="
+# include stack aliases
+if [ -f \"$MY_ALIASES_PATH\" ]; then
+    . \"$MY_ALIASES_PATH\"
+fi"
+
+# colours
+MY_RED='\e[0;31m'
+MY_GREEN='\e[0;32m'
+MY_NORMAL='\033[0m'
+
+# messages
+MY_OK="${MY_GREEN}ok${MY_NORMAL}"
+
+################################################################################
+## INSTALLATION STEPS ##########################################################
+################################################################################
+
+say "Stack bin directory: $MY_BIN_DIR"
+say "Stack etc directory: $MY_ETC_DIR"
+
 if grep -q "# include stack bin" "$MY_PROFILE_PATH"; then
-    say "Looks like $MY_PROFILE_PATH already includes the stack bin."
+    say "[$MY_OK] Looks like $MY_PROFILE_PATH already includes the stack bin."
 else
     # preview step
     say "This will APPEND the following code to your .profile: $MY_INCLUDE_BIN"
@@ -50,16 +88,37 @@ else
     fi
 fi
 
-# the bashrc file is here
-MY_BASHRC_PATH="$HOME/.bashrc"
-MY_INCLUDE_ALIASES="
-# include stack aliases
-if [ -f \"$MY_ALIASES_PATH\" ]; then
-    . \"$MY_ALIASES_PATH\"
-fi"
+# install preferred shell
+if [ -z "$MY_ZSH_PATH" ]; then
+    say "Preferred shell not detected: zsh"
+
+    read -p "=> Install zsh (with apt-get) (y)? " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then
+        say "Skipped."
+    else
+        sudo apt-get install zsh
+        MY_ZSH_PATH="$(which zsh)"
+    fi
+fi
+
+# install preferred shell
+if [ -n "$MY_ZSH_PATH" ]; then
+    say "[$MY_OK] Existence of preferred shell $MY_ZSH_PATH detected."
+
+    if [ "$SHELL" == "$MY_ZSH_PATH" ]; then
+        say "[$MY_OK] Current shell is the preferred shell."
+    else
+        read -p "=> Change shell to $MY_ZSH_PATH (y)? " MY_ANSWER
+        if test "$MY_ANSWER" != "y"; then
+            say "Skipped."
+        else
+            chsh -s $MY_ZSH_PATH
+        fi
+    fi
+fi
 
 if grep -q "# include stack aliases" "$MY_BASHRC_PATH"; then
-    say "Looks like $MY_BASHRC_PATH already includes the stack aliases."
+    say "[$MY_OK] Looks like $MY_BASHRC_PATH already includes the stack aliases."
 else
     # preview step
     say "This will APPEND the following code to your .bashrc: $MY_INCLUDE_ALIASES"
@@ -73,58 +132,78 @@ else
     fi
 fi
 
-# preview step
-say "This will add symlinks to home directory: .vimrc .vim .ackrc gtkrc-2.0 .zshrc"
-
-# apply step
-read -p "=> Install cli-related symlinks (y)? " MY_ANSWER
-if test "$MY_ANSWER" != "y"; then
-    say "Skipped."
+if [ "$MY_ETC_DIR/vimrc" -ef "$HOME/.vimrc" ] && [ "$MY_ETC_DIR/ackrc" -ef "$HOME/.ackrc" ] && 
+   [ "$MY_ETC_DIR/vim" -ef "$HOME/.vim" ] && [ "$MY_ETC_DIR/zshrc" -ef "$HOME/.zshrc" ]; then
+    say "[$MY_OK] Looks like all desirable console-related symlinks are set"
 else
-    symlink_file "$MY_ETC_DIR/vimrc" "$HOME/.vimrc"
-    symlink_file "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
-    symlink_dir "$MY_ETC_DIR/vim" "$HOME/.vim"
-    symlink_file "$MY_ETC_DIR/zshrc" "$HOME/.zshrc"
+    # preview step
+    say "This will add symlinks to home directory: .vimrc .vim .ackrc gtkrc-2.0 .zshrc"
+
+    # apply step
+    read -p "=> Install cli-related symlinks (y)? " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then
+        say "Skipped."
+    else
+        symlink_file "$MY_ETC_DIR/vimrc" "$HOME/.vimrc"
+        symlink_file "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
+        symlink_dir "$MY_ETC_DIR/vim" "$HOME/.vim"
+        symlink_file "$MY_ETC_DIR/zshrc" "$HOME/.zshrc"
+    fi
 fi
 
-# preview step
-say "This will install all submodules (especially vim plugins managed by pathogen)."
+if git submodule status | grep -q '^-'; then
+    # preview step
+    say "This will install all submodules (especially vim plugins managed by pathogen)."
 
-# apply step
-read -p "=> Install submodules (y)? " MY_ANSWER
-if test "$MY_ANSWER" != "y"; then
-    say "Skipped."
+    # apply step
+    read -p "=> Install submodules (y)? " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then
+        say "Skipped."
+    else
+        cd "$MY_MAIN_DIR"
+        git submodule update --init
+    fi
 else
-    cd "$MY_MAIN_DIR"
-    git submodule update --init
+    say "[$MY_OK] Looks like all submodules are initialized."
 fi
 
-# preview step
-say "This will compile binaries for the Command-T vim module."
+if [ -z "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t/ext.so" ]; then
+    # preview step
+    say "This will compile binaries for the Command-T vim module."
 
-# apply step
-read -p "=> Compile Command-T (y)? " MY_ANSWER
-if test "$MY_ANSWER" != "y"; then
-    say "Skipped."
+    # apply step
+    read -p "=> Compile Command-T (y)? " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then
+        say "Skipped."
+    else
+        cd "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t"
+        ruby extconf.rb
+        make
+    fi
 else
-    cd "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t"
-    ruby extconf.rb
-    make
+    say "[$MY_OK] Looks like Command-T is compiled."
 fi
 
-# preview step
-say "This will add x-related symlinks to home directory: .xmonad .xsession"
-
-# apply step
-read -p "=> Install x-related symlinks (y)? " MY_ANSWER
-if test "$MY_ANSWER" != "y"; then
-    say "Skipped."
+if [ "$MY_ETC_DIR/xmonad.hs" -ef "$HOME/.xmonad/xmonad.hs" ] && 
+   [ "$MY_ETC_DIR/xmobar.hs" -ef "$HOME/.xmonad/xmobar.hs" ] && 
+   [ "$MY_ETC_DIR/xsession" -ef "$HOME/.xsession" ] && 
+   [ "$MY_ETC_DIR/gtkrc-2.0" -ef "$HOME/.gtkrc-2.0" ]; then
+    say "[$MY_OK] Looks like all desirable x-related symlinks are set"
 else
-    mkdir -p "$HOME/.xmonad"
-    symlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
-    symlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
-    symlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
-    symlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
+    # preview step
+    say "This will add x-related symlinks to home directory: .xmonad .xsession"
+
+    # apply step
+    read -p "=> Install x-related symlinks (y)? " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then
+        say "Skipped."
+    else
+        mkdir -p "$HOME/.xmonad"
+        symlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
+        symlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
+        symlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
+        symlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
+    fi
 fi
 
 # done
