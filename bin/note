@@ -3,14 +3,15 @@
 # expect note file here
 MY_NOTE="$HOME/.note"
 
-# check for presence of parameters
 if [ -z "$1" ]; then
-    # show note
-    cat "$MY_NOTE"
-    exit 1
+    # if there are no parameters, show the whole note
+    if [ -f "$MY_NOTE" ]; then
+        cat "$MY_NOTE"
+    fi
+else
+    # if there are parameters, append them as a line in the note
+    echo "$@" >> "$MY_NOTE"
+
+    # ...and show the last few lines
+    tail "$MY_NOTE"
 fi
-
-# append to note
-echo "$@" >> "$MY_NOTE"
-
-tail "$MY_NOTE"
