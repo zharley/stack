@@ -95,9 +95,6 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # @see http://zsh.sourceforge.net/Doc/Release/Options-Index.html
 
-# Try to correct the spelling of all arguments in a line
-setopt CORRECTALL
-
 # If a command is issued that can't be executed as a normal command, and the 
 # command is the name of a directory, perform the cd command to that directory.
 setopt AUTOCD
@@ -120,10 +117,18 @@ setopt HISTIGNOREALLDUPS
 setopt SHAREHISTORY
 
 ################################################################################
-## ALIASES #####################################################################
+## AUTO LOAD ###################################################################
 ################################################################################
 
-# Automatically load stack aliases
+# autodetect stack directories
 MY_ZSHRC_FILE=`readlink -f ~/.zshrc`
 MY_ETC_DIR=`dirname $MY_ZSHRC_FILE`
+MY_BIN_DIR="$(cd "$MY_ETC_DIR/../bin" && pwd)"
+
+# Automatically load stack aliases
 source ${MY_ETC_DIR}/aliases
+
+# Automatically include stack bin in path
+if [ -d "$MY_BIN_DIR" ]; then
+    PATH="$MY_BIN_DIR:$PATH"
+fi

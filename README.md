@@ -4,21 +4,19 @@ This repository consists of some scripts in the **bin** subdirectory and miscell
 
 ### Install
 
-To use the scripts, add the **bin** directory to your **~/.profile**:
+To use the scripts, add the **bin** directory to your path in your shell configuration file (e.g. **.zshrc**, **.bashrc**, **.profile**):
 
     # include stack bin
     if [ -d "/path/to/stack/bin" ]; then
         PATH="/path/to/stack/bin:$PATH"
     fi
 
-To use the aliases in **etc**, add it to your **.bashrc** file:
+To use the aliases in **etc**::
 
     # include stack aliases
     if [ -f "/path/to/stack/etc/aliases" ]; then
         . "/path/to/stack/etc/aliases"
     fi
-
-There is a very rough install script that will do the above for you, as well as setup symlinks to use the stack's vim configuration.
 
 ### Reference
 
