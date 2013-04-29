@@ -6,9 +6,4 @@ setxkbmap -option caps:super
 # oldschool gray background
 xsetroot -gray
 
-# load profile stuff
-if [ -f $HOME/.profile ]; then
-    . $HOME/.profile
-fi 
-
 exec xmonad
