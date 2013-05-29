@@ -1,0 +1,23 @@
+#! /bin/bash
+set -e
+
+read -p "=> This will remove staged changes and untracked files. Continue (y)? " MY_ANSWER
+
+if test "$MY_ANSWER" != "y"; then 
+    echo "=> Cancelled!"
+    exit 1 
+fi
+
+echo "=> Performing hard reset..."
+# git-reset   Reset current HEAD to the specified state
+# --hard      Resets the index and working tree. Any changes to tracked files in the
+#             working tree since <commit> are discarded.
+git reset --hard
+
+echo "=> Performing cleanup..."
+# git-clean   Remove untracked files from the working tree
+# -f    Force (needed to do anything)
+# -d    Remove untracked directories in addition to untracked files
+git clean -f -d
+
+echo "=> Done."
