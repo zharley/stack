@@ -22,6 +22,7 @@ HISTFILE=~/.zsh_history
 bindkey -v
 bindkey '^P' up-line-or-history
 bindkey '^N' down-line-or-history
+bindkey '^R' history-incremental-search-backward
 
 # The current chroot (used in the prompt below)
 if [ -z "$MY_CHROOT" ] && [ -r /etc/MY_CHROOT ]; then
@@ -68,9 +69,12 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ################################################################################
-## AUTOCOMPLETION ##############################################################
+## PLUGINS #####################################################################
 ################################################################################
 
+# initialize and configure tab completion
+# -U  suppress alias expansion (recommended for functions supplied with zsh)
+# -z  force native emulation (rather than -k for ksh)
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' auto-description 'specify: %d'
@@ -88,6 +92,9 @@ zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+# use special move command for easy renaming
+autoload -Uz zmv
 
 ################################################################################
 ## OPTIONS #####################################################################
