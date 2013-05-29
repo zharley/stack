@@ -356,8 +356,3 @@ else
 fi
 
 say "Finished."
-
-# play a little sound
-if [ $MY_QUIET -eq 0 ]; then
-    play -n synth 0.3 sine 300-3300 vol 0.1 &> /dev/null
-fi
