@@ -10,12 +10,9 @@ fi
 # build filename based on date and label
 MY_FILE="`date +%Y-%m-%d-%I%M%S`$MY_LABEL.png"
 
-# capture the cropped screenshot
-echo "=> Select area to capture"
-scrot -s "$MY_FILE"
+shutter -s -o "$MY_FILE"
 
 # show result
 echo "=> Captured: $MY_FILE"
-gnome-paint "$MY_FILE" &
 
 echo "=> Done."
