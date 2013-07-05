@@ -41,6 +41,9 @@ puts <<EOF
     CustomLog /var/log/apache2/vhost-access.log combined
     
     DocumentRoot #{dir_path}
+
+    # Symfony 1.0
+    # Alias /sf #{dir_path}/../lib/vendor/symfony/data/web/sf
     
     # # python http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives 
     # WSGIDaemonProcess #{domain} user=#{user} group=#{user} processes=1 threads=5 home=#{dir_path} python-path=#{dir_path}
