@@ -19,7 +19,7 @@ Config {
                     , Run Swap ["-t","<usedratio>%"] 5
                     , Run Date "%a %d-%b-%Y %l:%M:%S%p" "date" 10
                     , Run StdinReader
-                    , Run Com "if ping -c 1 8.8.8.8 > /dev/null; then echo '<fc=#3CB371>ok</fc>'; else echo '<fc=#FF8C00>no</fc>'; fi" [""] "status" 20
+                    , Run Com "if ping -w 1 -c 1 8.8.8.8 > /dev/null; then echo '<fc=#3CB371>ok</fc>'; else echo '<fc=#FF8C00>no</fc>'; fi" [""] "status" 20
                     , Run Com "acpi | awk '{ print $4 $5 }' | sed 's/,/ /'" [""] "batt" 50 
                     ]
        -- character to be used for indicating commands in the output template
