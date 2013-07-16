@@ -382,6 +382,30 @@ Enable common Apache modules:
     # apache modules
     a2enmod proxy_balancer proxy_http rewrite
 
+### Trap all outgoing mail
+
+Install Perl-Compatible Regular Expressions for postfix.
+
+    apt-get install postfix-pcre
+
+Create a destinations file:
+
+    vim /etc/postfix/mydestinations
+
+Make this server the final destination for all messages:
+
+    /.*/    ACCEPT
+
+Edit main config:
+
+    vim /etc/postfix/main.cf
+
+Use the pcre file and set "catch all" mailbox. Also set **local\_recipent\_maps**, otherwise non-local domains will be rejected.
+
+    mydestination = pcre:/etc/postfix/mydestinations
+    local_recipient_maps =
+    luser_relay = $MY_USER@localhost
+
 ### Desktop
 
 Remove auto-generated directories and register absence of these directories with desktop settings manager.
