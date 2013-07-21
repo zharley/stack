@@ -1,0 +1,14 @@
+#! /bin/bash
+set -e
+
+# exclude the following lines matching unwanted databases and headers
+MY_EXCLUDE='^\(Database\|information_schema\|mysql\|performance_schema\)$'
+
+# get list of databases minus exclusions
+MY_DB_LIST=`mysql -e "show databases" | grep -v $MY_EXCLUDE`
+
+# dump each database to an appropriately named file
+for MY_DB in $MY_DB_LIST; do
+    echo "=> Dumping $MY_DB to $MY_DB.sql"
+    mysqldump $MY_DB > $MY_DB.sql
+done
