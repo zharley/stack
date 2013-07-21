@@ -406,6 +406,37 @@ Use the pcre file and set "catch all" mailbox. Also set **local\_recipent\_maps*
     local_recipient_maps =
     luser_relay = $MY_USER@localhost
 
+Add local IMAP server:
+
+    apt-get install dovecot-imapd
+
+Edit main Dovecot configuration:
+
+    vim /etc/dovecot/dovecot.conf
+
+Uncomment this line to listen on the default interface.
+
+    listen = *, ::
+
+Edit mail configuration:
+
+    vim /etc/dovecot/conf.d/10-mail.conf
+
+Set the mail location to the mbox:
+
+    mail_location = mbox:~/mail:INBOX=/var/mail/%u
+
+Restart dovecot:
+
+    /etc/init.d/dovecot restart
+
+Test login (Ctrl+] to exit):
+
+    telnet localhost 143
+    a login username password
+
+Login should now be possible via Thunderbird or other mail client.
+
 ### Desktop
 
 Remove auto-generated directories and register absence of these directories with desktop settings manager.
