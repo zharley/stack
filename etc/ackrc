@@ -1,1 +1,2 @@
 --type-add=html=.twig,.tpl
+--type-set=drupal=.php,.inc,.module,.install,.info,.engine
