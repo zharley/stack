@@ -159,7 +159,7 @@ if [ -d "$MY_BIN_DIR" ]; then
     PATH="$MY_BIN_DIR:$PATH"
 fi
 
-# Add home bin in path
-if [ -d "$HOME/bin" ]; then
-    PATH="$HOME/bin:$PATH"
+# Add custom bin
+if [ -d "$HOME/.bin" ]; then
+    PATH="$HOME/.bin:$PATH"
 fi
