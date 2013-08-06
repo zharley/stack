@@ -435,6 +435,10 @@ Test login (Ctrl+] to exit):
     telnet localhost 143
     a login username password
 
+Forward mail:
+
+    echo user@example.com > .forward
+
 Login should now be possible via Thunderbird or other mail client.
 
 ### Desktop
