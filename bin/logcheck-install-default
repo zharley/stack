@@ -31,7 +31,9 @@ MY_LOGCHECK_IGNORE="/etc/logcheck/ignore.d.server/custom"
 echo "=> Writing $MY_LOGCHECK_IGNORE"
 cat > $MY_LOGCHECK_IGNORE << EOF
 # ignore UFW blocks
-^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: .+ \[UFW BLOCK\] IN=eth[0-9].*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: .+ \[UFW BLOCK\] IN=eth[0-9].*\$
+# ignore sshd disconnect notifications
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ sshd\[[[:digit:]]+\]: Connection closed by [:[:xdigit:].]+ \[[[:alnum:]]+\]\$
 EOF
 cat $MY_LOGCHECK_IGNORE
 
