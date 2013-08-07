@@ -49,8 +49,8 @@ check system system
   if loadavg (5min) > 2 then alert
   if memory usage > 75% then alert
   if cpu usage (user) > 70% then alert
-  if cpu usage (system) > 30% then alert
-  if cpu usage (wait) > 20% then alert
+  if cpu usage (system) > 55% then alert
+  if cpu usage (wait) > 45% then alert
 
 # check hard drive
 check filesystem rootfs with path $MY_HDD_DEVICE
