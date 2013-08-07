@@ -1,0 +1,26 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` /path/to/diary"
+    exit 1
+fi
+
+MY_FILE="$1"
+
+# entry separator
+echo "------------------------------" >> $MY_FILE
+
+# compute timestamp
+MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
+echo -e "$MY_TIMESTAMP\n\n" >> "$MY_FILE"
+
+# automatically use gvim instead of vim if possible
+MY_COMMAND='vim'
+if [ -n "$DISPLAY" ]; then
+    MY_COMMAND='gvim'
+fi
+
+# vim parameters: enable spelling, start editing at bottom of file
+$MY_COMMAND -c 'set spell' -c 'set nonumber' -c 'normal G' -c 'start' "$MY_FILE"
