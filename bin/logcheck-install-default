@@ -12,7 +12,7 @@ MY_EMAIL="$1"
 
 # make sure logcheck is installed
 if ! dpkg-query -W -f='${Status} ${Version}\n' logcheck; then
-  apt-get --no-install-recommends install logcheck
+    apt-get --no-install-recommends install logcheck
 fi
 
 # backup configuration files with timestamped extension
@@ -22,7 +22,9 @@ MY_BACKUP_EXT=".`date +%Y-%m-%d`.old"
 MY_LOGCHECK_CONF='/etc/logcheck/logcheck.conf'
 echo "=> Setting SENDMAILTO=\"$MY_EMAIL\" in $MY_LOGCHECK_CONF"
 sed --in-place="$MY_BACKUP_EXT" "s:^SENDMAILTO=.*$:SENDMAILTO=\"$MY_EMAIL\":" $MY_LOGCHECK_CONF
-diff $MY_LOGCHECK_CONF$MY_BACKUP_EXT $MY_LOGCHECK_CONF
+if diff $MY_LOGCHECK_CONF$MY_BACKUP_EXT $MY_LOGCHECK_CONF; then
+    echo "=> No change."
+fi
 
 # set custom ignore rules
 MY_LOGCHECK_IGNORE="/etc/logcheck/ignore.d.server/custom"
