@@ -1,0 +1,36 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` user@example.com"
+    exit 1
+fi
+
+# parameters
+MY_EMAIL="$1"
+
+# make sure logcheck is installed
+if ! dpkg-query -W -f='${Status} ${Version}\n' logcheck; then
+  apt-get --no-install-recommends install logcheck
+fi
+
+# backup configuration files with timestamped extension
+MY_BACKUP_EXT=".`date +%Y-%m-%d`.old"
+
+# update logcheck configuration
+MY_LOGCHECK_CONF='/etc/logcheck/logcheck.conf'
+echo "=> Setting SENDMAILTO=\"$MY_EMAIL\" in $MY_LOGCHECK_CONF"
+sed --in-place="$MY_BACKUP_EXT" "s:^SENDMAILTO=.*$:SENDMAILTO=\"$MY_EMAIL\":" $MY_LOGCHECK_CONF
+diff $MY_LOGCHECK_CONF$MY_BACKUP_EXT $MY_LOGCHECK_CONF
+
+# set custom ignore rules
+MY_LOGCHECK_IGNORE="/etc/logcheck/ignore.d.server/custom"
+echo "=> Writing $MY_LOGCHECK_IGNORE"
+cat > $MY_LOGCHECK_IGNORE << EOF
+# ignore UFW blocks
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: .+ \[UFW BLOCK\] IN=eth[0-9].*$
+EOF
+cat $MY_LOGCHECK_IGNORE
+
+echo "=> Done."

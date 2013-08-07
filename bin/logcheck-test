@@ -1,0 +1,23 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` filter"
+    exit 1
+fi
+
+MY_FILTER="$1"
+
+MY_LOGCHECK_IGNORE="/etc/logcheck/ignore.d.server/custom"
+
+MY_LOG="/var/log/syslog"
+(sudo egrep -f $MY_LOGCHECK_IGNORE $MY_LOG | grep "$MY_FILTER") || echo "No match in $MY_LOG" 
+
+MY_LOG="/var/log/auth.log"
+(sudo egrep -f $MY_LOGCHECK_IGNORE $MY_LOG | grep "$MY_FILTER") || echo "No match in $MY_LOG" 
+
+echo "=> Done."
+
+echo "=> Try running logcheck with:"
+echo "sudo -u logcheck logcheck -o -t"
