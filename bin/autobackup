@@ -15,15 +15,21 @@ MY_DUMP_LOCATION="$4"
 
 # clear old backup files
 cd $MY_DESTINATION
-rm -f `ls -t *.tar.gz | awk "NR>$((MY_MAX-1))"`
+if ls -t *.tar.gz > /dev/null; then
+  rm -f `ls -t *.tar.gz | awk "NR>$((MY_MAX-1))"`
+fi
 
 # datestamp-derive a new archive file
 MY_BASE="`date +%Y-%m-%d`.tar.gz"
 
 if [ -n "$MY_DUMP_LOCATION" ]; then
-  # dump all databases
-  mysqldump --all-databases > $MY_DUMP_LOCATION
+  # select all databases except system ones
+  MY_SCHEMAS=$(mysql -NBe 'show schemas'| grep -wv 'mysql\|performance_schema\|information_schema')
 
+  # dump databases to file
+  mysqldump --databases $MY_SCHEMAS > $MY_DUMP_LOCATION
+
+  # add to souces to be zipped
   MY_SOURCES="$MY_SOURCES $MY_DUMP_LOCATION"
 fi
 
