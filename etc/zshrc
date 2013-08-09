@@ -144,22 +144,17 @@ MY_ZSHRC_FILE=$(readlink -f ~/.zshrc)
 MY_ETC_DIR=$(dirname $MY_ZSHRC_FILE)
 MY_BIN_DIR=$(readlink -f "$MY_ETC_DIR/../bin")
 
-# Load stack aliases
-if [ -f "${MY_ETC_DIR}/aliases" ]; then
-    source "${MY_ETC_DIR}/aliases"
-fi
-
-# Load custom aliases
-if [ -f "$HOME/.aliases" ]; then
-    source "$HOME/.aliases"
-fi
-
 # Add stack bin to path
 if [ -d "$MY_BIN_DIR" ]; then
     PATH="$MY_BIN_DIR:$PATH"
 fi
 
-# Add custom bin
-if [ -d "$HOME/.bin" ]; then
-    PATH="$HOME/.bin:$PATH"
+# Load stack aliases
+if [ -f "${MY_ETC_DIR}/aliases" ]; then
+    source "${MY_ETC_DIR}/aliases"
+fi
+
+# Load optional custom rc
+if [ -f "$HOME/.stackrc" ]; then
+    source "$HOME/.stackrc"
 fi
