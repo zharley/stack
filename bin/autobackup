@@ -8,14 +8,21 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
   exit 1
 fi
 
+# space-separated sources to be archived (directories or files)
 MY_SOURCES="$1"
+
+# destination directory where datestamped backups are stored
 MY_DESTINATION="$2"
+
+# maximum number of backups to store (oldest ones are deleted)
 MY_MAX="$3"
+
+# (optional) location for MySQL all-database dump (auto-added to sources)
 MY_DUMP_LOCATION="$4"
 
 # clear old backup files
 cd $MY_DESTINATION
-if ls -t *.tar.gz > /dev/null; then
+if ls -t *.tar.gz 2> /dev/null; then
   rm -f `ls -t *.tar.gz | awk "NR>$((MY_MAX-1))"`
 fi
 
@@ -29,15 +36,15 @@ if [ -n "$MY_DUMP_LOCATION" ]; then
   # dump databases to file
   mysqldump --databases $MY_SCHEMAS > $MY_DUMP_LOCATION
 
-  # add to souces to be zipped
+  # add to sources to be archived
   MY_SOURCES="$MY_SOURCES $MY_DUMP_LOCATION"
 fi
 
 # delete the archive file if it exists
 rm -f "$MY_BASE"
 
-# c   create a new archive
-# z   filter the archive through gzip
-# f   use archive file or device
-# P   absolute names (don't strip leading /)
-tar czfP $MY_BASE $MY_SOURCES
+# -c     create a new archive
+# -z     filter the archive through gzip
+# -P     absolute names (don't strip leading /)
+# -f     use archive file or device
+tar -c -z -P -f $MY_BASE $MY_SOURCES
