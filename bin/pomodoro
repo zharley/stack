@@ -1,32 +1,54 @@
 #! /bin/bash
 set -e
 
-MY_LOG="$1"
-MY_DIR="$(cd "$(dirname "$0")" && pwd)"
-MY_ETC="$MY_DIR/../etc"
+# output with time of day
+say() {
+    # get time of day
+    MY_TIME=`date "+%l:%M%P"`
+    echo -ne "=> [$MY_TIME] $1"
+}
 
+# optional first parameter is a path to a log file
+MY_LOG="$1"
 if [ -z "$MY_LOG" ]; then
-    echo "=> Not logging"
+    say "Not Logging\n"
 else
-    echo "=> Logging to: $MY_LOG"
+    say "Logging to: $MY_LOG\n"
 fi
 
+# compute stack bin directory
+MY_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# compute stack etc directory
+MY_ETC="$MY_DIR/../etc"
+
+# endlessly loop
 for (( i = 1; ; i++ )); do
+    # mark start of work cycle
     if [ -n "$MY_LOG" ]; then
-        read -p "=> Work cycle #$i: " MY_DESCRIPTION
+        # log to file
+        say "Work cycle #$i: "
+        read MY_DESCRIPTION
         MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION"
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION" >> "$MY_LOG"
     else
-        echo "=> Work cycle #$i"
+        # just announce
+        say "Work cycle #$i\n"
     fi
   
+    # count 25 minutes of work time
     countdown 25 
-    notify-send "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
-    echo -n "=> Press [Enter] to continue" && read
+    notify-send "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION" \
+        --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes expiry
+    say "Press ENTER to continue." && read
+
+    # mark start of break cycle
+    say "Break cycle #$i\n"
   
-    echo "=> Break cycle #$i"
+    # count 5 minutes of break time
     countdown 5
-    notify-send "Pomodoro - Break cycle #$i complete" "$MY_DESCRIPTION" --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes
-    echo -n "=> Press [Enter] to continue" && read
+    notify-send "Pomodoro - Break cycle #$i complete" "$MY_DESCRIPTION" \
+        --icon "$MY_ETC/pomodoro.png" --expire-time=300000
+    say "Press ENTER to continue." && read
 done
