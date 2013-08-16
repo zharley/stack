@@ -337,6 +337,13 @@ Setup a priviledged non-root user:
     sudo -u $MY_USER mkdir -p tmp
     sudo -u $MY_USER mkdir -p mnt/{usb,ssh,ftp,hdd,cdrom,attach}
 
+Enable common Apache modules:
+
+    # apache modules
+    a2enmod proxy_balancer proxy_http rewrite
+
+### Server configuration
+
 Setting up firewall:
 
     # some networking essentials and ufw
@@ -364,23 +371,49 @@ Setting up unattended upgrades:
     APT::Periodic::Unattended-Upgrade "1";
     EOF
 
-Setting up mail:
+Forward mail:
+
+    echo user@example.com > .forward
+
+Mail transport:
 
     # Select "internet site" for default setup
     apt-get -y install postfix
 
-    read -p "Email address (e.g. me@example.com): " MY_RECIPIENT
+Relay mail via SMTP:
+
+    MY_BACKUP_EXT=".`date +%Y-%m-%d`.old"
+
+    sed --in-place="$MY_BACKUP_EXT" "s/^relayhost = $/relayhost = [smtp.gmail.com]:587/" /etc/postfix/main.cf
+    diff /etc/postfix/main.cf /etc/postfix/main.cf$MY_BACKUP_EXT
+
+    cat << EOF >> /etc/postfix/main.cf
+    smtp_sasl_auth_enable = yes
+    smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+    smtp_sasl_security_options = noanonymous
+    smtp_tls_CAfile = /etc/postfix/cacert.pem
+    smtp_use_tls = yes
+    EOF
+
+    echo "[smtp.gmail.com]:587 user@example.com:password" > /etc/postfix/sasl_passwd
+
+    chmod 600 /etc/postfix/sasl_passwd
+
+    postmap /etc/postfix/sasl_passwd
+
+    cat /etc/ssl/certs/Thawte_Premium_Server_CA.pem >> /etc/postfix/cacert.pem
+
+    /etc/init.d/postfix reload
+
+Test outgoing mail:
+
+    echo -n "Email address (e.g. me@example.com): " && read MY_RECIPIENT
     cat << EOF | sendmail -f "root@`hostname`" $MY_RECIPIENT
     Subject: Test from `hostname`
     To: $MY_RECIPIENT
     From: root@`hostname`
     If you've received this message, then the server is able to send email. 
     EOF
-
-Enable common Apache modules:
-
-    # apache modules
-    a2enmod proxy_balancer proxy_http rewrite
 
 ### Trap all outgoing mail
 
@@ -435,9 +468,6 @@ Test login (Ctrl+] to exit):
     telnet localhost 143
     a login username password
 
-Forward mail:
-
-    echo user@example.com > .forward
 
 Login should now be possible via Thunderbird or other mail client.
 
