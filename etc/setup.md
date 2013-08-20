@@ -482,6 +482,11 @@ Remove graphical login window:
 
     update-rc.d -f xdm remove
 
+Automatic login:
+
+    # add "-a $MY_USER" at the end of the exec (last) line
+    vim /etc/init/tty1.conf
+
 ## Recovery
 
 ### Preliminary
