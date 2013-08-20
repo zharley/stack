@@ -487,6 +487,24 @@ Automatic login:
     # add "-a $MY_USER" at the end of the exec (last) line
     vim /etc/init/tty1.conf
 
+Automatic .localhost TLD:
+
+    MY_BACKUP_EXT=".`date +%Y-%m-%d`.old"
+    mv /etc/dnsmasq.conf /etc/dnsmasq.conf$MY_BACKUP_EXT
+
+    cat << EOF > /etc/dnsmasq.conf
+    listen-address=127.0.0.1
+    address=/localhost/127.0.0.1
+    EOF
+    
+    cat /etc/dnsmasq.conf
+
+Run Apache as local user:
+
+    MY_BACKUP_EXT=".`date +%Y-%m-%d`.old"
+    sed --in-place="$MY_BACKUP_EXT" "s/^export APACHE_RUN_USER=www-data$/export APACHE_RUN_USER=$MY_USER/;s/^export APACHE_RUN_GROUP=www-data$/export APACHE_RUN_GROUP=$MY_USER/" /etc/apache2/envvars
+    chown $MY_USER:$MY_USER /var/lock/apache2
+   
 ## Recovery
 
 ### Preliminary
