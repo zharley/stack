@@ -1,14 +1,40 @@
 #! /bin/bash
 set -e
 
-MY_MAIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+# compute main stack directory based on the location of this script
+MY_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "=> Stack directory detected: $MY_MAIN_DIR" 
+# flag of last successful update
+MY_FLAG="$MY_DIR/.last-update"
 
-cd "$MY_MAIN_DIR"
+# optional parameter indicating minimum update interval in seconds
+# (i.e. do not update unless it has been X seconds since last update)
+if [ -n "$1" ]; then
+    # minimum interval was specified
+    MY_INTERVAL="$1"
+
+    if [ -f "$MY_FLAG" ]; then
+        # flag exists, compute age
+        MY_AGE=$((`date +%s` - `stat -c %Z $MY_FLAG`)) 
+
+        if [ $MY_AGE -lt $MY_INTERVAL ]; then
+            # skip update
+            exit
+        else
+            echo "=> More than $MY_INTERVAL seconds since last update ($MY_AGE seconds)" 
+        fi
+    else
+        echo "=> First update ($MY_FLAG does not exist)" 
+    fi
+fi
+
+cd "$MY_DIR"
 
 echo "=> Updating from git..." 
 git pull
 
 echo "=> Re-installing..." 
 ./install
+
+# update flag
+touch "$MY_FLAG"
