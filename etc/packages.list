@@ -2,10 +2,10 @@
 # SERVER
 #
 # core stuff
-build-essential cmake ssh mdadm locate cron
-subversion git-core apache2-utils
+build-essential cmake ssh mdadm locate cron zsh
+subversion git-core apache2-utils git-gui tig
 apache2 libapache2-mod-php5
-php5-cgi php5-mysql php5-curl php5-gd php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-apc php5-xdebug
+php5-cgi php5-mysql php5-curl php5-gd php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-apc php5-xdebug php5-intl
 # database
 postgresql pgadmin3 mysql-server sqlite3
 # nfs
@@ -15,7 +15,7 @@ httperf sphinxsearch redis-server
 # dist upgrade
 update-manager-core
 # mail
-postfix postfix-pcre
+postfix postfix-pcre dovecot-imapd mutt
 # access control list utilities
 acl
 # restricted login shell
@@ -31,14 +31,16 @@ duplicity unison rsync
 pwgen encfs wipe
 # file systems (especially CD/DVD image tools)
 nrg2iso ntfsprogs dosfstools unetbootin fuseiso daa2iso bchunk isomaster
+isomaster mkisofs xorriso
 # network
 curlftpfs mtr nmap sshfs curl ufw dnsmasq telnet autossh 
-iptraf whois dnsutils lftp traceroute
+fping iptraf whois dnsutils lftp traceroute
 # laptop and wireless
 wireless-tools wpasupplicant wicd wicd-curses
 acpi acpitool
 # statistics
-conky statgrab saidar hddtemp
+conky statgrab saidar
+# text browsers
 lynx netrik links
 # encoding
 sharutils enca ack tofrodos 
@@ -56,8 +58,8 @@ multitail grc
 epub-utils
 # text file converter
 dos2unix 
-# hardware benchmark
-sysbench
+# hardware benchmark and check
+stress lilo lm-sensors hwinfo lshw smartmontools sysbench hddtemp
 # detect USB devices
 usbutils
 
@@ -127,6 +129,7 @@ emboss garlic gromacs pymol rasmol raster3d gnuplot euler
 # multimedia
 pulseaudio alsa-base alsa-utils pavucontrol pavumeter vlc avidemux
 audacity sox mp3gain totem mp3splt mencoder mplayer libfaac0 soundconverter
+eyeD3
 # webcam capturer
 cheese
 # flash video META editor
@@ -142,7 +145,7 @@ virtualbox-ose virtualbox-guest-additions virtualbox-ose-source virtualbox-ose-d
 # for skype
 libqt4-xml libqt4-dbus
 # graphics
-scribus scribus-template imagemagick
+scribus scribus-template imagemagick xzoom shutter
 # clipboard
 xclip
 # notification popups
