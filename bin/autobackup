@@ -22,7 +22,7 @@ MY_DUMP_LOCATION="$4"
 
 # clear old backup files
 cd $MY_DESTINATION
-if ls -t *.tar.gz 2> /dev/null; then
+if ls -t *.tar.gz > /dev/null 2>&1; then
   rm -f `ls -t *.tar.gz | awk "NR>$((MY_MAX-1))"`
 fi
 
