@@ -28,7 +28,7 @@ colorscheme slate-variant
 " automatically reload vimrc upon save
 au! BufWritePost .vimrc source %
 
-" ignore certain extensions and locations (affects Command-T)
+" ignore certain extensions and locations (affects CtrlP)
 set wildignore+=.svn,.git
 set wildignore+=www/app/cache/**,www/web/bundles/**,www/sites/default/files/**,www/backup/**
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
@@ -81,15 +81,6 @@ set lbr
 "" PLUGIN CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" allow 50K files to show up in Command-T
-let g:CommandTMaxFiles=50000
-" show the best match at the bottom of the Command-T window.
-let g:CommandTMatchWindowReverse = 1 
-" open Command-T files in a new tab by default
-let g:CommandTAcceptSelectionTabMap='<CR>'
-" use Ctrl+O to open file in the current tab
-let g:CommandTAcceptSelectionMap='<C-o>' 
-
 "au BufRead,BufNewFile *.twig set syntax=htmljinja
 autocmd BufReadPost * :DetectIndent
 
@@ -105,14 +96,13 @@ let g:ctrlp_working_path_mode = '0'
 
 " map leader and often-used shortcuts
 let mapleader=","
-map <Leader>t :call util#BeginCommandT()<CR>
-map <Leader>g :CommandTFlush<CR>:call util#BeginCommandT()<CR>
+map <Leader>t :call util#BeginFinder()<CR>
+map <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
 map <Leader>a :Align 
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
 map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 map <Leader>n :wincmd w<CR>
-map <Leader>e :CtrlPClearCache<CR>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs
 map <C-k> gT

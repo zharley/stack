@@ -43,12 +43,12 @@ function! util#PowerReplace(from, to) range
   execute a:firstline.",".a:lastline."s/".from_upper."/".to_upper."/gec"
 endfunction
 
-" launch CommandT as long as it's not the home directory
-function! util#BeginCommandT()
+" launch CtrlP as long as it's not the home directory
+function! util#BeginFinder()
   if (getcwd() == $HOME)
     echo 'Ooops! Home directory.'
   else
-    exec ":CommandT"
+    exec ":CtrlP"
   endif
 endfunction
 
