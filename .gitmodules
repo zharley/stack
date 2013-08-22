@@ -33,3 +33,6 @@
 [submodule "etc/vim/bundle/file-line"]
 	path = etc/vim/bundle/file-line
 	url = https://github.com/vim-scripts/file-line
+[submodule "etc/vim/bundle/ctrlp"]
+	path = etc/vim/bundle/ctrlp
+	url = https://github.com/kien/ctrlp.vim

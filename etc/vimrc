@@ -96,19 +96,23 @@ autocmd BufReadPost * :DetectIndent
 " disable syntax checking on twig files -- it does not seem to work
 let g:syntastic_mode_map = { 'mode' : 'active', 'active_filetypes' : [], 'passive_filetypes': ['twig'] }
 
+" don't need a separate working directory for CtrlP
+let g:ctrlp_working_path_mode = '0'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" KEYBOARD 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " map leader and often-used shortcuts
 let mapleader=","
-map <leader>t :call util#BeginCommandT()<CR>
-map <leader>g :CommandTFlush<CR>:call util#BeginCommandT()<CR>
-map <leader>a :Align 
+map <Leader>t :call util#BeginCommandT()<CR>
+map <Leader>g :CommandTFlush<CR>:call util#BeginCommandT()<CR>
+map <Leader>a :Align 
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
 map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 map <Leader>n :wincmd w<CR>
+map <Leader>e :CtrlPClearCache<CR>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs
 map <C-k> gT
