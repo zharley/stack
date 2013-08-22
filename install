@@ -148,23 +148,6 @@ else
     say "[$MY_OK] Looks like all submodules are initialized."
 fi
 
-if [ -z "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t/ext.so" ]; then
-    # preview step
-    say "This will compile binaries for the Command-T vim module."
-
-    # apply step
-    read -p "=> Compile Command-T (y)? " MY_ANSWER
-    if test "$MY_ANSWER" != "y"; then
-        say "Skipped."
-    else
-        cd "$MY_ETC_DIR/vim/bundle/command-t/ruby/command-t"
-        ruby extconf.rb
-        make
-    fi
-else
-    say "[$MY_OK] Looks like Command-T is compiled."
-fi
-
 # install (more) symlinks
 if [ -n "$DISPLAY" ]; then
    if [ "$MY_ETC_DIR/xmonad.hs" -ef "$HOME/.xmonad/xmonad.hs" ] && 
