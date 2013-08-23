@@ -194,7 +194,7 @@ Use the RAID device:
 
 ### Filesystems and networking
 
-Configure **fstab**:
+Configure **fstab** (default):
 
     cat << EOF > /mnt/etc/fstab
     # /etc/fstab: static file system information.
@@ -210,6 +210,25 @@ Configure **fstab**:
     EOF
 
     cat /mnt/etc/fstab
+
+Configure **fstab** (SSD variant):
+
+    cat << EOF > /mnt/etc/fstab
+    # /etc/fstab: static file system information.
+    #
+    # <file system>    <mount point>   <type>  <options>                   <dump>  <pass>
+    proc               /proc           proc    defaults                    0       0
+    # boot: $MY_BOOT_DEVICE
+    $MY_BOOT_DEVICE_ID /boot           ext2    relatime                    0       2
+    # swap: $MY_SWAP_DEVICE
+    /dev/mapper/swap   none            swap    sw                          0       0
+    # root: $MY_ROOT_DEVICE
+    /dev/mapper/root   /               ext4    discard,noatime,errors=remount-ro  0       1
+    # SSD: tmpfs for frequently-written directories 
+    tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0
+    tmpfs /var/spool tmpfs defaults,noatime,mode=1777 0 0
+    tmpfs /var/log tmpfs defaults,noatime,mode=0755 0 0
+    EOF
 
 Configure network interfaces:
 
