@@ -101,7 +101,7 @@ let g:ctrlp_prompt_mappings = {
 \ }
 
 " CtrlP - set size and position
-let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:15'
+let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:50'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" KEYBOARD 
