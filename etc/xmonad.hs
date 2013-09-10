@@ -100,10 +100,10 @@ myLayout = gaps [(U,15)] (smartBorders (tiled ||| Full))
      delta   = 3/100
 
 -- workspace names
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9" ]
+myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9" ]
 
 -- specific terminal command
-myTerminal = "xterm -fa monaco -fs 10 -cr red1 -selbg grey30"
+myTerminal = "xterm -fa 'Source Code Pro' -fs 10 -cr red1 -selbg grey30"
 
 -- startup hook
 myStartup :: X ()

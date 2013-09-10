@@ -77,6 +77,12 @@ set timeoutlen=200
 " wrap words visually
 set lbr 
 
+if has("gui_running")
+  if has("gui_gtk2")
+    set guifont=Source\ Code\ Pro\ 11
+  endif
+endif
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" PLUGIN CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
