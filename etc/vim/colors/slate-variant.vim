@@ -29,7 +29,7 @@ let colors_name = "slate-variant"
 :hi Visual gui=none guifg=khaki guibg=olivedrab cterm=reverse
 :hi WarningMsg guifg=salmon ctermfg=1
 :hi String guifg=SkyBlue ctermfg=darkcyan
-:hi Comment term=bold ctermfg=11 guifg=grey60
+:hi Comment term=bold ctermfg=11 guifg=grey70
 :hi Constant guifg=#ffa0a0 ctermfg=brown
 :hi Special guifg=darkkhaki ctermfg=brown
 :hi Identifier guifg=salmon ctermfg=red

@@ -6,9 +6,9 @@ call pathogen#helptags()
 
 runtime autoload/util.vim
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" GENERAL PREFERENCES
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"-------------------------------------------------------------------------------
+" GENERAL PREFERENCES
+"-------------------------------------------------------------------------------
 
 " we're running Vim, not Vi!
 set nocompatible          
@@ -79,25 +79,24 @@ set lbr
 
 if has("gui_running")
   if has("gui_gtk2")
-    set guifont=Source\ Code\ Pro\ 11
+    set guifont=Inconsolata\ 12
   endif
 endif
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" PLUGIN CONFIGURATION
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"-------------------------------------------------------------------------------
+" PLUGIN CONFIGURATION
+"-------------------------------------------------------------------------------
 
-"au BufRead,BufNewFile *.twig set syntax=htmljinja
 autocmd BufReadPost * :DetectIndent
 
-" disable syntax checking on twig files -- it does not seem to work
+" Syntastic - disable syntax checking on twig files
 let g:syntastic_mode_map = { 
     \ 'mode' : 'active', 
     \ 'active_filetypes' : [], 
     \ 'passive_filetypes': ['twig'] 
 \ }
 
-" CtrlP - don't need a separate working directory
+" CtrlP - just use the current working directory
 let g:ctrlp_working_path_mode = '0'
 
 " CtrlP - open in new tab by default
@@ -109,9 +108,9 @@ let g:ctrlp_prompt_mappings = {
 " CtrlP - set size and position
 let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:50'
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" KEYBOARD 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"-------------------------------------------------------------------------------
+" KEYBOARD 
+"-------------------------------------------------------------------------------
 
 " map leader and often-used shortcuts
 let mapleader=","
@@ -128,7 +127,7 @@ map <C-k> gT
 map <C-j> gt
 map <C-w> :tabclose<CR>
 
-" use Ctrl+n to hop to next quickfix item
+" use Ctrl+n to save and then hop to next quickfix item
 map <C-n> :w<CR>:cn<CR>
 
 " write to file
@@ -148,7 +147,6 @@ map <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2 expandtab<CR>
 
 " pull full path name into paste buffer for attachment to email etc
 nnoremap <Leader>p :let @*=expand("%")<CR>
-"nnoremap <F2> :let @*=substitute(expand("%:p"), "/", "\\", "g")<cr>
 
 " use Tab to initiate autocomplete
 imap <Tab> <C-n>
