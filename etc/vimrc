@@ -10,6 +10,9 @@ runtime autoload/util.vim
 " GENERAL PREFERENCES
 "-------------------------------------------------------------------------------
 
+" automatically reload vimrc upon save
+au! BufWritePost .vimrc source %
+
 " we're running Vim, not Vi!
 set nocompatible          
 
@@ -21,12 +24,6 @@ filetype plugin indent on
 
 " show line numbers
 set number
-
-" set colour scheme
-colorscheme slate-variant
-
-" automatically reload vimrc upon save
-au! BufWritePost .vimrc source %
 
 " ignore certain extensions and locations (affects CtrlP)
 set wildignore+=.svn,.git
@@ -77,12 +74,6 @@ set timeoutlen=200
 " wrap words visually
 set lbr 
 
-if has("gui_running")
-  if has("gui_gtk2")
-    set guifont=Inconsolata\ 12
-  endif
-endif
-
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
@@ -107,6 +98,22 @@ let g:ctrlp_prompt_mappings = {
 
 " CtrlP - set size and position
 let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:50'
+
+" Color overrides
+let g:jellybeans_overrides = {
+   \ 'Constant':    { 'guifg': 'FFA0A0' },
+   \ 'Define':      { 'guifg': 'FFD700', 'attr': 'bold' },
+   \ 'Identifier':  { 'guifg': 'E9967A' },
+   \ 'Operator':    { 'guifg': 'FF0000' },
+   \ 'Statement':   { 'guifg': '6495ED', 'attr': 'bold' },
+   \ 'TabLine':     { 'guifg': 'CCCCCC', 'guibg': '333333' },
+   \ 'TabLineFill': { 'guibg': '333333' },
+   \ 'TabLineSel':  { 'guifg': 'FFFFFF', 'guibg': '666666' },
+\ }
+
+" set colour scheme (must be after overrides)
+set t_Co=256
+colorscheme jellybeans
 
 "-------------------------------------------------------------------------------
 " KEYBOARD 

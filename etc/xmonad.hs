@@ -60,6 +60,9 @@ myManageHook = composeAll [
     className =? "Xfce4-notifyd"         --> doF W.focusDown <+> doF copyToAll
     ]
 
+-- specific terminal command
+myTerminal = "xterm -fa 'Inconsolata-dz' -fs 12 -cr red1 -selbg grey30"
+
 -- key bindings
 myKeys = [
     -- take screenshots
@@ -67,10 +70,9 @@ myKeys = [
     ((0, xK_Print), spawn "scrot"),
     -- specific launch shortcuts
     ((mod4Mask .|. shiftMask, xK_f), spawn "firefox -P default"),
-    ((mod4Mask .|. shiftMask, xK_e), spawn "gvim"),
+    ((mod4Mask .|. shiftMask, xK_e), spawn ("TERM=xterm-256color " ++ myTerminal ++ " vim")),
     ((mod4Mask .|. shiftMask, xK_m), spawn "mysql-workbench"),
     ((mod4Mask .|. shiftMask, xK_d), spawn "gthumb"),
-    ((mod4Mask .|. shiftMask, xK_l), spawn "xterm" ),
     ((mod4Mask .|. shiftMask, xK_equal), spawn "xzoom -mag 10"),
     -- listen to specific hardware buttons
     ((0, 0x1008FF11), spawn "amixer set Master 2-"),
@@ -101,9 +103,6 @@ myLayout = gaps [(U,15)] (smartBorders (tiled ||| Full))
 
 -- workspace names
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9" ]
-
--- specific terminal command
-myTerminal = "xterm -fa 'Inconsolata' -fs 12 -cr red1 -selbg grey30"
 
 -- startup hook
 myStartup :: X ()

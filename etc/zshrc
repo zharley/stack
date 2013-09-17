@@ -33,7 +33,13 @@ fi
 case "$TERM" in
 xterm*|rxvt*)
     set_title() { printf "\e]0;$PWD\a" }
+
     chpwd_functions=(set_title)
+
+    if [ -n "$DISPLAY" ]; then
+        # makes "tput colors" output 256
+        export TERM=xterm-256color
+    fi
 
     # Substitute specific colour palette
     echo -n "\033]4;0;#1e1314\007"

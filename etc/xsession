@@ -6,4 +6,6 @@ setxkbmap -option caps:super
 # oldschool gray background
 xsetroot -gray
 
+export TERM=xterm-256color
+
 exec xmonad
