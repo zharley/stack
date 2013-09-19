@@ -54,14 +54,14 @@ myManageHook = composeAll [
     className =? "Gimp"                  --> doF (W.shift "9"),
     -- don't launch these in the master pane
     title =? "Downloads"                 --> doF W.swapDown,
-    className =? "XTerm"                 --> doF W.swapDown,
+    title =? "xterm"                     --> doF W.swapDown,
     className =? "Pidgin"                --> doF W.swapDown,
     -- show this one on all workplaces
     className =? "Xfce4-notifyd"         --> doF W.focusDown <+> doF copyToAll
     ]
 
 -- specific terminal command
-myTerminal = "xterm -fa 'Inconsolata-dz' -fs 12 -cr red1 -selbg grey30"
+myTerminal = "xterm -fa 'Source Code Pro' -fs 11 -cr red1 -selbg grey30"
 
 -- key bindings
 myKeys = [
@@ -70,7 +70,7 @@ myKeys = [
     ((0, xK_Print), spawn "scrot"),
     -- specific launch shortcuts
     ((mod4Mask .|. shiftMask, xK_f), spawn "firefox -P default"),
-    ((mod4Mask .|. shiftMask, xK_e), spawn ("TERM=xterm-256color " ++ myTerminal ++ " vim")),
+    ((mod4Mask .|. shiftMask, xK_e), spawn ("TERM=xterm-256color " ++ myTerminal ++ " -e vim")),
     ((mod4Mask .|. shiftMask, xK_m), spawn "mysql-workbench"),
     ((mod4Mask .|. shiftMask, xK_d), spawn "gthumb"),
     ((mod4Mask .|. shiftMask, xK_equal), spawn "xzoom -mag 10"),
