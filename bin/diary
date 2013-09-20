@@ -16,11 +16,5 @@ echo "------------------------------" >> $MY_FILE
 MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
 echo -e "$MY_TIMESTAMP\n\n" >> "$MY_FILE"
 
-# automatically use gvim instead of vim if possible
-MY_COMMAND='vim'
-if [ -n "$DISPLAY" ]; then
-    MY_COMMAND='gvim'
-fi
-
 # vim parameters: enable spelling, start editing at bottom of file
-$MY_COMMAND -c 'set spell' -c 'set nonumber' -c 'normal G' -c 'start' "$MY_FILE"
+vim -c 'set spell' -c 'set nonumber' -c 'normal G' -c 'start' "$MY_FILE"

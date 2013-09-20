@@ -38,8 +38,6 @@ cp "$MY_TEMPLATE" "$MY_FILE"
 chmod +x "$MY_FILE"
 
 # edit it
-if hash gvim 2>/dev/null; then
-    gvim --remote-tab "$MY_FILE"
-elif hash vim 2>/dev/null; then
+if hash vim 2>/dev/null; then
     vim "$MY_FILE"
 fi

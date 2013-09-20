@@ -125,7 +125,7 @@ alias decrypt-stream='openssl aes-256-cbc -d'
 ################################################################################
 
 # open in new tab in existing gvim
-alias e="gvim --remote-tab"
+alias e="vim --servername PRIMARY --remote-tab"
 
 # find matching packages
 alias apt-find='apt-cache search'
