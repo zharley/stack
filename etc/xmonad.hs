@@ -70,8 +70,8 @@ myKeys = [
     ((0, xK_Print), spawn "scrot"),
     -- specific launch shortcuts
     ((mod4Mask .|. shiftMask, xK_f), spawn "firefox -P default"),
-    ((mod4Mask .|. shiftMask, xK_e), spawn ("TERM=xterm-256color " ++ 
-      myTerminal ++ " -e vim --servername PRIMARY")),
+    ((mod4Mask .|. shiftMask, xK_e), spawn (myTerminal ++ 
+      " -e /bin/zsh -i -c 'vim --servername PRIMARY'")),
     ((mod4Mask .|. shiftMask, xK_m), spawn "mysql-workbench"),
     ((mod4Mask .|. shiftMask, xK_d), spawn "gthumb"),
     ((mod4Mask .|. shiftMask, xK_equal), spawn "xzoom -mag 10"),

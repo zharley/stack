@@ -1,0 +1,10 @@
+#! /bin/bash
+set -e
+
+# compute stack bin directory
+MY_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# compute stack etc directory
+MY_ETC="$MY_DIR/../etc"
+
+csstidy - --allow_html_in_templates=false --case_properties=true --compress_colors=true --compress_font-weight=false --discard_invalid_properties=false --lowercase_s=false --preserve_css=true --remove_bslash=true --remove_last_\;=false --silent=true --sort_properties=true --sort_selectors=false --timestamp=false --merge_selectors=0 --optimise_shorthands=1 --template=$MY_ETC/csstidy.tpl
