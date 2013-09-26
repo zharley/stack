@@ -20,9 +20,9 @@ output = description ? description.gsub(/\W/, '-').downcase : File.basename(file
 # -pointsize font point size
 # -font      render text with this font (convert -list type)
 # -annotate  annotate an image with text (tx and ty are offsets that give the
-#            location of the text relative to the upper left corner of the image
+#            location of the text relative to the upper left corner of the image)
 # -strip     strip the image of any profiles or comments
-description &&= " -fill white -box '#00000069' -gravity South -pointsize 30 -font 'Helvetica' -strip -annotate +0+5 '  #{description}  '"
+description &&= " -fill white -box '#00000069' -gravity South -pointsize 30 -font 'Source-Code-Pro-Regular' -strip -annotate +0+5 ' #{description} '"
 
 # output here
 output = "/tmp/#{output}.jpg"
