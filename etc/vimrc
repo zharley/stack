@@ -26,8 +26,8 @@ filetype plugin indent on
 set number
 
 " ignore certain extensions and locations (affects CtrlP)
-set wildignore+=.svn,.git
-set wildignore+=www/app/cache/**,www/web/bundles/**,www/sites/default/files/**,www/backup/**
+set wildignore+=*/.svn,*/.git
+set wildignore+=*/cache,*/web
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
 
 " autocomplete: pick longest match first, then cycle through list
@@ -137,11 +137,11 @@ map <Leader>r :UtilPowerReplace
 map <Leader>q :UtilQuickfixToArgs<CR>
 map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 map <Leader>n :wincmd w<CR>
+map <Leader>q :tabclose<CR>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs
 map <C-k> gT
 map <C-j> gt
-map <C-w> :tabclose<CR>
 
 " use Ctrl+n to save and then hop to next quickfix item
 map <C-n> :w<CR>:cn<CR>
@@ -170,5 +170,5 @@ imap <Tab> <C-n>
 " command shortcuts
 command! -range=% TidyCSS :<line1>,<line2>!css-quick-format
 command! -range=% TidyHTML :<line1>,<line2>!tidy -i -q -xml -w 0
-map <leader>s :TidyCSS<CR>
-map <leader>h :TidyHTML<CR>
+map <Leader>s :TidyCSS<CR>
+map <Leader>h :TidyHTML<CR>
