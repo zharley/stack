@@ -9,7 +9,7 @@ if [ -n "$1" ]; then
 fi
 
 while [ 1 ]; do
-  MY_FILE="`date +%Y-%m-%d-%I%M%S`.png"
+  MY_FILE="`date +%Y-%m-%d-%H%M%S`.png"
   echo "=> Select area to capture or click window"
   scrot $MY_PARAMS "$MY_FILE"
   echo "=> Captured: $MY_FILE"
