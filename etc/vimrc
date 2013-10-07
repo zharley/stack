@@ -121,8 +121,10 @@ let g:jellybeans_overrides = {
 \ }
 
 " set colour scheme (must be after overrides)
-set t_Co=256
-colorscheme jellybeans
+if $TERM == 'xterm-256color'
+   set t_Co=256
+   colorscheme jellybeans
+endif
 
 "-------------------------------------------------------------------------------
 " KEYBOARD 
@@ -136,12 +138,11 @@ map <Leader>a :Align
 map <Leader>r :UtilPowerReplace 
 map <Leader>q :UtilQuickfixToArgs<CR>
 map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
-map <Leader>n :wincmd w<CR>
-map <Leader>q :tabclose<CR>
 
-" use Ctrl+k and Ctrl+j to switch between open tabs
+" use Ctrl+k and Ctrl+j to switch between open tabs, Ctrl+x to close
 map <C-k> gT
 map <C-j> gt
+map <C-x> :tabclose<CR>
 
 " use Ctrl+n to save and then hop to next quickfix item
 map <C-n> :w<CR>:cn<CR>
