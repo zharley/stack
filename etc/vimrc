@@ -139,10 +139,13 @@ map <Leader>r :UtilPowerReplace
 map <Leader>q :UtilQuickfixToArgs<CR>
 map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 
-" use Ctrl+k and Ctrl+j to switch between open tabs, Ctrl+x to close
+" use Ctrl+q for the usual Ctrl+w
+nnoremap <C-q> <C-w>
+
+" use Ctrl+k and Ctrl+j to switch between open tabs, Ctrl+w to close
 map <C-k> gT
 map <C-j> gt
-map <C-x> :tabclose<CR>
+map <C-w> :tabclose<CR>
 
 " use Ctrl+n to save and then hop to next quickfix item
 map <C-n> :w<CR>:cn<CR>
