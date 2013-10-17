@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` hostname"
+    exit 1
+fi
+
+MY_HOST="$1"
+
+while [ 1 ]; do
+    MY_TIMESTAMP=`date +%Y%m%d%H%M%S`
+    echo -n "$MY_TIMESTAMP,"
+
+    MY_RESULT=`ping -n -c 1 $MY_HOST | grep time=`
+    if [ $? -eq 0 ]; then
+        echo $MY_RESULT | awk '{ print $(NF-1) }' | sed 's/time=//'
+    else
+        echo 0
+    fi
+
+    sleep 0.5
+done
