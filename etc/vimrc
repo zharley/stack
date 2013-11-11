@@ -104,13 +104,13 @@ let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:50'
 
 " Color overrides
 let g:jellybeans_overrides = {
-   \ 'Comment':     { 'guifg': 'B3B3B3' },
+   \ 'Comment':     { 'guifg': 'A1A1A1' },
    \ 'Constant':    { 'guifg': 'FFA0A0' },
    \ 'Define':      { 'guifg': 'FFD700', 'attr': 'bold' },
    \ 'Identifier':  { 'guifg': 'E9967A' },
    \ 'IncSearch':   { 'guibg': '666666' },
    \ 'LineNr':      { 'guifg': '666666', 'guibg': '232323' },
-   \ 'Normal':      { 'guibg': '232323' },
+   \ 'Normal':      { 'guifg': 'E5E5E5', 'guibg': '232323' },
    \ 'NonText':     { 'guibg': '232323' },
    \ 'Operator':    { 'guifg': 'FF0000' },
    \ 'Search':      { 'guibg': 'A0522D', 'guifg': 'FFFFFF' },
