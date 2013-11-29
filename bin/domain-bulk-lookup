@@ -1,7 +1,10 @@
 #!/usr/bin/ruby
 
+STDOUT.sync = true
+
 def lookup_line(line)
   domain = line.chomp
+  
   result = `host '#{domain}'`
   address = $1
 
