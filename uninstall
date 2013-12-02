@@ -1,0 +1,107 @@
+#! /bin/bash
+set -e
+
+################################################################################
+## HELPER FUNCTIONS ############################################################
+################################################################################
+
+say() {
+    echo -e "=> $1"
+}
+
+unlink_file() {
+    if [ "$1" -ef "$2" ]; then
+        say "[$MY_OK] Unlinking file $1 => $2"
+        unlink "$2"
+    else
+        say "[skip] File symlink does not exist $1 => $2"
+    fi
+}
+
+unlink_dir() {
+    if [ "$1" -ef "$2" ]; then
+        say "[$MY_OK] Unlinking directory $1 => $2"
+        unlink "$2"
+    else
+        say "[skip] Directory symlink does not exist $1 => $2"
+    fi
+}
+
+################################################################################
+## VARIABLES ###################################################################
+################################################################################
+
+# autodetect stack directories
+MY_MAIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+MY_BIN_DIR="$(cd "$MY_MAIN_DIR/bin" && pwd)"
+MY_ETC_DIR="$(cd "$MY_MAIN_DIR/etc" && pwd)"
+
+# paths to particular files and directories
+MY_ALIASES_PATH="$MY_ETC_DIR/aliases"
+MY_BASHRC_PATH="$HOME/.bashrc"
+
+# code fragment to add stack/bin to the path
+MY_INCLUDE_BIN="
+# include stack bin
+if [ -d \"$MY_BIN_DIR\" ]; then
+    PATH=\"$MY_BIN_DIR:\$PATH\"
+fi"
+
+# code fragment to include aliases in bashrc
+MY_INCLUDE_ALIASES="
+# include stack aliases
+if [ -f \"$MY_ALIASES_PATH\" ]; then
+    . \"$MY_ALIASES_PATH\"
+fi"
+
+# colours
+MY_RED='\e[0;31m'
+MY_GREEN='\e[0;32m'
+MY_NORMAL='\033[0m'
+
+# messages
+MY_OK="${MY_GREEN}ok${MY_NORMAL}"
+
+################################################################################
+## INSTALLATION STEPS ##########################################################
+################################################################################
+
+cd "$MY_MAIN_DIR"
+
+say "Stack bin directory: $MY_BIN_DIR"
+say "Stack etc directory: $MY_ETC_DIR"
+
+# change back to Bash
+if which zsh > /dev/null; then
+    MY_ZSH_PATH="$(which zsh)"
+    MY_BASH_PATH="$(which bash)"
+
+    if [ "$SHELL" == "$MY_ZSH_PATH" ]; then
+        read -p "=> Change shell to $MY_BASH_PATH (y)? " MY_ANSWER
+        if test "$MY_ANSWER" != "y"; then
+            say "Skipped."
+        else
+            chsh -s $MY_BASH_PATH
+        fi
+    fi
+fi
+
+# remove symlinks
+unlink_file "$MY_ETC_DIR/vimrc" "$HOME/.vimrc"
+unlink_file "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
+unlink_dir "$MY_ETC_DIR/vim" "$HOME/.vim"
+unlink_file "$MY_ETC_DIR/zshrc" "$HOME/.zshrc"
+
+# remove (more) symlinks
+if [ -n "$DISPLAY" ]; then
+    unlink_file "$MY_ETC_DIR/xmonad.hs" "$HOME/.xmonad/xmonad.hs"
+    unlink_file "$MY_ETC_DIR/xmobar.hs" "$HOME/.xmonad/xmobar.hs"
+    unlink_file "$MY_ETC_DIR/xsession" "$HOME/.xsession"
+    unlink_file "$MY_ETC_DIR/gtkrc-2.0" "$HOME/.gtkrc-2.0"
+else
+   say "No display detected, so skip x-related symlinks."
+fi
+
+# done
+say "Done!"
+say "Note: You may have to logout and log back in to see the result."
