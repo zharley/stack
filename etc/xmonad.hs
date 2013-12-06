@@ -115,18 +115,20 @@ myStartup = do
 main = do
     xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
     xmonad $ defaultConfig {
-        terminal          = myTerminal,
-        workspaces        = myWorkspaces,
-        focusFollowsMouse = True,
-        borderWidth       = 1,
-        manageHook        = manageDocks <+> myManageHook <+>
-                            manageHook defaultConfig,
-        layoutHook        = myLayout,
-        startupHook       = myStartup,
-        logHook           = dynamicLogWithPP $ xmobarPP {
-                              ppOutput = hPutStrLn xmproc
-                            , ppTitle = xmobarColor "white" "" . shorten 100
-                            },
+        terminal           = myTerminal,
+        workspaces         = myWorkspaces,
+        focusFollowsMouse  = True,
+        borderWidth        = 1,
+        normalBorderColor  = "#666666",
+        focusedBorderColor = "#5F87FF",
+        manageHook         = manageDocks <+> myManageHook <+>
+                             manageHook defaultConfig,
+        layoutHook         = myLayout,
+        startupHook        = myStartup,
+        logHook            = dynamicLogWithPP $ xmobarPP {
+                               ppOutput = hPutStrLn xmproc
+                             , ppTitle = xmobarColor "white" "" . shorten 100
+                             },
         modMask = mod4Mask     -- Rebind Mod to the Windows key
      } `additionalKeys`
      myKeys
