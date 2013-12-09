@@ -2,40 +2,46 @@
 
 set -e
 
-# the first parameter is the application name
+# The first parameter is the application name (required)
 MY_APP="$1"
-
-# app must be specified
 if [ -z "$MY_APP" ]; then
     echo "Usage: `basename $0` appname [password]"
     exit 1
 fi
 
-# the second (optional) parameter is the password 
+# The second parameter is the password (optional)
 MY_PASSWORD="$2"
 
-# set a random password with pwgen
+# Generate a random password with pwgen if one was not specified
 if [ -z "$MY_PASSWORD" ]; then
-    # length=12, count=1
-    MY_PASSWORD=`pwgen -s 12 1`
+    if which pwgen; then
+        # length=12, count=1
+        MY_PASSWORD=`pwgen -s 12 1`
+    else
+        echo "=> Could not auto-generate password (apt-get install pwgen)"
+        exit 1
+    fi
 fi
 
-# build MySQL command
-MY_COMMAND="DROP DATABASE IF EXISTS $MY_APP; \
-CREATE DATABASE $MY_APP; \
+# Build MySQL command
+MY_COMMAND="CREATE DATABASE $MY_APP; \
 GRANT ALL ON ${MY_APP}.* TO '$MY_APP'@'localhost' \
 IDENTIFIED BY '$MY_PASSWORD'; \
 GRANT ALL ON ${MY_APP}.* TO '$MY_APP'@'%' \
 IDENTIFIED BY '$MY_PASSWORD';"
 
-# run MySQL command
-mysql -u root -e "$MY_COMMAND"
+# Run MySQL command
+if ! mysql -u root -e "$MY_COMMAND"; then
+    echo "=> MySQL command failed:"
+    echo "$MY_COMMAND"
 
-echo "=> Running:"
-echo "$MY_COMMAND"
+    echo "=> If the database already exists, you may want to: DROP DATABASE $MY_APP;"
+    exit 1
+fi
+
 echo "=> Database for application '$MY_APP' initialized."
 
 if [ -z "$2" ]; then
-    # no password was specified
+    # No password was specified, so show 
     echo "=> Generated password: $MY_PASSWORD"
 fi
