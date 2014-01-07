@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+# The first parameter is the application name (required)
+MY_APP="$1"
+if [ -z "$MY_APP" ]; then
+    echo "Usage: `basename $0` appname [password]"
+    exit 1
+fi
+
+# The second parameter is the password (optional)
+MY_PASSWORD="$2"
+
+# Generate a random password with pwgen if one was not specified
+if [ -z "$MY_PASSWORD" ]; then
+    if which pwgen > /dev/null; then
+        # length=12, count=1
+        MY_PASSWORD=`pwgen -s 12 1`
+    else
+        echo "=> Could not auto-generate password (apt-get install pwgen)"
+        exit 1
+    fi
+fi
+
+# Build PostgreSQL command #1
+MY_COMMAND="CREATE DATABASE $MY_APP"
+
+# Run PostgreSQL command #1
+if ! psql -c "$MY_COMMAND"; then
+    echo "=> PostgreSQL command failed:"
+    echo "$MY_COMMAND"
+
+    echo "=> If the database already exists, you may want to:"
+    echo "   psql -c \"DROP DATABASE $MY_APP\""
+    echo "=> If the role already exists, you may want to also:"
+    echo "   psql -c \"DROP ROLE $MY_APP\""
+    exit 1
+fi
+
+# Build PostgreSQL command #2
+MY_COMMAND="CREATE USER $MY_APP WITH PASSWORD '$MY_PASSWORD'; \
+GRANT ALL PRIVILEGES ON DATABASE $MY_APP TO $MY_APP;"
+
+# Run PostgreSQL command #2
+if ! psql -c "$MY_COMMAND"; then
+    echo "=> PostgreSQL command failed:"
+    echo "$MY_COMMAND"
+
+    echo "=> If the role already exists, you may want to also:"
+    echo "   psql -c \"DROP ROLE $MY_APP\""
+    exit 1
+fi
+
+echo "=> PostgreSQL application '$MY_APP' initialized."
+
+if [ -z "$2" ]; then
+    # No password was specified, so show 
+    echo "=> Generated password: $MY_PASSWORD"
+fi

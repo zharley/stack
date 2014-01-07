@@ -14,7 +14,7 @@ MY_PASSWORD="$2"
 
 # Generate a random password with pwgen if one was not specified
 if [ -z "$MY_PASSWORD" ]; then
-    if which pwgen; then
+    if which pwgen > /dev/null; then
         # length=12, count=1
         MY_PASSWORD=`pwgen -s 12 1`
     else
@@ -39,7 +39,7 @@ if ! mysql -u root -e "$MY_COMMAND"; then
     exit 1
 fi
 
-echo "=> Database for application '$MY_APP' initialized."
+echo "=> MySQL application '$MY_APP' initialized."
 
 if [ -z "$2" ]; then
     # No password was specified, so show 
