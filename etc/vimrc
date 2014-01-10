@@ -171,6 +171,10 @@ nnoremap <Leader>p :let @*=expand("%")<CR>
 " use Tab to initiate autocomplete
 imap <Tab> <C-n>
 
+" launch nerd tree
+map <Leader>b :NERDTreeToggle<CR>
+let g:NERDTreeDirArrows=0
+
 " command shortcuts
 command! -range=% TidyCSS :<line1>,<line2>!css-quick-format
 command! -range=% TidyHTML :<line1>,<line2>!tidy -i -q -xml -w 0
