@@ -1,0 +1,13 @@
+#! /bin/bash
+set -e
+
+# Optionally accept new working directory as parameter
+if [ -n "$1" ]; then
+    cd "$1"
+fi
+
+echo "=> File and directory count:"
+find . | wc -l
+
+echo "=> Total directory size:"
+du -sh | awk '{ print $1 }'
