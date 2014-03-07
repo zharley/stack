@@ -26,6 +26,7 @@ if test "$MY_ANSWER" != "y"; then
     say "Skipped."
 else
     sudo -u postgres createuser -s $USER
+    sudo -u postgres createdb $USER
 fi
 
 # Set a dummy password for the postgres user, for convenience during development.
