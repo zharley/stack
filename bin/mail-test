@@ -1,0 +1,21 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` user@example.com"
+    exit 1
+fi
+
+MY_RECIPIENT="$1"
+MY_SENDER="$USER@`hostname`"
+MY_SUBJECT="Test from `hostname`"
+
+cat << EOF | sendmail -f $MY_SENDER $MY_RECIPIENT
+Subject: $MY_SUBJECT
+To: $MY_RECIPIENT
+From: $MY_SENDER
+If you've received this message, then the server is able to send email. 
+EOF
+
+echo "=> Message with the subject '$MY_SUBJECT' has been sent from $MY_SENDER to $MY_RECIPIENT"
