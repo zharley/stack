@@ -39,7 +39,7 @@ end
 filename = ARGV[0]
 
 # detect supported extensions on filename
-unless File.basename(filename) =~ /(.+)(\.zip|\.tgz|\.tbz|\.tar\.gz|\.tar\.bz2|\.rar)$/
+unless File.basename(filename) =~ /(.+)(\.zip|\.tgz|\.tbz|\.tar\.gz|\.tar\.bz2|\.rar|\.tar\.xz)$/
   puts "=> Don't know what to do with that file!"
   exit 1
 end
@@ -88,6 +88,13 @@ elsif extension == ".tar.bz2" or extension == ".tbz"
   # -j     filter the archive through bzip2
   # -f     use archive file or device ARCHIVE
   cmd = "tar xj -f '#{path}'"
+elsif extension == ".tar.xz"
+  # xz tar
+  #
+  # -x     extract files from an archive
+  # -J     filter the archive through xz
+  # -f     use archive file or device ARCHIVE
+  cmd = "tar xJ -f '#{path}'"
 elsif extension == ".rar"
   # rar
   #
