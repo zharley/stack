@@ -171,6 +171,14 @@ nnoremap <Leader>p :let @*=expand("%")<CR>
 " use Tab to initiate autocomplete
 imap <Tab> <C-n>
 
+" enable easy line indenting by pressing > or <, instead of >> or <<.
+:nnoremap > >>
+:nnoremap < <<
+
+" preserve selection after (un-)indenting selected lines.
+:vnoremap > >gv
+:vnoremap < <gv
+
 " launch nerd tree
 map <Leader>b :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
