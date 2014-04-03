@@ -13,3 +13,6 @@ style "vimfix"
 }
 
 widget "vim-main-window.*GtkForm" style "vimfix"
+
+# can be any theme name in /usr/share/icons
+gtk-icon-theme-name = "Humanity"
