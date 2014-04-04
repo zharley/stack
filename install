@@ -25,7 +25,7 @@ symlink_dir() {
         say "[skip] Directory symlink exists $1 => $2"
     else
         # -T  treat LINK_NAME as a normal file
-        ln -sivT "$1" "$2"
+        ln -siv "$1" "$2"
     fi
 }
 
