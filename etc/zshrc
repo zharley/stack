@@ -146,9 +146,9 @@ setopt HIST_VERIFY
 ################################################################################
 
 # Determine stack directories
-MY_ZSHRC_FILE=$(readlink -f ~/.zshrc)
-MY_ETC_DIR=$(dirname $MY_ZSHRC_FILE)
-MY_BIN_DIR=$(readlink -f "$MY_ETC_DIR/../bin")
+MY_ZSHRC_FILE="$HOME/.zshrc"
+MY_ETC_DIR=${MY_ZSHRC_FILE:A:h}
+MY_BIN_DIR="${MY_ETC_DIR:h}/bin"
 
 # Add stack bin to path
 if [ -d "$MY_BIN_DIR" ]; then
