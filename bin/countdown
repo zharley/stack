@@ -8,8 +8,8 @@ if [ -z "$1" ]; then
 fi
 
 MY_TIME="$1"
-MY_RED='\e[0;31m'
-MY_GREEN='\e[0;32m'
+MY_RED='\033[0;31m'
+MY_GREEN='\033[0;32m'
 MY_NORMAL='\033[0m'
 
 echo -e "[$MY_GREEN********** Start *********$MY_NORMAL]"
