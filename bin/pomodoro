@@ -8,6 +8,17 @@ say() {
     echo -ne "=> [$MY_TIME] $1"
 }
 
+# produce notification
+notify() {
+    if which notify-send > /dev/null; then
+        notify-send "$1" "$2" --icon "$MY_ETC/pomodoro.png" --expire-time=300000
+    elif which terminal-notifier > /dev/null; then
+        terminal-notifier -title "$1" -message "$2" -appIcon "$MY_ETC/pomodoro.png" 
+    else
+        say "$1 $2"
+    fi
+}
+
 # optional first parameter is a path to a log file
 MY_LOG="$1"
 if [ -z "$MY_LOG" ]; then
@@ -39,8 +50,7 @@ for (( i = 1; ; i++ )); do
   
     # count 25 minutes of work time
     countdown 25 
-    notify-send "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION" \
-        --icon "$MY_ETC/pomodoro.png" --expire-time=300000 # 5 minutes expiry
+    notify "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION"
     say "Press ENTER to continue." && read
 
     # mark start of break cycle
@@ -48,7 +58,6 @@ for (( i = 1; ; i++ )); do
   
     # count 5 minutes of break time
     countdown 5
-    notify-send "Pomodoro - Break cycle #$i complete" "$MY_DESCRIPTION" \
-        --icon "$MY_ETC/pomodoro.png" --expire-time=300000
+    notify "Pomodoro - Break cycle #$i complete" "$MY_DESCRIPTION"
     say "Press ENTER to continue." && read
 done
