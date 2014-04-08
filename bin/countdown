@@ -16,7 +16,7 @@ echo -e "[$MY_GREEN********** Start *********$MY_NORMAL]"
 for (( i = $MY_TIME; i > 0; i-- ))
 do
   echo -n "$i..."
-  sleep 1m
+  sleep 60
 done
 
 echo -e "\n[$MY_RED********** Done **********$MY_NORMAL]"
