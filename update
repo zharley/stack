@@ -17,7 +17,6 @@ if [ -n "$1" ]; then
     MY_COUNT=`find "$MY_FLAG" -mtime -$MY_INTERVAL -depth 0 | wc -l`
 
     if [ $MY_COUNT -gt 0 ]; then
-        echo "=> Skipping update"
         exit
     else
         echo "=> Missing or outdated flag $MY_FLAG" 
