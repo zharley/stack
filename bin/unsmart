@@ -141,7 +141,7 @@ else
 end
 
 # create temp directory
-tempdir = `mktemp -d`.chomp
+tempdir = `mktemp -d tmp.XXXXXXXXXX`.chomp
 
 # execute command in the temp directory
 old = Dir.pwd
