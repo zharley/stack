@@ -7,24 +7,20 @@ MY_DIR="$(cd "$(dirname "$0")" && pwd)"
 # flag of last successful update
 MY_FLAG="$MY_DIR/.last-update"
 
-# optional parameter indicating minimum update interval in seconds
-# (i.e. do not update unless it has been X seconds since last update)
+# optional parameter indicating minimum update interval in find-compatible time
+# (i.e. do not update unless it has been X time since last update)
 if [ -n "$1" ]; then
     # minimum interval was specified
     MY_INTERVAL="$1"
+    
+    # see if flag file exists within that interval
+    MY_COUNT=`find "$MY_FLAG" -mtime -$MY_INTERVAL -depth 0 | wc -l`
 
-    if [ -f "$MY_FLAG" ]; then
-        # flag exists, compute age
-        MY_AGE=$((`date +%s` - `stat -c %Z $MY_FLAG`)) 
-
-        if [ $MY_AGE -lt $MY_INTERVAL ]; then
-            # skip update
-            exit
-        else
-            echo "=> More than $MY_INTERVAL seconds since last update ($MY_AGE seconds)" 
-        fi
+    if [ $MY_COUNT -gt 0 ]; then
+        echo "=> Skipping update"
+        exit
     else
-        echo "=> First update ($MY_FLAG does not exist)" 
+        echo "=> Missing or outdated flag $MY_FLAG" 
     fi
 fi
 
