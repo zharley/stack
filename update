@@ -1,25 +1,30 @@
 #! /bin/bash
 set -e
 
-# compute main stack directory based on the location of this script
+# Compute main stack directory based on the location of this script
 MY_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# flag of last successful update
+# Flag of last successful update
 MY_FLAG="$MY_DIR/.last-update"
 
-# optional parameter indicating minimum update interval in find-compatible time
+# Optional parameter indicating minimum update interval in find-compatible time
 # (i.e. do not update unless it has been X time since last update)
 if [ -n "$1" ]; then
-    # minimum interval was specified
+    # Minimum interval was specified
     MY_INTERVAL="$1"
     
-    # see if flag file exists within that interval
-    MY_COUNT=`find "$MY_FLAG" -mtime -$MY_INTERVAL -depth 0 | wc -l`
+    MY_COUNT=0
+    if [ -f "$MY_FLAG" ]; then
+        # Find a flag file within that interval
+        MY_COUNT=`find "$MY_FLAG" -mtime -$MY_INTERVAL -maxdepth 0 | wc -l`
 
-    if [ $MY_COUNT -gt 0 ]; then
-        exit
+        if [ $MY_COUNT -gt 0 ]; then
+            exit
+        fi
+
+        echo "=> Flag $MY_FLAG is outdated, performing update."
     else
-        echo "=> Missing or outdated flag $MY_FLAG" 
+        echo "=> Missing update flag $MY_FLAG, performing update."
     fi
 fi
 
@@ -31,5 +36,5 @@ git pull
 echo "=> Re-installing..." 
 ./install
 
-# update flag
+# Update timestamp on flag file
 touch "$MY_FLAG"
