@@ -132,59 +132,59 @@ endif
 
 " map leader and often-used shortcuts
 let mapleader=","
-map <Leader>t :call util#BeginFinder()<CR>
-map <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
-map <Leader>a :Align 
-map <Leader>r :UtilPowerReplace 
-map <Leader>q :UtilQuickfixToArgs<CR>
-map <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
+noremap <Leader>t :call util#BeginFinder()<CR>
+noremap <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
+noremap <Leader>a :Align
+noremap <Leader>r :UtilPowerReplace
+noremap <Leader>q :UtilQuickfixToArgs<CR>
+noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i
 
 " use Ctrl+q for the usual Ctrl+w
 nnoremap <C-q> <C-w>
 
 " use Ctrl+k and Ctrl+j to switch between open tabs, Ctrl+w to close
-map <C-k> gT
-map <C-j> gt
-map <C-w> :tabclose<CR>
+noremap <C-k> gT
+noremap <C-j> gt
+noremap <C-w> :tabclose<CR>
 
 " use Ctrl+n to save and then hop to next quickfix item
-map <C-n> :w<CR>:cn<CR>
+noremap <C-n> :w<CR>:cn<CR>
 
 " write to file
-map <Leader><Leader> :w<CR>
+noremap <Leader><Leader> :w<CR>
 
 " cut, copy, paste
-map <Leader>x "+x
-map <Leader>c "+y
-map <Leader>v "+gP
+noremap <Leader>x "+x
+noremap <Leader>c "+y
+noremap <Leader>v "+gP
 
 " delete without destroying buffer
-map <Leader>d "_d
+noremap <Leader>d "_d
 
 " switch to usual indents
-map <Leader>4 :set tabstop=4 softtabstop=4 shiftwidth=4 expandtab<CR>
-map <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2 expandtab<CR>
+noremap <Leader>4 :set tabstop=4 softtabstop=4 shiftwidth=4 expandtab<CR>
+noremap <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2 expandtab<CR>
 
 " pull full path name into paste buffer for attachment to email etc
 nnoremap <Leader>p :let @*=expand("%")<CR>
 
 " use Tab to initiate autocomplete
-imap <Tab> <C-n>
+inoremap <Tab> <C-n>
 
 " enable easy line indenting by pressing > or <, instead of >> or <<.
-:nnoremap > >>
-:nnoremap < <<
+nnoremap > >>
+nnoremap < <<
 
 " preserve selection after (un-)indenting selected lines.
-:vnoremap > >gv
-:vnoremap < <gv
+vnoremap > >gv
+vnoremap < <gv
 
 " launch nerd tree
-map <Leader>b :NERDTreeToggle<CR>
+noremap <Leader>b :NERDTreeToggle<CR>
 let g:NERDTreeDirArrows=0
 
 " command shortcuts
 command! -range=% TidyCSS :<line1>,<line2>!css-quick-format
 command! -range=% TidyHTML :<line1>,<line2>!tidy -i -q -xml -w 0
-map <Leader>s :TidyCSS<CR>
-map <Leader>h :TidyHTML<CR>
+noremap <Leader>s :TidyCSS<CR>
+noremap <Leader>h :TidyHTML<CR>
