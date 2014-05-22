@@ -162,8 +162,8 @@ noremap <Leader>v "+gP
 noremap <Leader>d "_d
 
 " switch to usual indents
-noremap <Leader>4 :set tabstop=4 softtabstop=4 shiftwidth=4 expandtab<CR>
-noremap <Leader>2 :set tabstop=2 softtabstop=2 shiftwidth=2 expandtab<CR>
+noremap <Leader>4 :set tabstop=8 softtabstop=4 shiftwidth=4 expandtab<CR>
+noremap <Leader>2 :set tabstop=4 softtabstop=2 shiftwidth=2 expandtab<CR>
 
 " pull full path name into paste buffer for attachment to email etc
 nnoremap <Leader>p :let @*=expand("%")<CR>
