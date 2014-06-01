@@ -38,6 +38,9 @@ set guioptions-=T
 set guioptions-=m
 set guioptions-=r
 
+" set a nice default font
+set guifont=Source\ Code\ Pro\ Light:h13
+
 " prevent overflowing output when doing find-in-files
 set nomore	
 
@@ -76,6 +79,9 @@ set lbr
 
 " enable mouse in xterm
 set mouse=a
+
+" use the system clipboard with vim
+set clipboard=unnamed
 
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION

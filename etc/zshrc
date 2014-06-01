@@ -102,6 +102,9 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # use special move command for easy renaming
 autoload -Uz zmv
 
+# use the stat built-in for resolving symlinks
+zmodload -a zsh/stat stat
+
 ################################################################################
 ## OPTIONS #####################################################################
 ################################################################################
@@ -146,8 +149,8 @@ setopt HIST_VERIFY
 ################################################################################
 
 # Determine stack directories
-MY_ZSHRC_FILE="$HOME/.zshrc"
-MY_ETC_DIR=${MY_ZSHRC_FILE:A:h}
+MY_ZSHRC_FILE=`stat +link $HOME/.zshrc`
+MY_ETC_DIR=${MY_ZSHRC_FILE:h}
 MY_BIN_DIR="${MY_ETC_DIR:h}/bin"
 
 # Add stack bin to path
