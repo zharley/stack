@@ -141,7 +141,7 @@ let mapleader=","
 noremap <Leader>t :call util#BeginFinder()<CR>
 noremap <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
 noremap <Leader>a :Align
-noremap <Leader>r :UtilPowerReplace
+noremap <Leader>r :UtilPowerReplace 
 noremap <Leader>q :UtilQuickfixToArgs<CR>
 noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i
 
