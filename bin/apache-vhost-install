@@ -12,10 +12,10 @@ MY_DOMAIN="$2"
 
 # install a basic apache config
 apache-vhost $MY_DIRECTORY $MY_DOMAIN | \
-  sudo tee /etc/apache2/sites-available/$MY_DOMAIN
+  sudo tee /etc/apache2/sites-available/$MY_DOMAIN.conf
 
 # customize the apache config (if desired)
-sudo vim /etc/apache2/sites-available/$MY_DOMAIN
+sudo vim /etc/apache2/sites-available/$MY_DOMAIN.conf
 
 # enable site and reload
 sudo a2ensite $MY_DOMAIN
