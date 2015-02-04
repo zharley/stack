@@ -42,3 +42,6 @@
 [submodule "nerdtree"]
 	path = etc/vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
+[submodule "etc/vim/bundle/vim-dict"]
+	path = etc/vim/bundle/vim-dict
+	url = https://github.com/szw/vim-dict.git
