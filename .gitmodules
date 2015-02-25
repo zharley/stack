@@ -45,3 +45,4 @@
 [submodule "etc/vim/bundle/vim-dict"]
 	path = etc/vim/bundle/vim-dict
 	url = https://github.com/szw/vim-dict.git
+	ignore = dirty
