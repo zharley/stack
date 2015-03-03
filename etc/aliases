@@ -147,9 +147,6 @@ alias upgrade='sudo sh -c "apt-get update && apt-get upgrade"'
 # show info on connected SATA drives
 alias sd='dmesg | grep "\[sd.\]"'
 
-# show hard-drive temperatures for /dev/sda and /dev/sdb
-alias -g temp='sudo hddtemp /dev/sda && sudo hddtemp /dev/sdb'
-
 # show battery information
 alias batt="acpi | awk '{ print \$4 \$5 }' | sed 's/,/ /'"
 
