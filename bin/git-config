@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 
-# check for presence of parameters
+# Check for presence of parameters
 if [ -z "$1" ] || [ -z "$2" ]; then
     echo "Usage: `basename $0` 'End User' mail@example.com"
     exit 1
@@ -16,3 +16,6 @@ git config --global color.branch auto
 
 git config --global user.name "$MY_NAME"
 git config --global user.email "$MY_EMAIL"
+
+# Squelch nag message and adopt the new new Git 2.0 default setting
+git config --global push.default simple
