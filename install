@@ -113,7 +113,8 @@ fi
 
 # install symlinks
 if [ "$MY_ETC_DIR/vimrc" -ef "$HOME/.vimrc" ] && [ "$MY_ETC_DIR/ackrc" -ef "$HOME/.ackrc" ] && 
-   [ "$MY_ETC_DIR/vim" -ef "$HOME/.vim" ] && [ "$MY_ETC_DIR/zshrc" -ef "$HOME/.zshrc" ]; then
+   [ "$MY_ETC_DIR/vim" -ef "$HOME/.vim" ] && [ "$MY_ETC_DIR/zshrc" -ef "$HOME/.zshrc" ] &&
+   [ "$MY_ETC_DIR/ssh_config" -ef "$HOME/.ssh/config" ]; then
     say "[$MY_OK] Looks like all desirable console-related symlinks are set"
 else
     # preview step
@@ -128,6 +129,8 @@ else
         symlink_file "$MY_ETC_DIR/ackrc" "$HOME/.ackrc"
         symlink_dir "$MY_ETC_DIR/vim" "$HOME/.vim"
         symlink_file "$MY_ETC_DIR/zshrc" "$HOME/.zshrc"
+        mkdir -p "$HOME/.ssh"
+        symlink_file "$MY_ETC_DIR/ssh_config" "$HOME/.ssh/config"
     fi
 fi
 
