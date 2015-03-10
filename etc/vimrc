@@ -149,7 +149,7 @@ noremap <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
 noremap <Leader>a :Align
 noremap <Leader>r :UtilPowerReplace 
 noremap <Leader>q :UtilQuickfixToArgs<CR>
-noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i
+noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
 
 " use Ctrl+q for the usual Ctrl+w
 nnoremap <C-q> <C-w>
