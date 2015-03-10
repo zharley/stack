@@ -1,0 +1,25 @@
+#! /bin/bash
+set -e
+
+echo "[ Cheatsheet for current Git repo ]"
+
+if [ ! -d ".git" ]; then 
+    echo "=> No .git directory found. Not a repo."
+    exit 1
+fi
+
+
+MY_REMOTE_ORIGIN_URL=$(git config --get remote.origin.url)
+echo "* Remote origin    : $MY_REMOTE_ORIGIN_URL"
+
+MY_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+echo "* Current branch   : $MY_CURRENT_BRANCH"
+
+if [[ $MY_REMOTE_ORIGIN_URL == "https://github.com/"* ]]; then
+    echo -e "\n* GitHub URL       : $MY_REMOTE_ORIGIN_URL/tree/$MY_CURRENT_BRANCH"
+    echo "* Compare to master: $MY_REMOTE_ORIGIN_URL/compare/master...$MY_CURRENT_BRANCH"
+    echo "* Compare to dev   : $MY_REMOTE_ORIGIN_URL/compare/dev...$MY_CURRENT_BRANCH"
+
+    echo -e "\n* All pulls        : https://github.com/pulls"
+    echo -e "* Assigned pulls   : https://github.com/pulls/assigned"
+fi
