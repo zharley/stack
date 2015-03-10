@@ -42,6 +42,12 @@ puts <<EOF
     
     DocumentRoot #{dir_path}
 
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride all
+        Allow from all
+    </Directory>
+
     # Symfony 1.0
     # Alias /sf #{dir_path}/../lib/vendor/symfony/data/web/sf
     
