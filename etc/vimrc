@@ -83,6 +83,9 @@ set mouse=a
 " use the system clipboard with vim
 set clipboard=unnamed
 
+" disable folding
+set nofoldenable
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
