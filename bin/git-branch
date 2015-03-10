@@ -1,0 +1,15 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` branch_name"
+    exit 1
+fi
+
+MY_BRANCH="$1"
+
+echo "=> Creating new branch: $MY_BRANCH"
+
+git checkout -b "$MY_BRANCH"
+git push --set-upstream origin "$MY_BRANCH"
