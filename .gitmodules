@@ -1,10 +1,11 @@
 [submodule "etc/vim/bundle/syntastic"]
 	path = etc/vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
+	ignore = dirty
 [submodule "etc/vim/bundle/align"]
 	path = etc/vim/bundle/align
 	url = https://github.com/pix/vim-align.git
-        ignore = dirty
+	ignore = dirty
 [submodule "etc/vim/bundle/pathogen"]
 	path = etc/vim/bundle/pathogen
 	url = https://github.com/tpope/vim-pathogen.git
@@ -14,7 +15,7 @@
 [submodule "etc/vim/bundle/detectindent"]
 	path = etc/vim/bundle/detectindent
 	url = https://github.com/ciaranm/detectindent.git
-        ignore = dirty
+	ignore = dirty
 [submodule "etc/vim/bundle/surround"]
 	path = etc/vim/bundle/surround
 	url = git://github.com/tpope/vim-surround.git
