@@ -4,7 +4,7 @@ set -e
 # output with time of day
 say() {
     # get time of day
-    MY_TIME=`date "+%l:%M%P"`
+    MY_TIME=`date "+%l:%M%p"`
     echo -ne "=> [$MY_TIME] $1"
 }
 
@@ -40,7 +40,7 @@ for (( i = 1; ; i++ )); do
         # log to file
         say "Work cycle #$i: "
         read MY_DESCRIPTION
-        MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%P"`
+        MY_TIMESTAMP=`date "+%Y-%m-%d %l:%M%p"`
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION"
         echo -e "$MY_TIMESTAMP\t$MY_DESCRIPTION" >> "$MY_LOG"
     else
@@ -49,7 +49,7 @@ for (( i = 1; ; i++ )); do
     fi
   
     # count 25 minutes of work time
-    countdown 25 
+    countdown 25
     notify "Pomodoro - Work cycle #$i complete" "$MY_DESCRIPTION"
     say "Press ENTER to continue." && read
 
