@@ -1,0 +1,39 @@
+#!/usr/bin/ruby
+
+# Provide repeatable selection prompt
+def get_pick(count)
+  prompt = "=> Pick one or hit ^C to cancel [1-#{count}]: "
+  pick = nil
+
+  while pick.nil? do
+    print prompt
+    pick = STDIN.gets.chomp.to_i
+    pick = nil if pick < 1 or pick > count
+  end
+
+  pick
+end
+
+# Get local branches (without leading *)
+branches = `git for-each-ref --format='%(refname:short)' refs/heads/`.split("\n")
+
+# Remove special names from the list
+branches.delete "master"
+branches.delete "dev"
+
+# List branches
+puts "=> Delete which branch?"
+count = 0
+for branch in branches
+  count += 1
+  puts "%2d. %s" % [ count, branch ]
+end
+
+# Get selection
+pick ||= get_pick(count)
+pick = pick.to_i
+raise "Invalid pick" if pick < 1 || pick > count
+
+# Delete the branch
+`git branch -D #{branches[pick - 1]}`
+puts "=> Done!"
