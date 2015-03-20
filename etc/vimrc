@@ -86,6 +86,10 @@ set clipboard=unnamed
 " disable folding
 set nofoldenable
 
+" prefer to place swap file in ~/tmp if possible
+" \\ indicates that the swap file name will be build from complete path
+set directory=~/tmp//,.
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
