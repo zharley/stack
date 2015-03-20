@@ -1,0 +1,45 @@
+#!/usr/bin/ruby
+
+# Provide repeatable selection prompt
+def get_pick(count)
+  prompt = "=> Pick one or hit ^C to cancel [1-#{count}]: "
+  pick = nil
+
+  while pick.nil? do
+    print prompt
+    pick = STDIN.gets.chomp.to_i
+    pick = nil if pick < 1 or pick > count
+  end
+
+  pick
+end
+
+# First argument can override default limit
+limit = 20
+unless ARGV.empty?
+  limit = ARGV.first.to_i
+end
+
+# Sort by most recently touched branches first 
+options = "--sort=-committerdate --format='%(committerdate:short) %(refname:short)"
+
+# Get local branches (without leading *)
+branches = `git for-each-ref --count=#{limit}  #{options}' refs/remotes`.split("\n")
+
+# List branches
+puts "=> Checkout which remote branch?"
+count = 0
+for branch in branches
+  count += 1
+  puts "%2d. %s" % [ count, branch ]
+end
+
+# Get selection
+pick ||= get_pick(count)
+pick = pick.to_i
+raise "Invalid pick" if pick < 1 || pick > count
+
+# Get the plain branch name
+branch = branches[pick - 1].split("/").last
+exec "git checkout #{branch}"
+puts "=> Done!"
