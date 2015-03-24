@@ -1,0 +1,33 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` action"
+    echo "1) Specify commit to start cherry picking"
+    echo "2) Specify 'c' to continue or 'a' to abort"
+    exit 1
+fi
+
+MY_ACTION="$1"
+
+if [ "$MY_ACTION" == "c" ]; then
+    echo "=> Continue cherry picking"
+    git cherry-pick --continue
+elif [ "$MY_ACTION" == "a" ]; then
+    echo "=> Abort cherry picking"
+    git cherry-pick --abort
+else
+    echo "=> Start cherry picking with $MY_ACTION"
+    git cherry-pick -x "$MY_ACTION"
+fi
+
+if [ "$MY_ACTION" == "c" || "$MY_ACTION" == "a" ]; then
+    read -p "=> Clean up files? " MY_ANSWER
+
+    if test "$MY_ANSWER" == "y"; then
+        git clean -f
+    else
+        echo "=> Skipping clean up."
+    fi
+fi
