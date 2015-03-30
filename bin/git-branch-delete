@@ -14,6 +14,24 @@ def get_pick(count)
   pick
 end
 
+def prompt_for(text, options = nil)
+  response = nil
+
+  while response.nil? do
+    prompt = "=> #{text}"
+    prompt += " [#{options.join(',')}]" if options
+    prompt += options ? '? ' : ': '
+    print prompt
+    response = STDIN.gets.chomp
+
+    if options
+      response = nil unless options.include?(response)
+    end
+  end
+
+  response
+end
+
 # Get local branches (without leading *)
 branches = `git for-each-ref --format='%(refname:short)' refs/heads/`.split("\n")
 
@@ -22,7 +40,7 @@ branches.delete "master"
 branches.delete "dev"
 
 # List branches
-puts "=> Delete which branch?"
+puts "=> Delete which local branch?"
 count = 0
 for branch in branches
   count += 1
@@ -34,6 +52,22 @@ pick ||= get_pick(count)
 pick = pick.to_i
 raise "Invalid pick" if pick < 1 || pick > count
 
+# Get branch to delete
+branch = branches[pick - 1]
+
+# Get current branch
+current_branch = `git rev-parse --abbrev-ref HEAD`.chomp
+
+# See if they're the same
+if branch == current_branch
+  if prompt_for("Attempting to delete current branch. Checkout master first", %w{y n}) == 'y'
+    system "git checkout master"
+  else
+    puts "=> Cancelled."
+    exit
+  end
+end
+
 # Delete the branch
-`git branch -D #{branches[pick - 1]}`
+system "git branch -D #{branch}"
 puts "=> Done!"
