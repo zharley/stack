@@ -22,12 +22,15 @@ else
     git cherry-pick -x "$MY_ACTION"
 fi
 
-if [ "$MY_ACTION" == "c" || "$MY_ACTION" == "a" ]; then
-    read -p "=> Clean up files? " MY_ANSWER
+if [ "$MY_ACTION" == "c" ] || [ "$MY_ACTION" == "a" ]; then
+    read -p "=> Clean up files (git clean -f)? " MY_ANSWER
 
     if test "$MY_ANSWER" == "y"; then
+        echo "=> Cleaning up..."
         git clean -f
     else
         echo "=> Skipping clean up."
     fi
 fi
+
+echo "=> Done."
