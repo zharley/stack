@@ -1,11 +1,11 @@
 # Init script /etc/init/name.conf
 #
-# To force reload of init daemon configuration:
+# @see http://upstart.ubuntu.com/wiki/Stanzas
 #
+# => To force reload of init daemon configuration:
 # initctl reload-configuration
 #
-# Check list of the known jobs and instances:
-#
+# => Check list of the known jobs and instances:
 # initctl list
 #
 description "Service description"
