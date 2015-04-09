@@ -1,0 +1,33 @@
+#! /bin/bash
+set -e
+
+MY_COLOR_NORMAL='\033[0m'
+MY_COLOR_YELLOW='\033[0;33m'
+MY_COLOR_UNDERLINE_WHITE='\033[4;37m'
+
+MY_REMOTE_ORIGIN_URL=$(git config --get remote.origin.url)
+
+echo "=> Changes exclusive to this branch:"
+
+# Extract entries that are exclusive to this branch
+#
+# --no-merges       Do not print commits with more than one parent
+# --pretty=oneline  One line of log prefixed by commit hash
+# 
+# Compares origin/master against the current branch (..)
+git log --pretty=oneline --no-merges origin/master.. | while read MY_LINE; do
+  # A line of output looks like this:
+  # 73a9dc9ded5b0809284229bc31bfd834f8a48086 MU-1015 cordova online and offline events now working as
+  MY_COMMIT="${MY_LINE%% *}"
+  MY_COMMENT="${MY_LINE#* }"
+
+  echo -e "$MY_COLOR_YELLOW$MY_COMMENT$MY_COLOR_NORMAL"
+
+  if [[ $MY_REMOTE_ORIGIN_URL == "https://github.com/"* ]]; then
+    echo -e "$MY_COLOR_UNDERLINE_WHITE$MY_REMOTE_ORIGIN_URL/commit/$MY_COMMIT$MY_COLOR_NORMAL\n"
+  else
+    echo -e "Hash: $MY_COMMIT\n"
+  fi
+done
+
+echo "=> Done."
