@@ -18,6 +18,14 @@ elif [ "$MY_ACTION" == "a" ]; then
     echo "=> Abort cherry picking"
     git cherry-pick --abort
 else
+    read -p "=> Git remote update first? " MY_ANSWER
+
+    if test "$MY_ANSWER" == "y"; then
+        git remote update
+    else
+        echo "=> Skipped update."
+    fi
+
     echo "=> Start cherry picking with $MY_ACTION"
     git cherry-pick -x "$MY_ACTION"
 fi
