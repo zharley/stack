@@ -122,17 +122,18 @@ alias unhex-typed='xxd -r -p'
 alias decrypt-stream='openssl aes-256-cbc -d'
 
 ################################################################################
-## UBUNTU ######################################################################
+## OSX #########################################################################
 ################################################################################
 
 # open in new tab in existing gvim
-alias e="vim --servername PRIMARY --remote-tab"
+alias e="mvim --remote-tab"
+
+################################################################################
+## UBUNTU ######################################################################
+################################################################################
 
 # find matching packages
 alias apt-find='apt-cache search'
-
-# memorable synonym for a useful program
-alias usage='baobab'
 
 # install headers for the current kernel
 alias apt-install-kernel-headers='sudo apt-get install linux-headers-`uname -r`'
