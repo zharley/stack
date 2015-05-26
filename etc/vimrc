@@ -90,6 +90,12 @@ set nofoldenable
 " \\ indicates that the swap file name will be build from complete path
 set directory=~/tmp//,.
 
+" open as many tabs as needed!
+set tabpagemax=999
+
+" disable octal format for increment/decrement on number with leading 0's
+set nrformats-=octal
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
