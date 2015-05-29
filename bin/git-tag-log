@@ -1,0 +1,16 @@
+#! /bin/bash
+set -e
+
+export MY_COLOR_RED='\033[0;31m'
+
+# --tags                       Pretend as if all the refs in refs/tags are listed on the command line as <commit>.
+# --simplify-by-decoration     Commits that are referred by some branch or tag are selected.
+# --pretty                     Pretty-print the contents of the commit logs in a given format.
+#          %ai      author date, ISO 8601-like format
+#          %D       ref names
+#          %s       subject
+#          %Cred    switch color to red
+#          %Cgreen  switch color to green
+#          %Cblue   switch color to blue
+#          %Creset  reset color
+git log --tags --simplify-by-decoration --pretty="format:%ai - %Cred%D%Creset%n%an: %Cgreen%s%n"
