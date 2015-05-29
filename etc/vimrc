@@ -96,6 +96,9 @@ set tabpagemax=999
 " disable octal format for increment/decrement on number with leading 0's
 set nrformats-=octal
 
+" automatically reload files when update
+set autoread
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
