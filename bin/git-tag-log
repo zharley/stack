@@ -4,6 +4,7 @@ set -e
 export MY_COLOR_RED='\033[0;31m'
 
 # --tags                       Pretend as if all the refs in refs/tags are listed on the command line as <commit>.
+# --date-order                 Show no parents before all of its children are shown, but otherwise show commits in the commit timestamp order.
 # --simplify-by-decoration     Commits that are referred by some branch or tag are selected.
 # --pretty                     Pretty-print the contents of the commit logs in a given format.
 #          %ai      author date, ISO 8601-like format
@@ -13,4 +14,4 @@ export MY_COLOR_RED='\033[0;31m'
 #          %Cgreen  switch color to green
 #          %Cblue   switch color to blue
 #          %Creset  reset color
-git log --tags --simplify-by-decoration --pretty="format:%ai - %Cred%D%Creset%n%an: %Cgreen%s%n"
+git log --tags --date-order --simplify-by-decoration --pretty="format:%ai - %Cred%D%Creset%n%an: %Cgreen%s%n"
