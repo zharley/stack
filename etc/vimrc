@@ -66,7 +66,7 @@ set scrolloff=5
 set expandtab
 
 " start new line at appropriate indentation level
-set smartindent
+set cindent
 
 " make tab bar always visible (to prevent annoying appearing/disappearing)
 set showtabline=2
