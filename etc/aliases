@@ -26,8 +26,13 @@ alias reverse-file="awk '{ a[NR]=\$0 } END { for(i=NR; i; --i) print a[i] }'"
 alias count-files="find . -type f | wc -l"
 
 # convenient date and timestamps
+# %F    is equivalent to %Y-%m-%d
+# %H    is replaced by the hour (24-hour clock) as a decimal number (00-23)
+# %M    is replaced by the minute as a decimal number (00-59)
+# %S    is replaced by the second as a decimal number (00-60)
 alias -g stamp='date +%F-%H%M%S'
 alias -g stampd='date +%F'
+alias -g stampy='date "+%-d-%b-%Y at %-I:%M%p"'
 
 ################################################################################
 ## CODING ######################################################################
