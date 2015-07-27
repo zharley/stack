@@ -3,3 +3,4 @@ etc/vim/.netrwhist
 .last-update
 etc/vim/spell/en.utf-8.add
 etc/vim/spell/en.utf-8.add.spl
+.vagrant
