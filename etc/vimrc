@@ -27,7 +27,6 @@ set number
 
 " ignore certain extensions and locations (affects CtrlP)
 set wildignore+=*/.svn,*/.git
-set wildignore+=*/cache,*/web
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg,*.JPG,*.BMP,*.GIF,*.PNG,*.JPEG
 
 " autocomplete: pick longest match first, then cycle through list
