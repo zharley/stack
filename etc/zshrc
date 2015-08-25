@@ -78,6 +78,14 @@ fi
 ## PLUGINS #####################################################################
 ################################################################################
 
+# Include site functions installed in /usr/local
+if [ -d "/usr/local/share/zsh/site-functions" ]; then
+    fpath=(
+        /usr/local/share/zsh/site-functions
+        $fpath
+    )
+fi
+
 # initialize and configure tab completion
 # -U  suppress alias expansion (recommended for functions supplied with zsh)
 # -z  force native emulation (rather than -k for ksh)
