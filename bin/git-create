@@ -1,0 +1,36 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` project_name"
+    echo "=> Creates a new repository in ~/src"
+    exit 1
+fi
+
+MY_NAME="$1"
+MY_HOST=`hostname`
+MY_DIR="$HOME/src"
+
+cd "$MY_DIR"
+
+if [ -d "$MY_NAME" ] || [ -d "$MY_NAME.git" ]; then
+    echo "=> Directory $MY_NAME or $MY_NAME.git already exists"
+    exit 1
+fi
+
+# Init bare repo
+mkdir "$MY_NAME.git" && cd "$MY_NAME.git"
+git --bare init
+
+# Clone repo
+cd "$MY_DIR"
+git clone "$MY_NAME"
+cd "$MY_NAME"
+
+# Add first commit
+echo \# `date` > README
+echo "# $1 repository created on $MY_HOST" >> README
+git add .
+git commit -m "Initial commit"
+git push --all
