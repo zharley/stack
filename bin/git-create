@@ -12,6 +12,7 @@ MY_NAME="$1"
 MY_HOST=`hostname`
 MY_DIR="$HOME/src"
 
+mkdir -p "$MY_DIR"
 cd "$MY_DIR"
 
 if [ -d "$MY_NAME" ] || [ -d "$MY_NAME.git" ]; then
@@ -25,8 +26,8 @@ git --bare init
 
 # Clone repo
 cd "$MY_DIR"
-git clone "$MY_NAME"
-cd "$MY_NAME"
+git clone "$MY_NAME.git" "$MY_NAME.working"
+cd "$MY_NAME.working"
 
 # Add first commit
 echo \# `date` > README
