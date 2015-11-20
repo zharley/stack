@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'selenium-webdriver'
+
+# Check that parameters are given
+if ARGV.size < 2
+  puts "Usage: #{File.basename($0)} http://example.com/path/to/url /path/to/filename.png [width] [height] [sleep]"
+  exit 1
+end
+
+# Extract parameters
+url = ARGV[0]
+filename = ARGV[1]
+width = ARGV[2] || 1024
+height = ARGV[3] || 768
+seconds = ARGV[4] || 5
+
+# File should not exist
+if File.exist? filename
+  raise "Destination file '#{filename}' already exists!"
+end
+
+# Generate screenshot
+begin
+  driver = Selenium::WebDriver.for :chrome
+  driver.manage.window.resize_to width, height
+  driver.get url
+  sleep seconds
+  driver.save_screenshot filename
+ensure
+  driver.quit
+end
+
+# File should now exist
+if File.exist? filename
+  puts "=> Screenshot saved: '#{filename}'"
+else
+  raise "Destination file '#{filename}' already exists!"
+end
