@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` domain"
+    exit 1
+fi
+
+# OpenSSL requires the port number.
+MY_SERVER="$1:443"
+MY_DELAY=1
+MY_CIPHERS=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/ /g')
+
+echo "=> Obtaining cipher list from $(openssl version)."
+
+for MY_CIPHER in ${MY_CIPHERS[@]}; do
+  echo -n "=> Testing $MY_CIPHER..."
+
+  MY_RESULT=$(echo -n | openssl s_client -cipher "$MY_CIPHER" -connect $MY_SERVER 2>&1)
+
+  if [[ "$MY_RESULT" =~ ":error:" ]] ; then
+    error=$(echo -n $MY_RESULT | cut -d':' -f6)
+    echo NO \($error\)
+  else
+    if [[ "$MY_RESULT" =~ "Cipher is ${MY_CIPHER}" || "$MY_RESULT" =~ "Cipher    :" ]] ; then
+      echo YES
+    else
+      echo UNKNOWN RESPONSE
+      echo $MY_RESULT
+    fi
+  fi
+
+  sleep $MY_DELAY
+done
