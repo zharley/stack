@@ -9,7 +9,7 @@ if [ ! -d ".git" ]; then
 fi
 
 
-MY_REMOTE_ORIGIN_URL=$(git config --get remote.origin.url | sed 's|git@github.com:|https://github.com/|')
+MY_REMOTE_ORIGIN_URL=$(git config --get remote.origin.url | sed 's|git@github.com:|https://github.com/|' | sed 's|.git$||')
 echo "* Remote origin    : $MY_REMOTE_ORIGIN_URL"
 
 MY_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
