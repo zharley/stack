@@ -133,6 +133,9 @@ alias decrypt-stream='openssl aes-256-cbc -d'
 # open in new tab in existing gvim
 alias e="mvim --remote-tab"
 
+# resize terminal
+alias termsize="osascript -e 'tell app \"iTerm\" to set bounds of the first window to {0, 0, 1024, 768}'"
+
 ################################################################################
 ## UBUNTU ######################################################################
 ################################################################################
