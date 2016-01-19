@@ -1,38 +1,63 @@
 #!/usr/bin/env ruby
 require 'selenium-webdriver'
+require 'pry'
+
+DEFAULT_WIDTH = 1024
+DEFAULT_HEIGHT = 768
+DEFAULT_SLEEP = 5
+
+def get(url, seconds = 0)
+  begin
+    $driver.get url
+    sleep seconds
+  end
+end
+
+def shot(filename)
+  if File.exist? filename
+    puts "Destination file '#{filename}' already exists!"
+    return
+  end
+
+  $driver.save_screenshot filename
+
+  # File should now exist
+  if File.exist? filename
+    puts "=> Screenshot saved: '#{filename}'"
+  end
+end
 
 # Check that parameters are given
-if ARGV.size < 2
+unless (ARGV.size == 1 && ARGV[0] == 'pry') || ARGV.size == 2
   puts "Usage: #{File.basename($0)} http://example.com/path/to/url /path/to/filename.png [width] [height] [sleep]"
+  puts "   Or: #{File.basename($0)} pry (for interactive)"
+  puts "\n[ Popular resolutions: 1920x1080 1366x768 1280x1024 1280x800 1024x768 800x600 ]"
   exit 1
 end
+
+is_pry = ARGV.first == 'pry'
 
 # Extract parameters
 url = ARGV[0]
 filename = ARGV[1]
-width = ARGV[2] || 1024
-height = ARGV[3] || 768
-seconds = ARGV[4] || 5
+width = ARGV[2] || DEFAULT_WIDTH
+height = ARGV[3] || DEFAULT_HEIGHT
+seconds = ARGV[4] || DEFAULT_SLEEP
 
-# File should not exist
-if File.exist? filename
-  raise "Destination file '#{filename}' already exists!"
-end
+# Save webdriver as global variable
+$driver = Selenium::WebDriver.for :chrome
+$driver.manage.window.resize_to width, height
 
 # Generate screenshot
 begin
-  driver = Selenium::WebDriver.for :chrome
-  driver.manage.window.resize_to width, height
-  driver.get url
-  sleep seconds
-  driver.save_screenshot filename
+  if is_pry
+    puts "Usage: get \"http://path/to/url.html\""
+    puts "       shot \"filename.png\" [width] [height] [sleep]"
+    binding.pry
+  else
+    get url, sleep
+    shot filename
+  end
 ensure
-  driver.quit
-end
-
-# File should now exist
-if File.exist? filename
-  puts "=> Screenshot saved: '#{filename}'"
-else
-  raise "Destination file '#{filename}' already exists!"
+  $driver.quit
 end
