@@ -16,10 +16,11 @@ MY_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 echo "* Current branch   : $MY_CURRENT_BRANCH"
 
 if [[ $MY_REMOTE_ORIGIN_URL == "https://github.com/"* ]]; then
-    echo -e "\n* GitHub URL       : $MY_REMOTE_ORIGIN_URL/tree/$MY_CURRENT_BRANCH"
-    echo "* Compare to master: $MY_REMOTE_ORIGIN_URL/compare/master...$MY_CURRENT_BRANCH"
-    echo "* Compare to dev   : $MY_REMOTE_ORIGIN_URL/compare/dev...$MY_CURRENT_BRANCH"
+    echo -e "\n* GitHub URL        : $MY_REMOTE_ORIGIN_URL/tree/$MY_CURRENT_BRANCH"
+    echo "* Compare to master : $MY_REMOTE_ORIGIN_URL/compare/master...$MY_CURRENT_BRANCH"
+    echo "* Compare to dev    : $MY_REMOTE_ORIGIN_URL/compare/dev...$MY_CURRENT_BRANCH"
+    echo "* Compare to develop: $MY_REMOTE_ORIGIN_URL/compare/develop...$MY_CURRENT_BRANCH"
 
-    echo -e "\n* All pulls        : https://github.com/pulls"
-    echo -e "* Assigned pulls   : https://github.com/pulls/assigned"
+    echo -e "\n* All pulls requests: https://github.com/pulls"
+    echo -e "* Assigned requests : https://github.com/pulls/assigned"
 fi
