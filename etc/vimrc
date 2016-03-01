@@ -98,6 +98,9 @@ set nrformats-=octal
 " automatically reload files when update
 set autoread
 
+" always show status line
+set laststatus=2
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
@@ -109,6 +112,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
+" Airline theme
+let g:airline_theme = 'hybrid'
 
 " CtrlP - just use the current working directory
 let g:ctrlp_working_path_mode = '0'

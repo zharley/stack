@@ -34,3 +34,9 @@
 [submodule "etc/vim/bundle/vim-pencil"]
 	path = etc/vim/bundle/vim-pencil
 	url = https://github.com/reedes/vim-pencil
+[submodule "etc/vim/bundle/vim-airline"]
+	path = etc/vim/bundle/vim-airline
+	url = https://github.com/vim-airline/vim-airline
+[submodule "etc/vim/bundle/vim-airline-themes"]
+	path = etc/vim/bundle/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes
