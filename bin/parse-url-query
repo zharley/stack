@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var url = require('url');
+var querystring = require('querystring');
+var parameters = process.argv.slice(2);
+var parsedUrl = url.parse(parameters[0]);
+var parsedQuery = querystring.parse(parsedUrl.query);
+
+console.log(JSON.stringify(parsedQuery));
