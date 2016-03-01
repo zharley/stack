@@ -1,0 +1,77 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` relative/path/to/submodule"
+    exit 1
+fi
+
+MY_PATH="$1"
+
+# @see http://stackoverflow.com/a/1260982
+
+# 1. Delete the relevant section from the .gitmodules file.
+if [ -f ".gitmodules" ]; then
+    echo "=> [OK] Found .gitmodules in current directory"
+
+    if grep -q "$MY_PATH" .gitmodules; then
+        echo "=> [NEXT] Remove reference to '$MY_PATH' in .gitmodules and run again"
+        exit 1
+    else
+        echo "=> [OK] No reference to '$MY_PATH' in .gitmodules"
+    fi
+else
+    echo "=> [ERROR] Expected to find .gitmodules"
+    exit 1
+fi
+
+# 2. Stage the .gitmodules changes git add .gitmodules
+if git status | grep -q "nothing to commit"; then
+    echo "=> [OK] Nothing to commit in `pwd`"
+else
+    echo "=> [NEXT] Stage any changes to .gitmodules (e.g. git add .gitmodules)"
+    #exit 1
+    #git commit -a -m "$MY_MESSAGE"
+fi
+
+# 3. Delete the relevant section from .git/config.
+if [ -f ".git/config" ]; then
+    echo "=> [OK] Found .git/config in current directory"
+
+    if grep -q "$MY_PATH" .git/config; then
+        echo "=> [NEXT] Remove reference to '$MY_PATH' in .git/config and run again"
+        exit 1
+    else
+        echo "=> [OK] No reference to '$MY_PATH' in .git/config"
+    fi
+else
+    echo "=> [ERROR] Expected to find .git/config"
+    exit 1
+fi
+
+# 4. Run git rm --cached path_to_submodule (no trailing slash)
+if git rm -q -n --cached "$MY_PATH" > /dev/null 2>&1; then
+    echo "=> [NEXT] Remove git cache (e.g. git rm --cached '$MY_PATH')"
+else
+    echo "=> [OK] No git cache found"
+fi
+
+# 5. Run rm -rf .git/modules/path_to_submodule
+if [ -d ".git/modules/$MY_PATH" ]; then
+    echo "=> [NEXT] Remove subdirectory from .git/modules (e.g. rm -rf '.git/modules/$MY_PATH')"
+    exit 1
+else
+    echo "=> [OK] No subdirectory found in .git/modules"
+fi
+
+# 6. Commit git commit -m "Removed submodule <name>"
+echo "=> [NEXT] Commit changes (e.g. git commit -m \"Removed submodule <name>\""
+
+# 7. Delete the now untracked submodule files rm -rf path_to_submodule
+if [ -d "$MY_PATH" ]; then
+    echo "=> [NEXT] Remove submodule (e.g. rm -rf '$MY_PATH')"
+    exit 1
+else
+    echo "=> [OK] No submodule found"
+fi
