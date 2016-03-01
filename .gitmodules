@@ -19,15 +19,9 @@
 [submodule "etc/vim/bundle/surround"]
 	path = etc/vim/bundle/surround
 	url = git://github.com/tpope/vim-surround.git
-[submodule "etc/vim/bundle/twig"]
-	path = etc/vim/bundle/twig
-	url = https://github.com/beyondwords/vim-twig.git
 [submodule "etc/vim/bundle/html5"]
 	path = etc/vim/bundle/html5
 	url = https://github.com/othree/html5.vim.git
-[submodule "etc/vim/bundle/twig-indent"]
-	path = etc/vim/bundle/twig-indent
-	url = https://github.com/tokutake/twig-indent.git
 [submodule "etc/vim/bundle/file-line"]
 	path = etc/vim/bundle/file-line
 	url = https://github.com/vim-scripts/file-line
@@ -40,10 +34,3 @@
 [submodule "etc/vim/bundle/jellybeans"]
 	path = etc/vim/bundle/jellybeans
 	url = https://github.com/nanotech/jellybeans.vim
-[submodule "nerdtree"]
-	path = etc/vim/bundle/nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
-[submodule "etc/vim/bundle/vim-dict"]
-	path = etc/vim/bundle/vim-dict
-	url = https://github.com/szw/vim-dict.git
-	ignore = dirty
