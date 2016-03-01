@@ -14,7 +14,7 @@ runtime autoload/util.vim
 au! BufWritePost .vimrc source %
 
 " we're running Vim, not Vi!
-set nocompatible          
+set nocompatible
 
 " enable syntax highlighting
 syntax on
@@ -41,13 +41,13 @@ set guioptions-=r
 set guifont=Source\ Code\ Pro\ Light:h13
 
 " prevent overflowing output when doing find-in-files
-set nomore	
+set nomore
 
 " show matching parenteses
 set noshowmatch
 
 " incremental search
-set incsearch	
+set incsearch
 
 " highlight search result
 set hlsearch
@@ -59,7 +59,7 @@ set noignorecase
 set nosmartcase
 
 " automatically scroll so that at least this lines are above or below cursor
-set scrolloff=5 
+set scrolloff=5
 
 " use spaces instead of tabs
 set expandtab
@@ -74,7 +74,7 @@ set showtabline=2
 set timeoutlen=200
 
 " wrap words visually
-set lbr 
+set lbr
 
 " enable mouse in xterm
 set mouse=a
@@ -104,12 +104,11 @@ set autoread
 
 autocmd BufReadPost * :DetectIndent
 
-" Syntastic - disable syntax checking on twig files
-let g:syntastic_mode_map = { 
-    \ 'mode' : 'active', 
-    \ 'active_filetypes' : [], 
-    \ 'passive_filetypes': ['twig'] 
-\ }
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " CtrlP - just use the current working directory
 let g:ctrlp_working_path_mode = '0'
@@ -151,6 +150,7 @@ if $TERM == 'xterm-256color'
 endif
 
 " setup pencil
+let g:pencil#textwidth = 100
 augroup pencil
   autocmd!
   autocmd FileType markdown,mkd call pencil#init()
@@ -159,7 +159,7 @@ augroup pencil
 augroup END
 
 "-------------------------------------------------------------------------------
-" KEYBOARD 
+" KEYBOARD
 "-------------------------------------------------------------------------------
 
 " map leader and often-used shortcuts
@@ -167,9 +167,10 @@ let mapleader=","
 noremap <Leader>t :call util#BeginFinder()<CR>
 noremap <Leader>g :CtrlPClearCache<CR>:call util#BeginFinder()<CR>
 noremap <Leader>a :Align
-noremap <Leader>r :UtilPowerReplace 
+noremap <Leader>r :UtilPowerReplace
 noremap <Leader>q :UtilQuickfixToArgs<CR>
-noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i 
+noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i
+noremap <Leader><Tab> :lnext<CR>
 
 " use Ctrl+q for the usual Ctrl+w
 nnoremap <C-q> <C-w>
@@ -210,10 +211,6 @@ nnoremap < <<
 " preserve selection after (un-)indenting selected lines.
 vnoremap > >gv
 vnoremap < <gv
-
-" launch nerd tree
-noremap <Leader>b :NERDTreeToggle<CR>
-let g:NERDTreeDirArrows=0
 
 " command shortcuts
 command! -range=% TidyCSS :<line1>,<line2>!css-quick-format
