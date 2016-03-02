@@ -101,6 +101,9 @@ set autoread
 " always show status line
 set laststatus=2
 
+" add a visual indicator at column limit
+let &colorcolumn=80
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
@@ -109,10 +112,11 @@ autocmd BufReadPost * :DetectIndent
 
 " Syntastic
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_mode_map = { 'passive_filetypes': ['java'] }
 
 " Airline theme and fonts
 let g:airline_theme = 'hybrid'
@@ -180,7 +184,7 @@ noremap <Leader>a :Align
 noremap <Leader>r :UtilPowerReplace
 noremap <Leader>q :UtilQuickfixToArgs<CR>
 noremap <Leader>f :Ack --ignore-dir=cache --ignore-dir=vendor --ignore-dir=web -i
-noremap <Leader><Tab> :lnext<CR>
+noremap <Leader>e :ll<CR>
 
 " use Ctrl+q for the usual Ctrl+w
 nnoremap <C-q> <C-w>
