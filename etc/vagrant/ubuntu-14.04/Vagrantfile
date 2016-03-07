@@ -2,9 +2,4 @@
 Vagrant.configure('2') do |config|
   # Base image for VM
   config.vm.box = "ubuntu/trusty64"
-
-  # Enable GUI
-  config.vm.provider "virtualbox" do |vm|
-    vm.gui = true
-  end
 end
