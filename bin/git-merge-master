@@ -2,11 +2,12 @@
 set -e
 
 MY_BRANCH=`git rev-parse --abbrev-ref HEAD`
+echo "=> Current branch is '$MY_BRANCH'"
 
-echo "=> Current branch is '$MY_BRANCH'. Will attempt to merge in master."
-
+echo "=> Switching to master and pulling"
 git checkout master
 git pull
 
+echo "=> Switching back to '$MY_BRANCH' and merging in master"
 git checkout $MY_BRANCH
 git merge master
