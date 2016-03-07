@@ -1,0 +1,35 @@
+#! /bin/bash
+set -e
+
+# check for presence of parameters
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` query"
+    exit 1
+fi
+
+MY_SELF="$0"
+MY_QUERY="$1"
+
+# use a [t]rick to exclude the grep command
+MY_MATCH="[${MY_QUERY:0:1}]${MY_QUERY:1}"
+
+# use ack if it's available
+MY_BIN="grep"
+if which ack-grep > /dev/null; then
+    MY_BIN="ack-grep"
+elif which ack > /dev/null; then
+    MY_BIN="ack"
+fi
+
+# show header
+ps aux | head -n 1
+
+# perform match
+if ps aux | grep -v "$MY_SELF" | $MY_BIN $MY_MATCH; then
+    if which awk > /dev/null; then
+        echo "=> Kill command(s):"
+        ps aux | grep -v "$MY_SELF" | $MY_BIN $MY_MATCH | awk '{print "kill " $2}'
+    fi
+else
+    echo "=> No matching processes"
+fi
