@@ -104,6 +104,9 @@ set laststatus=2
 " add a visual indicator at column limit
 let &colorcolumn=80
 
+" .md files are always markdown
+autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
 " save with sudo when you forget to launch vim with sudo
 " @see http://stackoverflow.com/a/7078429
 cmap w!! w !sudo tee > /dev/null %
@@ -174,6 +177,7 @@ augroup pencil
   autocmd FileType markdown,mkd call pencil#init()
            \ | setl spell spl=en_us fdl=4 noru nonu nornu
            \ | setl fdo+=search
+           \ | setl colorcolumn=100
 augroup END
 
 "-------------------------------------------------------------------------------
