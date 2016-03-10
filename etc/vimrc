@@ -104,6 +104,10 @@ set laststatus=2
 " add a visual indicator at column limit
 let &colorcolumn=80
 
+" save with sudo when you forget to launch vim with sudo
+" @see http://stackoverflow.com/a/7078429
+cmap w!! w !sudo tee > /dev/null %
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
