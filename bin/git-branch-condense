@@ -1,0 +1,67 @@
+#! /bin/bash
+set -e
+
+# Some console color constants
+MY_RED='\033[0;31m'
+MY_GREEN='\033[0;32m'
+MY_NORMAL='\033[0m'
+
+# Really simple confirmation function (you have to enter 'y')
+confirm() {
+    read -p "=> $1 [Enter 'y' to continue]: " MY_ANSWER
+    if test "$MY_ANSWER" != "y"; then 
+        echo "=> Cancelled!"
+        exit 1 
+    fi
+}
+
+# Say something in red
+red() {
+    echo -e "=> ${MY_RED}$1${MY_NORMAL}"
+}
+
+# Say something in green
+green() {
+    echo -e "=> ${MY_GREEN}$1${MY_NORMAL}"
+}
+
+# Default to using master as parent for new branches
+MY_PARENT_BRANCH="master"
+
+# Print brief usage when no parameter is supplied
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` new-branch-name [parent branch or default master]"
+    exit 1
+fi
+
+# First parameter is the new branch name
+MY_NEW_BRANCH="$1"
+
+# Second (optional) parameter is a different parent
+if [ -n "$2" ]; then
+    MY_PARENT_BRANCH="$2"
+fi
+
+# Extract current branch name
+MY_CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+# Warn about what's going to happen
+green "Your current branch is '$MY_CURRENT_BRANCH'"
+red "This will create a new branch '$MY_NEW_BRANCH' based on '$MY_PARENT_BRANCH'"
+confirm "Condense everything from '$MY_CURRENT_BRANCH' into new branch"
+
+green "Checking out parent and creating a new branch"
+git checkout "$MY_PARENT_BRANCH"
+git pull
+git checkout -b "$MY_NEW_BRANCH"
+git push --set-upstream origin "$MY_NEW_BRANCH"
+
+green "Generating a patch and applying it to the new branch"
+git diff -R "$MY_CURRENT_BRANCH" | git apply
+
+green "Adding changes and preparing a commit message based on the log"
+git add .
+git log --no-merges .."$MY_CURRENT_BRANCH" | git commit -a -F -
+git commit --amend
+
+green "Done"
