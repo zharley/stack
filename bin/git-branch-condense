@@ -2,22 +2,23 @@
 set -e
 
 # Some console color constants
-MY_RED='\033[0;31m'
+MY_YELLOW='\033[0;33m'
 MY_GREEN='\033[0;32m'
 MY_NORMAL='\033[0m'
 
-# Really simple confirmation function (you have to enter 'y')
+# Simple confirmation function (you have to enter 'y')
 confirm() {
-    read -p "=> $1 [Enter 'y' to continue]: " MY_ANSWER
+    echo -en "=> $MY_YELLOW$1$MY_NORMAL [Enter 'y' to continue]: "
+    read MY_ANSWER
     if test "$MY_ANSWER" != "y"; then 
         echo "=> Cancelled!"
         exit 1 
     fi
 }
 
-# Say something in red
-red() {
-    echo -e "=> ${MY_RED}$1${MY_NORMAL}"
+# Say something in yellow
+yellow() {
+    echo -e "=> ${MY_YELLOW}$1${MY_NORMAL}"
 }
 
 # Say something in green
@@ -25,36 +26,53 @@ green() {
     echo -e "=> ${MY_GREEN}$1${MY_NORMAL}"
 }
 
-# Default to using master as parent for new branches
-MY_PARENT_BRANCH="master"
+# Default to using master as base for new branches
+MY_BASE_BRANCH="master"
 
-# Print brief usage when no parameter is supplied
-if [ -z "$1" ]; then
-    echo "Usage: `basename $0` new-branch-name [parent branch or default master]"
+# Second (optional) parameter is a different base
+if [ -n "$2" ]; then
+    MY_BASE_BRANCH="$2"
+fi
+
+# Extract local branch name
+MY_CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+# Add timestamp for new branch name
+MY_NEW_BRANCH="$MY_CURRENT_BRANCH-`date +%F-%H%M%S`"
+
+# Warn about what's going to happen
+yellow "Condense feature branch '$MY_CURRENT_BRANCH' as follows:"
+echo "   1. Fetch and verify branch is up-to-date with $MY_BASE_BRANCH"
+echo "   2. Checkout $MY_BASE_BRANCH"
+echo "   3. Create local branch $MY_NEW_BRANCH" 
+echo "   4. Make diff representing net changes in $MY_CURRENT_BRANCH" 
+echo "   5. Apply diff to $MY_NEW_BRANCH" 
+echo "   6. Suggest a commit message for $MY_NEW_BRANCH" 
+confirm "Proceed?"
+
+green "Compare revisions to see if a merge is required"
+git fetch
+# @see http://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
+MY_LOCAL_REV=$(git rev-parse @)
+MY_REMOTE_REV=$(git rev-parse @{u})
+MY_BASE_REV=$(git merge-base @ @{u})
+if [ $MY_LOCAL_REV = $MY_REMOTE_REV ]; then
+    green "Up-to-date!"
+elif [ $MY_LOCAL_REV = $MY_BASE_REV ]; then
+    yellow "Need to pull"
+    exit 1
+elif [ $MY_REMOTE_REV = $MY_BASE_REV ]; then
+    yellow "Need to push"
+    exit 1
+else
+    yellow "Diverged"
     exit 1
 fi
 
-# First parameter is the new branch name
-MY_NEW_BRANCH="$1"
-
-# Second (optional) parameter is a different parent
-if [ -n "$2" ]; then
-    MY_PARENT_BRANCH="$2"
-fi
-
-# Extract current branch name
-MY_CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-
-# Warn about what's going to happen
-green "Your current branch is '$MY_CURRENT_BRANCH'"
-red "This will create a new branch '$MY_NEW_BRANCH' based on '$MY_PARENT_BRANCH'"
-confirm "Condense everything from '$MY_CURRENT_BRANCH' into new branch"
-
-green "Checking out parent and creating a new branch"
-git checkout "$MY_PARENT_BRANCH"
+green "Check out base and create a new branch"
+git checkout "$MY_BASE_BRANCH"
 git pull
 git checkout -b "$MY_NEW_BRANCH"
-git push --set-upstream origin "$MY_NEW_BRANCH"
 
 green "Generating a patch and applying it to the new branch"
 git diff -R "$MY_CURRENT_BRANCH" | git apply
@@ -65,3 +83,15 @@ git log --no-merges .."$MY_CURRENT_BRANCH" | git commit -a -F -
 git commit --amend
 
 green "Done"
+
+yellow "Next steps (optional):"
+echo "# Backup old branch and stop tracking remote"
+echo "git branch -m $MY_CURRENT_BRANCH $MY_CURRENT_BRANCH-backup"
+echo "git branch --unset-upstream"
+echo "# Delete remote branch"
+echo "git push origin :$MY_CURRENT_BRANCH"
+echo "# Rename local branch"
+echo "git checkout $MY_NEW_BRANCH"
+echo "git branch -m $MY_CURRENT_BRANCH"
+echo "# Push to remote and track"
+echo "git push --set-upstream origin $MY_CURRENT_BRANCH"
