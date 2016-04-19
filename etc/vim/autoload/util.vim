@@ -85,6 +85,13 @@ command! -nargs=+ -range=% UtilPowerReplace <line1>,<line2>call util#PowerReplac
 " pass quickfix to args
 command! -nargs=0 -bar UtilQuickfixToArgs execute 'args ' . util#QuickfixFilenames()
 
+" Detects shebang in current file and sets file type appropriately
+function! util#DetectNode()
+  if getline(1) =~# '^#!.*/bin/env\s\+node\>'
+    set ft=javascript
+  endif
+endfun
+
 let &cpo= s:keepcpo
 unlet s:keepcpo
 " end public interface

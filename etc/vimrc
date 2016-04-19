@@ -111,6 +111,9 @@ autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 " @see http://stackoverflow.com/a/7078429
 cmap w!! w !sudo tee > /dev/null %
 
+" auto-detect node scripts as javascript
+autocmd BufNewFile,BufRead * call util#DetectNode()
+
 "-------------------------------------------------------------------------------
 " PLUGIN CONFIGURATION
 "-------------------------------------------------------------------------------
