@@ -3,7 +3,7 @@
 # check for presence of parameters
 if [ -z $1 ]; then
     echo "Usage: `basename $0` user@host.com [protocol]"
-    echo "(protocol defaults to dsa)"
+    echo "(protocol defaults to rsa)"
     exit 1
 fi
 
@@ -11,7 +11,7 @@ fi
 MY_LOGIN="$1"
 
 # the second parameter optionally specifies a protocol
-MY_PROTOCOL="dsa"
+MY_PROTOCOL="rsa"
 if [ -n "$2" ]; then
     MY_PROTOCOL="$2"
 fi
