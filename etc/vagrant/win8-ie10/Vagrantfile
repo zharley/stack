@@ -1,0 +1,24 @@
+# vi: set ft=ruby :
+Vagrant.configure('2') do |config|
+  # Supply name and URL for box
+  config.vm.box = 'win81'
+
+  # The URL of the configured box (required for non-Hashicorp boxes)
+  config.vm.box_url = 'http://aka.ms/vagrant-win8-ie10'
+
+  # Prevent Vagrant from waiting around for machine to boot
+  config.vm.boot_timeout = 1
+
+  # Connect to guest box via WinRM rather than SSH
+  config.vm.communicator = "winrm"
+
+  # Default modern.ie user account for Windows Vista, 7, 8 VMs
+  # http://virtualization.modern.ie/vhd/virtualmachine_instructions.pdf
+  config.winrm.username = "IEUser"
+  config.winrm.password = "Passw0rd!"
+
+  # Enable GUI
+  config.vm.provider "virtualbox" do |vm|
+    vm.gui = true
+  end
+end
