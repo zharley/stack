@@ -176,13 +176,13 @@ if $TERM == 'xterm-256color'
 endif
 
 " setup pencil
-let g:pencil#textwidth = 100
 augroup pencil
   autocmd!
-  autocmd FileType markdown,mkd call pencil#init()
-           \ | setl spell spl=en_us fdl=4 noru nonu nornu
+  autocmd FileType markdown,mkd
+           \ setl spell spl=en_us fdl=4 noru nonu nornu
            \ | setl fdo+=search
            \ | setl colorcolumn=100
+           \ | call pencil#init()
 augroup END
 
 "-------------------------------------------------------------------------------
