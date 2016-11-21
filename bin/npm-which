@@ -1,0 +1,20 @@
+#! /bin/bash
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: `basename $0` command"
+    exit 1
+fi
+
+MY_COMMAND="$1"
+
+if which npm > /dev/null; then
+    MY_LOCAL="`npm bin`/$MY_COMMAND"
+
+    if [ -f "$MY_LOCAL" ]; then
+        echo "$MY_LOCAL"
+        exit 0
+    fi
+fi
+
+which "$1"
