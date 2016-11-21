@@ -23,6 +23,6 @@ Vagrant.configure('2') do |config|
 
   # Use IP resolver to get DHCP configured address
   config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
-    `vagrant ssh -c "hostname -I"`.split.last
+    `vagrant ssh -c "sudo hostname -I"`.split.last
   end
 end
