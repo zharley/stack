@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+def prompt_for(text, default = nil, options = nil)
+  response = nil
+
+  while response.nil? do
+    prompt = "==> #{text}"
+    prompt += " [#{options.join(',')}]" if options
+    prompt += " [default=#{default}]" if default
+    prompt += options ? '? ' : ': '
+    print prompt
+    response = STDIN.gets.chomp
+
+    if response.empty? and (not default.nil?)
+      response = default
+    end
+
+    if options
+      response = nil unless options.include?(response)
+    end
+  end
+
+  return response
+end
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} Your commit message"
+  exit 1
+end
+
+message = ARGV.join(" ")
+
+current_branch = `git rev-parse --abbrev-ref HEAD`.chomp
+
+if current_branch =~ /([a-zA-Z0-9]+-\d+)/
+  message = $1.upcase + " " + message
+else
+  puts "=> Cannot recognize the current branch."
+
+  log_history = `git log --pretty=oneline --abbrev-commit -20`
+
+  if log_history =~ /\s+([a-zA-Z0-9]+)-(\d+)\s+/
+    ticket = (current_branch == 'master') ? "#{$1}-0000" : "#{$1}-#{$2}"
+
+    message = ticket.upcase + " " + message
+  else
+    puts "=> Cannot deduce from log history"
+    exit
+  end
+end
+
+puts message
+
+response = prompt_for("Commit using the message above?", "y", %w{y n})
+
+if response != "y"
+  puts "=> Cancelled."
+  exit
+end
+
+exec "git-auto #{message.inspect}"
