@@ -1,6 +1,12 @@
 #! /bin/bash
 set -e
 
+# Optionally take first parameter to be the dev branch
+MY_DEV_BRANCH="$1"
+if [ -z "$1" ]; then
+    MY_DEV_BRANCH="dev"
+fi
+
 echo "[ Cheatsheet for current Git repo ]"
 
 if [ ! -d ".git" ]; then 
@@ -18,8 +24,7 @@ echo "* Current branch   : $MY_CURRENT_BRANCH"
 if [[ $MY_REMOTE_ORIGIN_URL == "https://github.com/"* ]]; then
     echo -e "\n* GitHub URL        : $MY_REMOTE_ORIGIN_URL/tree/$MY_CURRENT_BRANCH"
     echo "* Compare to master : $MY_REMOTE_ORIGIN_URL/compare/master...$MY_CURRENT_BRANCH"
-    echo "* Compare to dev    : $MY_REMOTE_ORIGIN_URL/compare/dev...$MY_CURRENT_BRANCH"
-    echo "* Compare to develop: $MY_REMOTE_ORIGIN_URL/compare/develop...$MY_CURRENT_BRANCH"
+    echo "* Compare to dev    : $MY_REMOTE_ORIGIN_URL/compare/$MY_DEV_BRANCH...$MY_CURRENT_BRANCH"
 
     echo -e "\n* All pulls requests: https://github.com/pulls"
     echo -e "* Assigned requests : https://github.com/pulls/assigned"

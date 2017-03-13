@@ -4,10 +4,16 @@ set -e
 MY_BRANCH=`git rev-parse --abbrev-ref HEAD`
 echo "=> Current branch is '$MY_BRANCH'"
 
-echo "=> Switching to master and pulling"
-git checkout master
+# Optionally take first parameter to be the master branch
+MY_MASTER_BRANCH="$1"
+if [ -z "$1" ]; then
+    MY_MASTER_BRANCH="master"
+fi
+
+echo "=> Switching to $MY_MASTER_BRANCH and pulling"
+git checkout $MY_MASTER_BRANCH
 git pull
 
-echo "=> Switching back to '$MY_BRANCH' and merging in master"
+echo "=> Switching back to '$MY_BRANCH' and merging in $MY_MASTER_BRANCH"
 git checkout $MY_BRANCH
-git merge master
+git merge $MY_MASTER_BRANCH
