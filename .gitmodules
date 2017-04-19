@@ -52,3 +52,6 @@
 [submodule "etc/vim/bundle/dash"]
 	path = etc/vim/bundle/dash
 	url = https://github.com/rizzatti/dash.vim.git
+[submodule "etc/vim/bundle/vim-js"]
+	path = etc/vim/bundle/vim-js
+	url = https://github.com/pangloss/vim-javascript
