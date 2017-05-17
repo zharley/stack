@@ -151,6 +151,9 @@ let g:ctrlp_match_window = 'bottom,order:btt,min:15,max:15,results:50'
 " CtrlP - follow symlinks
 let g:ctrlp_follow_symlinks = 1
 
+" CtrlP - maximum files (default 10,000)
+let g:ctrlp_max_files = 200000
+
 " Color overrides
 let g:jellybeans_overrides = {
    \ 'Comment':     { 'guifg': 'A1A1A1' },

@@ -13,6 +13,10 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+MY_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo "=> Current branch: $MY_CURRENT_BRANCH"
+
 # only try to commit if there's something to commit
 if git status | grep -q "nothing to commit"; then
     echo "=> Nothing to commit in `pwd`"
@@ -45,7 +49,7 @@ if git status | grep -q "Your branch is ahead"; then
     # push if desired
     if test "$MY_ANSWER" == "y"; then
         echo "=> Pushing all in `pwd`"
-        git push --all
+        git push origin $MY_CURRENT_BRANCH
     else
         echo "=> Nothing to push in `pwd`"
     fi

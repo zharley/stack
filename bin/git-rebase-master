@@ -9,6 +9,12 @@ confirm() {
     fi
 }
 
+# Optionally take first parameter to be the master branch
+MY_MASTER_BRANCH="$1"
+if [ -z "$1" ]; then
+    MY_MASTER_BRANCH="master"
+fi
+
 MY_BRANCH=`git rev-parse --abbrev-ref HEAD`
 echo "=> Current branch is '$MY_BRANCH'"
 
@@ -16,7 +22,7 @@ echo "=> Fetching latest..."
 git fetch
 
 echo "=> Rebasing..."
-git rebase origin/master
+git rebase origin/$MY_MASTER_BRANCH
 
 confirm "Force push origin"
 git push origin "$MY_BRANCH" -f
