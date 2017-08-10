@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'date'
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} author [weeks]"
+  exit 1
+end
+
+DATE_FORMAT="%Y-%m-%d"
+
+author = ARGV[0]
+weeks = ARGV[1] ? ARGV[1].to_i : 1
+
+# Get date range from one Monday to the next
+after = DateTime.parse('Monday') - (weeks - 1) * 7
+before = after + 7
+
+# Base git command
+# --no-pager       Disables the less-style navigator
+# --pretty         Supplies the subject only
+# --author         Matches any part of the author name/email with the parameter
+base = "git --no-pager log --pretty=format:'- %s' --author '.*#{author}.*'"
+
+for i in 1..weeks
+  # Show headline
+  puts "Week ##{i}: #{after.strftime(DATE_FORMAT)} to #{before.strftime(DATE_FORMAT)}"
+
+  # Add before/after date range to git command
+  cmd = base + " --before '#{before}' --after '#{after}'"
+
+  # Execute git command (allowing output to appear on STDOUT)
+  system cmd
+
+  # Draw a line
+  puts "\n" + ("-" * 80)
+
+  # Move forward a week
+  after += 7
+  before += 7
+end
