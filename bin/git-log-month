@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'date'
+
+# needs an argument
+if ARGV.empty?
+  puts "Usage: #{File.basename($0)} author [months_ago]"
+  exit 1
+end
+
+DATE_FORMAT="%Y-%m-%d"
+
+author = ARGV[0]
+months_ago = ARGV[1] ? ARGV[1].to_i : 1
+
+now = Date.today
+from = Date.new(now.year, now.month - months_ago, 1)
+last = Date.new(now.year, now.month - months_ago + 1, 1) - 1
+
+# Base git command
+# --no-pager       Disables the less-style navigator
+# --pretty         Supplies the subject only
+# --author         Matches any part of the author name/email with the parameter
+base = "git --no-pager log --pretty=format:'- %s' --author '.*#{author}.*'"
+
+count = 0;
+
+while from < last
+  to = from + (6 - from.wday)
+
+  if to > last
+    to = last
+  end 
+
+  count += 1
+
+  # Show headline
+  puts "Week ##{count}: #{from.strftime(DATE_FORMAT)} to #{to.strftime(DATE_FORMAT)}"
+
+  # Add to/from date range to git command
+  cmd = base + " --after '#{from - 1}' --before '#{to}' "
+
+  # Execute git command (allowing output to appear on STDOUT)
+  system cmd
+
+  # Draw a line
+  puts "\n" + ("-" * 80)
+
+  from += 7 - from.wday
+end
